@@ -1,0 +1,21 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  schemas  = ["diner"]
+}
+
+model foods {
+  id_food     String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name        String    @db.VarChar(30)
+  description String?
+  price       Decimal   @db.Decimal(6, 2)
+  promotion   Decimal?  @db.Decimal(7, 2)
+  stock       Boolean?  @default(true)
+  sale        Boolean?  @default(true)
+  created_at  DateTime? @default(now()) @db.Timestamp(6)
+
+  @@schema("diner")
+}
