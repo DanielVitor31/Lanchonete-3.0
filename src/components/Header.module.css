@@ -1,0 +1,14 @@
+.header {
+  border-bottom: 1px solid #1f2937;
+}
+
+.inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.logo {
+  font-weight: bold;
+  color: var(--primary, #f97316);
+}
