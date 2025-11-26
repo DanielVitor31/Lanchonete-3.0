@@ -3,3 +3,6 @@ export const moneyFormatBRL = (value: number) =>
     style: "currency",
     currency: "BRL",
   });
+
+export const supabaseStorageURL = (pasta: string, arquivo: string) => 
+  `https://tcbwhkdbktgzelgtyzgv.supabase.co/storage/v1/object/public/image/${pasta}/${arquivo}`;
