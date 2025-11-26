@@ -1,18 +1,44 @@
+// src/app/RootLayoutClient.tsx
 "use client";
 
-import { ReactNode } from "react";
-import { ThemeProvider } from "@mui/material/styles";
-import { CssBaseline, Box } from "@mui/material";
-import { theme } from "../theme";
-
+import { ReactNode, useEffect, useMemo, useState } from "react";
+import { ThemeProvider, CssBaseline, Box } from "@mui/material";
+import { createAppTheme, DEFAULT_PRIMARY, generateColorVariants } from "../theme";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-9
+
 type Props = {
   children: ReactNode;
 };
 
 export default function RootLayoutClient({ children }: Props) {
+  const [primary, setPrimary] = useState(DEFAULT_PRIMARY);
+
+  // carrega do localStorage na primeira vez
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const saved = window.localStorage.getItem("primaryColor");
+    if (saved) setPrimary(saved);
+  }, []);
+
+  // atualiza CSS var + salva no localStorage
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    document.documentElement.style.setProperty("--primary", primary);
+
+    const v = generateColorVariants(primary);
+    document.documentElement.style.setProperty("--primary-light", v.light);
+    document.documentElement.style.setProperty("--primary-dark", v.dark);
+    document.documentElement.style.setProperty("--primary-strong", v.strong);
+    document.documentElement.style.setProperty("--primary-soft", v.soft);
+    document.documentElement.style.setProperty("--primary-test", v.test);
+    
+    window.localStorage.setItem("primaryColor", primary);
+  }, [primary]);
+
+  const theme = useMemo(() => createAppTheme(primary), [primary]);
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -26,15 +52,13 @@ export default function RootLayoutClient({ children }: Props) {
           color: "text.primary",
         }}
       >
-        {/* Header separado */}
-        <Header />
+        {/* passa a cor e o setter pro Header */}
+        <Header primary={primary} onChangePrimary={setPrimary} />
 
-        {/* Conteúdo dinâmico */}
         <Box component="main" sx={{ flexGrow: 1, maxWidth: 1200, mx: "auto", p: 2 }}>
           {children}
         </Box>
 
-        {/* Footer separado */}
         <Footer />
       </Box>
     </ThemeProvider>
