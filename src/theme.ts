@@ -1,6 +1,6 @@
 import { createTheme, lighten, darken } from "@mui/material/styles";
 
-export const DEFAULT_PRIMARY = "#4ade80"; // verde de exemplo
+export const DEFAULT_PRIMARY = "#EE5700"; // verde de exemplo
 
 export interface CustomColors {
   strong: string;
@@ -29,7 +29,8 @@ export function generateColorVariants(base: string) {
     soft: lighten(base, 0.4),
 
     // sua "cor especial"
-    test: lighten(base, 0.15),
+    test: lighten(base, 1),
+    test2: lighten(base, 0.1),
   };
 }
 
@@ -38,7 +39,7 @@ export function createAppTheme(primaryColor: string) {
 
   return createTheme({
     palette: {
-      mode: "dark",
+      mode: "light",
       primary: {
         main: v.main,
         light: v.light,

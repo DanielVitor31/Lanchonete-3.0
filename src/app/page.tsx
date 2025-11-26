@@ -2,6 +2,10 @@
 
 import { Typography, Paper, Stack, Button } from "@mui/material";
 import Link from "next/link";
+import styles from "./page.module.css";
+
+
+// Home page da aplicação
 
 export default function HomePage() {
   return (
@@ -19,7 +23,7 @@ export default function HomePage() {
         variant="outlined"
         sx={{ p: 2, display: "flex", gap: 2, flexWrap: "wrap" }}
       >
-        <Button variant="contained" component={Link} href="/cardapio">
+        <Button variant="contained" component={Link} href="/cardapio" className={styles.teste}>
           Ir para o Cardápio
         </Button>
         <Button variant="outlined" component={Link} href="/comandas">

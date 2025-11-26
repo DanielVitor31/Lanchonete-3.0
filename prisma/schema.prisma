@@ -19,3 +19,13 @@ model foods {
 
   @@schema("diner")
 }
+
+model settings {
+  id_setting   String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name         String
+  value_string String?
+  value_number Decimal?  @db.Decimal
+  created_at   DateTime? @default(now()) @db.Timestamp(6)
+
+  @@schema("diner")
+}

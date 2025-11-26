@@ -38,7 +38,7 @@ export function Header({ primary, onChangePrimary }: HeaderProps) {
           </Button>
 
           {/* seletor de cor simples */}
-          <Box
+          {/* <Box
             component="label"
             sx={{
               ml: 2,
@@ -69,7 +69,8 @@ export function Header({ primary, onChangePrimary }: HeaderProps) {
                 cursor: "pointer",
               }}
             />
-          </Box>
+          </Box> */}
+          
         </Box>
       </Toolbar>
     </AppBar>
