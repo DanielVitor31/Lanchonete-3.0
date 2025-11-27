@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import RootLayoutClient from "./RootLayoutClient";
 import { prisma } from "@/lib/prisma";
-import { DEFAULT_PRIMARY } from "../theme";
+import { getColorMap } from "@/lib/colorSettings";
 
 export const metadata: Metadata = {
   title: "Lanchonete 3.0",
@@ -21,13 +21,14 @@ export default async function RootLayout({
     },
   });
 
-  const primaryFromDb = settings?.value_string ?? DEFAULT_PRIMARY;
+  const primaryFromDb = settings?.value_string ?? "rgb(255, 202, 127)";
+  const colorMap = await getColorMap();
   //const primaryFromDb = DEFAULT_PRIMARY; // Para testes
 
   return (
     <html lang="pt-BR">
       <body>
-        <RootLayoutClient initialPrimary={primaryFromDb}>
+        <RootLayoutClient initialPrimary={primaryFromDb} colorMap={colorMap}>
           {children}
         </RootLayoutClient>
       </body>

@@ -3,17 +3,17 @@
 import styles from "./Header.module.css";
 import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
 import Link from "next/link";
+import { culoriCalc } from "@/ultils/colors";
 
-type HeaderProps = {
-  primary: string;
-  onChangePrimary: (color: string) => void;
+type Props = {
+  colorMap?: { [key: string]: string };
 };
 
-export function Header({ primary, onChangePrimary }: HeaderProps) {
+export function Header({ colorMap }: Props) {
   return (
     <AppBar
       position="static"
-      color="transparent"
+      sx={{ background: culoriCalc({ keyColorData: colorMap?.["base_tematica"] ?? "rgb(255, 202, 127)", calc: [-0.19, 0.08, -31.18]}) }}
       elevation={0}
       className={styles.header}
     >

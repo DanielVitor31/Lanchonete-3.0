@@ -3,51 +3,42 @@
 
 import { ReactNode, useEffect, useMemo, useState } from "react";
 import { ThemeProvider, CssBaseline, Box } from "@mui/material";
-import { createAppTheme, generateColorVariants } from "../theme";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
+import {Header} from "@/components/Header";
+import {Footer} from "@/components/Footer";
+import type { ColorMap } from "@/lib/colorSettings";
 
 type Props = {
   children: ReactNode;
   initialPrimary: string;
+  colorMap: ColorMap;
 };
 
-export default function RootLayoutClient({ children, initialPrimary }: Props) {
-  const [primary, setPrimary] = useState(initialPrimary);
+export default function RootLayoutClient({
+  children,
+  colorMap,
+}: Props) {
 
-  // se por algum motivo o initialPrimary mudar (SSR), sincroniza
+  // 2) CSS vars vindas do banco: --icon_dark, --fundo_light etc
   useEffect(() => {
-    setPrimary(initialPrimary);
-  }, [initialPrimary]);
+    const root = document.documentElement.style;
 
-  useEffect(() => {
-    if (typeof window === "undefined") return;
+    Object.entries(colorMap).forEach(([name, value]) => {
+      // vira algo como --icon_dark: oklch(...)
+      root.setProperty(`--${name}`, value);
+    });
+  }, [colorMap]);
 
-    const v = generateColorVariants(primary);
-
-    document.documentElement.style.setProperty("--primary", primary);
-    document.documentElement.style.setProperty("--primary-light", v.light);
-    document.documentElement.style.setProperty("--primary-dark", v.dark);
-    document.documentElement.style.setProperty("--primary-strong", v.strong);
-    document.documentElement.style.setProperty("--primary-soft", v.soft);
-    document.documentElement.style.setProperty("--primary-test", v.test);
-    document.documentElement.style.setProperty("--primary-test2", v.test2);
-
-    window.localStorage.setItem("primaryColor", primary);
-  }, [primary]);
-
-  const theme = useMemo(() => createAppTheme(primary), [primary]);
 
   return (
-    <ThemeProvider theme={theme}>
+    <Box >
       <CssBaseline />
       <Box sx={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-        <Header primary={primary} onChangePrimary={setPrimary} />
+        <Header colorMap={colorMap} />
         <Box component="main" sx={{ flexGrow: 1, maxWidth: 1200, mx: "auto", p: 2 }}>
           {children}
         </Box>
         <Footer />
       </Box>
-    </ThemeProvider>
+    </Box>
   );
 }

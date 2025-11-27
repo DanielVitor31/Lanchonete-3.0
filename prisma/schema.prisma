@@ -29,3 +29,12 @@ model settings {
 
   @@schema("diner")
 }
+
+model settings_colors {
+  id_settings_colors String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name               String  @db.VarChar(30)
+  value              String? @db.VarChar(50)
+  value_default      String  @db.VarChar(50)
+
+  @@schema("diner")
+}
