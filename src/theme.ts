@@ -6,6 +6,7 @@ export interface CustomColors {
   strong: string;
   soft: string;
   test: string;
+  test2: string;
 }
 
 declare module "@mui/material/styles" {
@@ -29,7 +30,7 @@ export function generateColorVariants(base: string) {
     soft: lighten(base, 0.4),
 
     // sua "cor especial"
-    test: lighten(base, 1),
+    test: lighten(base, 0.64),
     test2: lighten(base, 0.1),
   };
 }
@@ -60,6 +61,7 @@ export function createAppTheme(primaryColor: string) {
       strong: v.strong,
       soft: v.soft,
       test: v.test,
+      test2: v.test2,
     },
   });
 }

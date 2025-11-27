@@ -1,6 +1,6 @@
 "use client";
 
-import { Typography, Paper, Stack, Button } from "@mui/material";
+import { Typography, Paper, Stack, Button, Box } from "@mui/material";
 import Link from "next/link";
 import styles from "./page.module.css";
 
@@ -23,9 +23,14 @@ export default function HomePage() {
         variant="outlined"
         sx={{ p: 2, display: "flex", gap: 2, flexWrap: "wrap" }}
       >
-        <Button variant="contained" component={Link} href="/cardapio" className={styles.teste}>
+        <Button variant="contained" component={Link} href="/cardapio">
           Ir para o Cardápio
         </Button>
+        <Box sx={{ display: 'flex', gap: 2, p: 2 }}>
+          <Box sx={{ width: 80, height: 80, bgcolor: "var(--primary-test)", }} />
+          <Box sx={{ width: 80, height: 80, bgcolor: "var(--primary-test2)" }}/>
+        </Box>
+
         <Button variant="outlined" component={Link} href="/comandas">
           Ir para Comandas
         </Button>

@@ -31,6 +31,7 @@ export default function RootLayoutClient({ children, initialPrimary }: Props) {
     document.documentElement.style.setProperty("--primary-strong", v.strong);
     document.documentElement.style.setProperty("--primary-soft", v.soft);
     document.documentElement.style.setProperty("--primary-test", v.test);
+    document.documentElement.style.setProperty("--primary-test2", v.test2);
 
     window.localStorage.setItem("primaryColor", primary);
   }, [primary]);
