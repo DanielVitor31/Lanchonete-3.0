@@ -1,4 +1,34 @@
-import { formatHex8, oklch, parse } from "culori";
+import { formatHex8, oklch, parse, formatCss } from "culori";
+
+
+/**
+ * Converte qualquer cor CSS compatível (rgb, rgba, lab, oklab, oklch,
+ * color(display-p3), etc) para OKLCH.
+ *
+ * Se não for possível converter, retorna null.
+ */
+export function normalizeToOklch(input: string): string | null {
+  if (!input) return null;
+
+  const trimmed = input.trim();
+
+  try {
+    const parsed = parse(trimmed);
+
+    if (!parsed) {
+      return null; // não é cor válida
+    }
+
+    // Na sua versão, o formato certo é:
+    // formatCss(color)
+    const asOklch = formatCss(oklch(parsed));
+
+    // pode vir null se algo der ruim
+    return asOklch ?? null;
+  } catch {
+    return null;
+  }
+}
 
 
 

@@ -3,13 +3,31 @@
 import styles from "./Header.module.css";
 import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
 import Link from "next/link";
-import { culoriCalc } from "@/ultils/colors";
+import { culoriCalc, normalizeToOklch } from "@/ultils/colors";
+import { colect_colors } from "@/ultils/ultils"
+import { useState, useEffect } from "react";
+
 
 type Props = {
   colorMap?: { [key: string]: string };
 };
 
+
+
+
 export function Header({ colorMap }: Props) {
+  const [colors, setcolors] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    const vars = colect_colors([
+      "--color-mint-500",
+      "--color-primary",
+      "--background",
+    ]);
+    setcolors(vars);
+  }, []);
+
+
   return (
     <AppBar
       position="static"
@@ -18,13 +36,10 @@ export function Header({ colorMap }: Props) {
       className={styles.header}
     >
       <Toolbar className={styles.inner}>
-        <Typography
-          variant="h6"
-          className={styles.logo}
-          sx={{ flexGrow: 1 }}
-        >
+        <p
+          className="bg-mint-500">
           Lanchonete 3.0
-        </Typography>
+        </p>
 
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
           <Button color="inherit" component={Link} href="/">
@@ -37,39 +52,6 @@ export function Header({ colorMap }: Props) {
             Comandas
           </Button>
 
-          {/* seletor de cor simples */}
-          {/* <Box
-            component="label"
-            sx={{
-              ml: 2,
-              width: 24,
-              height: 24,
-              borderRadius: "999px",
-              border: "2px solid rgba(255,255,255,0.4)",
-              overflow: "hidden",
-              cursor: "pointer",
-              position: "relative",
-            }}
-          >
-            <Box
-              sx={{
-                width: "100%",
-                height: "100%",
-                bgcolor: primary,
-              }}
-            />
-            <input
-              type="color"
-              value={primary}
-              onChange={(e) => onChangePrimary(e.target.value)}
-              style={{
-                position: "absolute",
-                inset: 0,
-                opacity: 0,
-                cursor: "pointer",
-              }}
-            />
-          </Box> */}
           
         </Box>
       </Toolbar>
