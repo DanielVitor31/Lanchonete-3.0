@@ -1,17 +1,16 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
+/* nome que deve seguir um padrão "--color-<nome>-<nível>" */
 @theme {
-  --color-mint-500: var(--dinheiro);
+  --color-base-tematica-1: var(--base-tematica);
 }
+
+
+/* bg-mint-500	       background-color
+text-mint-500	         color (texto)
+border-mint-500	       border-color
+outline-mint-500	     outline-color
+ring-mint-500	         ring-color
+fill-mint-500	         fill (SVG)
+stroke-mint-500	       stroke (SVG) */

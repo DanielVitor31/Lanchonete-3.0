@@ -40,6 +40,7 @@ type CssVarItem = {
 };
 
 export function applyCssVars(items: CssVarItem[]) {
+  if (typeof document === "undefined") return;
   const root = document.documentElement;
 
   items.forEach(({ name, value }) => {

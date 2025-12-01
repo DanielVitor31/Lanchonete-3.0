@@ -31,13 +31,11 @@ export function Header({ colorMap }: Props) {
   return (
     <AppBar
       position="static"
-      sx={{ background: culoriCalc({ keyColorData: colorMap?.["base_tematica"] ?? "rgb(255, 202, 127)", calc: [-0.19, 0.08, -31.18]}) }}
       elevation={0}
       className={styles.header}
     >
       <Toolbar className={styles.inner}>
-        <p
-          className="bg-mint-500">
+        <p>
           Lanchonete 3.0
         </p>
 
