@@ -5,7 +5,7 @@ export const moneyFormatBRL = (value: number) =>
   });
 
 export const supabaseStorageURL = (pasta: string, arquivo: string) => 
-  `https://tcbwhkdbktgzelgtyzgv.supabase.co/storage/v1/object/public/image/${pasta}/${arquivo}`;
+  `https://tcbwhkdbktgzelgtyzgv.supabase.co/storage/v1/object/public/image/${pasta}/${arquivo}.webp`;
 
 
 

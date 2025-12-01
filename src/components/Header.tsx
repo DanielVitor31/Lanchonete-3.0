@@ -3,28 +3,23 @@
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import styles from "./Header.module.css"
+import {ROUTES_STRING} from "@/constants"
+import { supabaseStorageURL } from "@/ultils/ultils"
 
 export default function Header() {
   const [open, setOpen] = useState(false);
 
-  const links = [
-    { label: "Início", href: "/" },
-    { label: "Cardápio", href: "/cardapio" },
-    { label: "Comandas", href: "/comandas" },
-    { label: "Pedidos", href: "/pedidos" },
-  ];
 
   return (
-    <header className={`border-b border-zinc-800 bg-zinc-900/80 backdrop-blur-lg ${styles.header}`}>
-      <div className="max-w-6xl px-4 py-3 flex items-center justify-between">
+    <header className={`p-10 border-b border-zinc-800 bg-zinc-900/80 backdrop-blur-lg ${styles.header}`}>
         {/* LOGO */}
-        <h1 className="text-lg font-bold text-white tracking-wide hover:text-primary transition">
-          Nova Lanchonete
-        </h1>
-
+        <div
+          className="w-20 h-18 bg-cover bg-center"
+          style={{ backgroundImage: `url("${supabaseStorageURL("logos", "logo")}")` }}
+        />
         {/* NAV DESKTOP */}
         <nav className="hidden md:flex gap-6">
-          {links.map((l) => (
+          {ROUTES_STRING.map((l) => (
             <a
               key={l.href}
               href={l.href}
@@ -45,12 +40,11 @@ export default function Header() {
         >
           {open ? <X size={28} /> : <Menu size={28} />}
         </button>
-      </div>
 
       {/* MENU MOBILE */}
       {open && (
         <nav className="md:hidden bg-zinc-900 border-t border-zinc-700 flex flex-col px-4 pb-4 animate-slideDown">
-          {links.map((l) => (
+          {ROUTES_STRING.map((l) => (
             <a
               key={l.href}
               href={l.href}
