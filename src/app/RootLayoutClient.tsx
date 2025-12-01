@@ -1,42 +1,40 @@
 "use client";
 
-import { ReactNode } from "react";
-import { ThemeProvider } from "@mui/material/styles";
+import { ReactNode, useEffect, useMemo, useState, useRef } from "react";
 import { CssBaseline, Box } from "@mui/material";
-import { theme } from "../theme";
-
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-9
+import { applyCssVars } from "@/ultils/ultils";
+import { culoriCalc } from "@/ultils/colors";
+
 type Props = {
   children: ReactNode;
+  colorsDB: { name: string; value: string }[];
 };
 
-export default function RootLayoutClient({ children }: Props) {
+export default function RootLayoutClient({ children, colorsDB, }: Props) {
+
+  applyCssVars(colorsDB)
+
+  const colorsDB_obj = Object.fromEntries(
+  colorsDB.map(item => [item.name, item.value])
+);
+
+
   return (
-    <ThemeProvider theme={theme}>
+    <Box >
       <CssBaseline />
-
-      <Box
-        sx={{
-          minHeight: "100vh",
-          display: "flex",
-          flexDirection: "column",
-          bgcolor: "background.default",
-          color: "text.primary",
-        }}
-      >
-        {/* Header separado */}
+      <Box sx={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
         <Header />
-
-        {/* Conteúdo dinâmico */}
         <Box component="main" sx={{ flexGrow: 1, maxWidth: 1200, mx: "auto", p: 2 }}>
           {children}
         </Box>
-
-        {/* Footer separado */}
+        <div style={{ backgroundColor: "var(--color-base-tematica-1)" }}>
+          {culoriCalc(colorsDB_obj["--base-tematica"], [-0.19, 0.09, -31.58, 0.0])}
+        </div>
         <Footer />
       </Box>
-    </ThemeProvider>
+    </Box>
   );
+
 }

@@ -3,25 +3,43 @@
 import styles from "./Header.module.css";
 import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
 import Link from "next/link";
+import { culoriCalc, normalizeToOklch } from "@/ultils/colors";
+import { colect_colors } from "@/ultils/ultils"
+import { useState, useEffect } from "react";
 
-export function Header() {
+
+type Props = {
+  colorMap?: { [key: string]: string };
+};
+
+
+
+
+export function Header({ colorMap }: Props) {
+  const [colors, setcolors] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    const vars = colect_colors([
+      "--color-mint-500",
+      "--color-primary",
+      "--background",
+    ]);
+    setcolors(vars);
+  }, []);
+
+
   return (
     <AppBar
       position="static"
-      color="transparent"
       elevation={0}
       className={styles.header}
     >
       <Toolbar className={styles.inner}>
-        <Typography
-          variant="h6"
-          className={styles.logo}
-          sx={{ flexGrow: 1 }}
-        >
+        <p>
           Lanchonete 3.0
-        </Typography>
+        </p>
 
-        <Box sx={{ display: "flex", gap: 1 }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
           <Button color="inherit" component={Link} href="/">
             Home
           </Button>
@@ -31,6 +49,8 @@ export function Header() {
           <Button color="inherit" component={Link} href="/comandas">
             Comandas
           </Button>
+
+          
         </Box>
       </Toolbar>
     </AppBar>

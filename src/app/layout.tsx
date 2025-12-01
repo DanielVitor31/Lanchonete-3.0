@@ -1,23 +1,47 @@
-// src/app/layout.tsx
 import type { Metadata } from "next";
 import "./globals.css";
 import RootLayoutClient from "./RootLayoutClient";
+import { prisma } from "@/lib/prisma";
+import { Suspense } from "react";
+import Loading from "./loading";
 
 export const metadata: Metadata = {
   title: "Lanchonete 3.0",
   description: "Sistema da lanchonete",
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  return (
-    <html lang="pt-BR">
-      <body>
-        <RootLayoutClient>{children}</RootLayoutClient>
-      </body>
-    </html>
-  );
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  try {
+    const colorsDB = await prisma.settings_colors.findMany({
+      select: {
+        name: true,
+        value: true,
+      }
+    });
+
+    if (!colorsDB) {
+      throw new Error("DB_EMPTY");
+    }
+
+
+
+    return (
+      <html lang="pt-BR">
+        <body>
+          <Suspense fallback={<Loading />}>
+            <RootLayoutClient
+              colorsDB={colorsDB}
+            >
+              {children}
+            </RootLayoutClient>
+          </Suspense>
+        </body>
+      </html>
+    );
+  } catch (err: any) {
+    console.error("Erro ao acessar DB:", err);
+
+    throw new Error("DB_ERROR");
+  }
+
 }
