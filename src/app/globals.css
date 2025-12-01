@@ -6,6 +6,16 @@
   --color-base-tematica-1: var(--base-tematica);
 }
 
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-slideDown {
+  animation: slideDown .25s ease-out;
+}
+
+
 
 /* bg-mint-500	       background-color
 text-mint-500	         color (texto)
