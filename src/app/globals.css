@@ -4,7 +4,18 @@
 /* nome que deve seguir um padrão "--color-<nome>-<nível>" */
 @theme {
   --color-base-tematica-1: var(--base-tematica);
+  --color-tematica-2: var(--tematica);
 }
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-slideDown {
+  animation: slideDown .25s ease-out;
+}
+
 
 
 /* bg-mint-500	       background-color
