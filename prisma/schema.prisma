@@ -8,14 +8,24 @@ datasource db {
 }
 
 model foods {
-  id_food     String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name        String    @db.VarChar(30)
-  description String?
-  price       Decimal   @db.Decimal(6, 2)
-  promotion   Decimal?  @db.Decimal(7, 2)
-  stock       Boolean?  @default(true)
-  sale        Boolean?  @default(true)
-  created_at  DateTime? @default(now()) @db.Timestamp(6)
+  id_food          String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name             String           @db.VarChar(30)
+  description      String?
+  xid_categorie    String           @db.Uuid
+  price            Decimal          @db.Decimal(6, 2)
+  promotion        Decimal?         @db.Decimal(7, 2)
+  stock            Boolean?         @default(true)
+  sale             Boolean?         @default(true)
+  created_at       DateTime?        @default(now()) @db.Timestamp(6)
+  foods_categories foods_categories @relation(fields: [xid_categorie], references: [id_foods_categories], onDelete: NoAction, onUpdate: NoAction)
+
+  @@schema("diner")
+}
+
+model foods_categories {
+  id_foods_categories String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name                String? @unique @db.VarChar(35)
+  foods               foods[]
 
   @@schema("diner")
 }
