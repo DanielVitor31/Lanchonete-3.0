@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
-import styles from "./Header.module.css";
 import { ROUTES_STRING } from "@/constants";
 import { supabaseStorageURL } from "@/ultils/ultils";
 import Link from "next/link";
@@ -19,16 +18,27 @@ export default function Header({ colorsDB }: Props) {
 
   return (
     <header
-      className={`p-4 md:p-6 border-b bg-tematica-2/90 border-zinc-800 backdrop-blur-lg ${styles.header} select-none`}
+      className="
+        flex items-center justify-between
+        w-full h-full
+        border-b border-zinc-800
+        bg-tematica-2 backdrop-blur-lg
+        px-4 py-3
+        md:px-6
+        select-none
+      "
     >
       {/* LOGO */}
       <Link
         href="/"
-        className="flex items-center gap-2 group"
         aria-label="Ir para o início"
+        className="flex items-center gap-2"
       >
         <div
-          className={styles.logo}
+          className="
+            w-[7vh] h-[7vh]
+            bg-cover bg-center
+          "
           style={{
             backgroundImage: `url("${supabaseStorageURL("logos", "logo")}")`,
           }}
@@ -36,7 +46,13 @@ export default function Header({ colorsDB }: Props) {
       </Link>
 
       {/* NAV DESKTOP */}
-      <nav className="hidden md:flex gap-4 lg:gap-6">
+      <nav
+        className="
+          hidden
+          md:flex
+          gap-4 lg:gap-6
+        "
+      >
         {ROUTES_STRING.map((l) => {
           const isActive = pathname === l.href;
 
@@ -46,11 +62,11 @@ export default function Header({ colorsDB }: Props) {
               href={l.href}
               aria-current={isActive ? "page" : undefined}
               className={`
-                relative px-2 py-1 md:px-3 md:py-2
+                relative
+                px-2 py-1 md:px-3 md:py-2
                 text-sm md:text-base lg:text-lg
                 font-medium tracking-wide
-                select-none
-                group transition
+                select-none group
                 ${
                   isActive
                     ? "text-white cursor-default pointer-events-none"
@@ -60,7 +76,7 @@ export default function Header({ colorsDB }: Props) {
             >
               {l.label}
 
-              {/* linha animada moderna */}
+              {/* underline animada */}
               <span
                 className={`
                   pointer-events-none
@@ -71,12 +87,11 @@ export default function Header({ colorsDB }: Props) {
                   transition-all duration-300 ease-out
                   ${
                     isActive
-                      ? "w-16 opacity-100"         // linha maior e sempre ativa
+                      ? "w-16 opacity-100"
                       : "w-0 opacity-0 group-hover:w-20 group-hover:opacity-100"
                   }
                 `}
               />
-
             </Link>
           );
         })}
@@ -84,7 +99,11 @@ export default function Header({ colorsDB }: Props) {
 
       {/* BOTÃO MOBILE */}
       <button
-        className="md:hidden text-white select-none"
+        className="
+          md:hidden
+          text-white
+          select-none
+        "
         onClick={() => setOpen((prev) => !prev)}
         aria-label="Abrir menu"
       >
@@ -93,7 +112,19 @@ export default function Header({ colorsDB }: Props) {
 
       {/* MENU MOBILE */}
       {open && (
-        <nav className="md:hidden mt-4 bg-zinc-950/90 border border-zinc-800 rounded-xl shadow-lg flex flex-col px-4 py-2 space-y-1">
+        <nav
+          className="
+            md:hidden
+            fixed inset-x-0 top-16   /* ajusta esse top pra altura real do header */
+            bg-zinc-950/90
+            border-b border-zinc-800
+            rounded-b-xl
+            shadow-lg
+            flex flex-col
+            px-4 py-2 space-y-1
+            z-50
+          "
+        >
           {ROUTES_STRING.map((l) => {
             const isActive = pathname === l.href;
 
@@ -107,7 +138,7 @@ export default function Header({ colorsDB }: Props) {
                   w-full rounded-lg px-3 py-2
                   text-base font-medium
                   select-none
-                  transition relative
+                  transition-colors duration-200
                   ${
                     isActive
                       ? "text-white bg-white/10 backdrop-blur-sm cursor-default pointer-events-none"
