@@ -24,8 +24,8 @@ export default function RootLayoutClient({ children, colorsDB, }: Props) {
   return (
     <div className="w-screen h-screen grid grid-rows-[0.6fr_6fr_0.7fr]">
       {/* Item 1 */}
-      <div className="overflow-hidden">
-        <Header />
+      <div className="overflow-hidden h-full flex items-center">
+        <Header colorsDB={colorsDB_obj}/>
       </div>
 
       {/* Item 2 */}

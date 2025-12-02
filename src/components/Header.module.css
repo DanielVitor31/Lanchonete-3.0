@@ -1,15 +1,10 @@
 .header {
-  @apply w-full h-full flex items-center justify-between  ;
-
+  @apply w-full h-full flex items-center justify-between ;
   
 }
 
-.inner {
-  max-width: 1200px;
-  margin: 0 auto;
-  width: 100%;
+.logo {
+  @apply w-[7vh] h-[7vh] bg-cover bg-center;
 }
 
-.logo {
-  font-weight: bold;
-}
+
