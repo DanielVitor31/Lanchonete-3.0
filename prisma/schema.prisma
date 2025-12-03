@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["views"]
 }
 
 datasource db {
@@ -11,6 +12,7 @@ model foods {
   id_food          String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name             String           @db.VarChar(30)
   description      String?
+  img              String?          @default("logos/logo") @db.VarChar(35)
   xid_categorie    String           @db.Uuid
   price            Decimal          @db.Decimal(6, 2)
   promotion        Decimal?         @db.Decimal(7, 2)
@@ -18,33 +20,87 @@ model foods {
   sale             Boolean?         @default(true)
   created_at       DateTime?        @default(now()) @db.Timestamp(6)
   foods_categories foods_categories @relation(fields: [xid_categorie], references: [id_foods_categories], onDelete: NoAction, onUpdate: NoAction)
+  foods_addons     foods_addons[]
+  foods_version    foods_version[]
+
+  @@schema("diner")
+}
+
+model foods_addons {
+  id_foods_addons      String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  xid_food             String               @db.Uuid
+  xid_foods_categories String               @db.Uuid
+  created_at           DateTime?            @default(now()) @db.Timestamp(6)
+  foods                foods                @relation(fields: [xid_food], references: [id_food], onDelete: Cascade, onUpdate: NoAction)
+  foods_categories     foods_categories     @relation(fields: [xid_foods_categories], references: [id_foods_categories], onDelete: NoAction, onUpdate: NoAction)
+  foods_addons_items   foods_addons_items[]
+
+  @@unique([xid_food, xid_foods_categories])
+  @@schema("diner")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model foods_addons_items {
+  id_foods_addons_items String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  xid_foods_addons      String       @db.Uuid
+  xid_food              String?      @db.Uuid
+  xid_food_version      String?      @db.Uuid
+  free                  Boolean      @default(false)
+  quant_max             Int?         @default(1)
+  created_at            DateTime?    @default(now()) @db.Timestamp(6)
+  foods_addons          foods_addons @relation(fields: [xid_foods_addons], references: [id_foods_addons], onDelete: NoAction, onUpdate: NoAction)
 
   @@schema("diner")
 }
 
 model foods_categories {
-  id_foods_categories String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name                String? @unique @db.VarChar(35)
+  id_foods_categories String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name                String?        @unique @db.VarChar(35)
   foods               foods[]
+  foods_addons        foods_addons[]
 
   @@schema("diner")
 }
 
-model settings {
-  id_setting   String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name         String
-  value_string String?
-  value_number Decimal?  @db.Decimal
-  created_at   DateTime? @default(now()) @db.Timestamp(6)
+model foods_version {
+  id_food_version String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  xid_food        String    @db.Uuid
+  name            String    @db.VarChar(30)
+  description     String?
+  img             String?   @db.VarChar(15)
+  price           Decimal   @db.Decimal(6, 2)
+  promotion       Decimal?  @db.Decimal(7, 2)
+  stock           Boolean?  @default(true)
+  sale            Boolean?  @default(true)
+  created_at      DateTime? @default(now()) @db.Timestamp(6)
+  foods           foods     @relation(fields: [xid_food], references: [id_food], onDelete: NoAction, onUpdate: NoAction)
 
   @@schema("diner")
 }
 
 model settings_colors {
-  id_settings_colors String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name               String @unique @db.VarChar(30)
-  value              String @db.VarChar(50)
-  value_default      String @db.VarChar(50)
+  id_settings_colors String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name               String    @unique @db.VarChar(30)
+  value              String    @db.VarChar(50)
+  value_default      String    @db.VarChar(50)
+  calc_color         Decimal[] @db.Decimal(10, 2)
+  based_themaatic    Boolean
+
+  @@schema("diner")
+}
+
+view foods_full {
+  id_food       String?  @db.Uuid
+  name          String?  @db.VarChar(30)
+  description   String?
+  img           String?  @db.VarChar(35)
+  xid_categorie String?  @db.Uuid
+  price         Decimal? @db.Decimal(6, 2)
+  promotion     Decimal? @db.Decimal(7, 2)
+  stock         Boolean?
+  sale          Boolean?
+  versions      Json?
+  addons        Json?
 
   @@schema("diner")
 }
