@@ -30,12 +30,12 @@ export default function RootLayoutClient({ children, colorsDB, }: Props) {
 
       {/* Item 2 */}
       <div className="bg-green-500 overflow-hidden">
-        <div className="h-[500px] w-full">{children}</div>
+        <div className="w-full">{children}</div>
       </div>
 
       {/* Item 3 */}
       <div className="bg-blue-500 overflow-hidden">
-        <div className="h-[500px] w-full">Conteúdo gigante também</div>
+        <div className="w-full">Conteúdo gigante também</div>
       </div>
     </div>
   );

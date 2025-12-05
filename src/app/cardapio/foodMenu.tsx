@@ -69,27 +69,32 @@ export default function Dashboard({ foods, foods_categories_obj }: Props) {
       </aside>
 
       {/* CONTEÚDO */}
-      <main className="flex-1 p-6 overflow-y-auto">
-        {foodsActive.map((food) =>  (
-          <div 
+      <main
+        className="
+          flex-1
+          grid
+          grid-cols-[repeat(auto-fit,minmax(16rem,1fr))]
+          gap-4
+          overflow-y-auto
+        "
+      >
+        {foodsActive.map((food) => (
+          <div    
+            key={food.id}
             onClick={() => setFoodActive(food.id)}
-            className="cursor-pointer select-none active:scale-95 transition-all border border-zinc-800 bg-zinc-900/60 p-4 rounded-xl w-64"
+            className="w-60 h-75 flex flex-col items-center overflow-hidden cursor-pointer select-none active:scale-95 transition-all border border-zinc-800 bg-zinc-900/60 p-4 rounded-xl"
           >
-          <div
-            className="
-              w-[7vh] h-[7vh]
-              bg-cover bg-center
-            "
-            style={{backgroundImage: `url("${supabaseStorageURL(food.img)}")`,}}
-          />
+            <div
+              className="w-[10vh] h-[10vh] bg-cover bg-center"
+              style={{ backgroundImage: `url("${supabaseStorageURL(food.img)}")` }}
+            />
             <p className="text-lg font-medium">{food.name}</p>
-
-            <p className="text-lg font-medium">
-              R$ {food.price.toFixed(2)}
-            </p>
+            <p className="text-lg font-small">{food.description}</p>
+            <p className="text-lg font-medium">R$ {food.price.toFixed(2)}</p>
           </div>
         ))}
       </main>
+
     </div>
   );
 }
