@@ -7,6 +7,7 @@ import type {
   FoodsGrouped,
   FoodWithVersionsMap,
 } from "@/types/type";
+import { X } from "lucide-react";
 
 type Props = {
   open: (value: null) => void;
@@ -30,7 +31,7 @@ export default function SelectMenu({ open, foods, food }: Props) {
     >
       <div
         className="
-              w-80 max-w-[90%]
+              w-[55vh] h-[78vh]
               rounded-2xl
               bg-zinc-900
               border border-zinc-700
@@ -38,25 +39,29 @@ export default function SelectMenu({ open, foods, food }: Props) {
               shadow-xl
             "
       >
-        <div className="flex items-center justify-between mb-2">
-          <h2 className="text-lg font-semibold">Mini menu</h2>
-          <button
-            className="text-zinc-400 hover:text-zinc-200 text-sm"
-            onClick={() => open(null)}
-          >
-            fechar
-          </button>
-        </div>
+
 
         <div className="
-              grid grid-rows-[1fr_1fr_1fr]
+              h-full
+              grid 
+              grid-rows-[0.4fr_5fr_1fr_2fr_5fr_1fr]
               items-center
-              gap-6
+              gap-2
+              overflow-hidden
             ">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-semibold">Mini menu</h2>
+            <button
+              className="cursor-pointer select-none text-zinc-400 hover:text-zinc-200 text-sm"
+              onClick={() => open(null)}
+            >
+              <X size={28} />
+            </button>
+          </div>
+
           <div
             className="
-                    w-24 h-24
-                    md:w-28 md:h-28
+                    w-50 h-60
                     bg-zinc-800
                     bg-cover bg-center
                     mb-1
@@ -79,6 +84,10 @@ export default function SelectMenu({ open, foods, food }: Props) {
           >
             {food.description}
           </p>
+
+          <div>
+            Teste
+          </div>
 
           <p className="w-full text-center text-sm md:text-base font-bold mt-1">
             {moneyFormatBRL(food.price)}
