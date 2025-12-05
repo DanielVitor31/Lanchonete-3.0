@@ -1,6 +1,6 @@
 "use client";
 
-import { supabaseStorageURL } from "@/ultils/ultils";
+import { supabaseStorageURL, moneyFormatBRL } from "@/ultils/ultils";
 import { useState } from "react";
 import type { FoodsFullResult  } from "@/types/type";
 import SelectMenu from "./selectMenu";
@@ -20,9 +20,8 @@ export default function Dashboard({ foods, foods_categories_obj }: Props) {
   const foodCategoriesIDActive = foods_categories_obj[categoriesActive];
   const foodsActiveOBJ = foodsGrouped[foodCategoriesIDActive];
   const foodsActive = Object.values(foodsActiveOBJ);
-  const [foodActive, setFoodActive] = useState<string | null>(null);
-  const foodVersionsOBJ = !!foodActive ? foodsActiveOBJ[foodActive].versions : null 
-  const foodVersions = !!foodVersionsOBJ ? Object.values(foodVersionsOBJ) : null 
+  const [foodIDActive, setFoodIDActive] = useState<string | null>(null);
+
 
 
   // console.log("Teste valores1", foodsGrouped)
@@ -32,9 +31,7 @@ export default function Dashboard({ foods, foods_categories_obj }: Props) {
   // console.log("Teste valores5", foodsActiveOBJ)
   // console.log("Teste valores6", foodsActive)
   // console.log("Teste valores7", foodsActiveOBJ)
-  console.log("Teste valores8", foodActive)
-  console.log("Teste valores9", foodVersionsOBJ)
-  console.log("Teste valores10", foodVersions)
+  //console.log("Teste valores8", foodActive)
 
     return (
       <div
@@ -128,7 +125,7 @@ export default function Dashboard({ foods, foods_categories_obj }: Props) {
             {foodsActive.map((food) => (
               <div
                 key={food.id}
-                onClick={() => setFoodActive(food.id)}
+                onClick={() => setFoodIDActive(food.id)}
                 className="
                   w-50
                   h-80
@@ -161,7 +158,6 @@ export default function Dashboard({ foods, foods_categories_obj }: Props) {
                   {food.name}
                 </p>
 
-                {food.description && (
                   <p
                     className="
                       w-full text-center
@@ -172,15 +168,14 @@ export default function Dashboard({ foods, foods_categories_obj }: Props) {
                   >
                     {food.description}
                   </p>
-                )}
 
                 <p className="w-full text-center text-sm md:text-base font-bold mt-1">
-                  R$ {food.price.toFixed(2)}
+                  {moneyFormatBRL(food.price)}
                 </p>
               </div>
             ))}
           </div>
-          {!!foodActive && <SelectMenu open={setFoodActive}/>}
+          {!!foodIDActive && <SelectMenu open={setFoodIDActive} foods={foodsGrouped} food={foodsActiveOBJ[foodIDActive]!} />}
           
 
         </main>
