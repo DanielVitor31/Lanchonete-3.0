@@ -3,17 +3,12 @@
 import { supabaseStorageURL } from "@/ultils/ultils";
 import { useState } from "react";
 import type { FoodsFullResult  } from "@/types/type";
+import SelectMenu from "./selectMenu";
 
 
 type Props = {
   foods: FoodsFullResult;
   foods_categories_obj: {[key: string]: string};
-};
-
-
-type Item = {
-  nome: string;
-  preco: number;
 };
 
 
@@ -37,64 +32,159 @@ export default function Dashboard({ foods, foods_categories_obj }: Props) {
   // console.log("Teste valores5", foodsActiveOBJ)
   // console.log("Teste valores6", foodsActive)
   // console.log("Teste valores7", foodsActiveOBJ)
-  //console.log("Teste valores8", foodActive)
+  console.log("Teste valores8", foodActive)
   console.log("Teste valores9", foodVersionsOBJ)
   console.log("Teste valores10", foodVersions)
 
-  return (
-    <div className="flex h-screen bg-zinc-950 text-white overflow-hidden">
-      {/* MENU */}
-      <aside className="w-64 border-r border-zinc-800 bg-zinc-900/70 overflow-y-auto">
-        <div className="p-4 border-b border-zinc-800">
-          <h1 className="text-xl font-bold">Categorias</h1>
-        </div>
-
-        <nav className="p-2 flex flex-col gap-1">
-          {foodsCategoriesNames.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setCategoriesActive(cat)}
-              className={`cursor-pointer select-none active:scale-95 transition-all px-4 py-2 text-left rounded 
-                ${
-                  categoriesActive === cat
-                    ? "bg-zinc-800 text-white"
-                    : "text-zinc-400 hover:bg-zinc-800/40"
-                }
-              `}
-            >
-              {cat}
-            </button>
-          ))}
-        </nav>
-      </aside>
-
-      {/* CONTEÚDO */}
-      <main
+    return (
+      <div
         className="
-          flex-1
-          grid
-          grid-cols-[repeat(auto-fit,minmax(16rem,1fr))]
-          gap-4
-          overflow-y-auto
+          min-h-screen
+          bg-zinc-950
+          text-white
+          flex
+          flex-col md:flex-row
+          overflow-hidden
         "
       >
-        {foodsActive.map((food) => (
-          <div    
-            key={food.id}
-            onClick={() => setFoodActive(food.id)}
-            className="w-60 h-75 flex flex-col items-center overflow-hidden cursor-pointer select-none active:scale-95 transition-all border border-zinc-800 bg-zinc-900/60 p-4 rounded-xl"
+        {/* MENU */}
+        <aside
+          className="
+            w-full md:w-64
+            shrink-0
+            border-b md:border-b-0 md:border-r
+            border-zinc-800
+            bg-zinc-900/70
+            flex
+            flex-col
+            max-h-[40vh] md:max-h-none
+          "
+        >
+          <div
+            className="
+              p-4
+              border-b
+              border-zinc-800
+              bg-zinc-900/80
+              backdrop-blur
+              sticky top-0
+              z-10
+            "
           >
-            <div
-              className="w-[10vh] h-[10vh] bg-cover bg-center"
-              style={{ backgroundImage: `url("${supabaseStorageURL(food.img)}")` }}
-            />
-            <p className="text-lg font-medium">{food.name}</p>
-            <p className="text-lg font-small">{food.description}</p>
-            <p className="text-lg font-medium">R$ {food.price.toFixed(2)}</p>
+            <h1 className="text-lg md:text-xl font-bold">Categorias</h1>
           </div>
-        ))}
-      </main>
 
-    </div>
+          <nav
+            className="
+              p-2
+              flex
+              gap-2
+              overflow-x-auto md:overflow-x-hidden
+              md:flex-col
+            "
+          >
+            {foodsCategoriesNames.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setCategoriesActive(cat)}
+                className={`
+                  whitespace-nowrap
+                  cursor-pointer select-none
+                  active:scale-95
+                  transition-all
+                  px-4 py-2
+                  text-left
+                  rounded-lg
+                  text-sm md:text-base
+                  ${
+                    categoriesActive === cat
+                      ? "bg-zinc-800 text-white"
+                      : "text-zinc-300 hover:bg-zinc-800/40"
+                  }
+                `}
+              >
+                {cat}
+              </button>
+            ))}
+          </nav>
+        </aside>
+
+        {/* CONTEÚDO */}
+        <main
+          className="
+            flex-1
+            overflow-y-auto
+            p-4
+          "
+        >
+          <div
+            className="
+              flex
+              flex-wrap
+              gap-4
+              justify-start
+            "
+          >
+            {foodsActive.map((food) => (
+              <div
+                key={food.id}
+                onClick={() => setFoodActive(food.id)}
+                className="
+                  w-50
+                  h-80
+                  grid grid-rows-[1fr_1fr_1fr_1fr]
+                  items-center
+                  gap-6
+                  cursor-pointer select-none
+                  hover:scale-95
+                  transition-transform duration-150
+                  border border-zinc-800
+                  bg-zinc-900/60
+                  p-4
+                  rounded-xl
+                  
+                "
+              >
+                <div
+                  className="
+                    w-24 h-24
+                    md:w-28 md:h-28
+                    bg-zinc-800
+                    bg-cover bg-center
+                    mb-1
+                    mx-auto
+                  "
+                  style={{ backgroundImage: `url("${supabaseStorageURL(food.img)}")` }}
+                />
+
+                <p className="w-full text-center text-base md:text-lg font-semibold">
+                  {food.name}
+                </p>
+
+                {food.description && (
+                  <p
+                    className="
+                      w-full text-center
+                      text-xs md:text-sm
+                      text-zinc-300
+                      line-clamp-2
+                    "
+                  >
+                    {food.description}
+                  </p>
+                )}
+
+                <p className="w-full text-center text-sm md:text-base font-bold mt-1">
+                  R$ {food.price.toFixed(2)}
+                </p>
+              </div>
+            ))}
+          </div>
+          {!!foodActive && <SelectMenu open={setFoodActive}/>}
+          
+
+        </main>
+      </div>
   );
+
 }
