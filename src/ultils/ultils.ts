@@ -4,8 +4,8 @@ export const moneyFormatBRL = (value: number) =>
     currency: "BRL",
   });
 
-export const supabaseStorageURL = (pasta: string, arquivo: string) => 
-  `https://tcbwhkdbktgzelgtyzgv.supabase.co/storage/v1/object/public/image/${pasta}/${arquivo}.webp`;
+export const supabaseStorageURL = (arquivo: string) => 
+  `https://tcbwhkdbktgzelgtyzgv.supabase.co/storage/v1/object/public/image/${arquivo}.webp`;
 
 
 

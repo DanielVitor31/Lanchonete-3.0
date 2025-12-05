@@ -40,7 +40,7 @@ export default function Header({ colorsDB }: Props) {
             bg-cover bg-center
           "
           style={{
-            backgroundImage: `url("${supabaseStorageURL("logos", "logo")}")`,
+            backgroundImage: `url("${supabaseStorageURL("logos/logo")}")`,
           }}
         />
       </Link>
