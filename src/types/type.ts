@@ -16,7 +16,7 @@ export type FoodVersion = {
 };
 
 export type FoodAddonItem = {
-  id_food: string | null;        // UUID ou null
+  id_food: string | null;         // UUID ou null
   id_food_version: string | null; // UUID ou null
   free: boolean;
   quant_max: number;
@@ -40,4 +40,24 @@ export type FoodFull = {
   sale: boolean;
   versions: FoodVersion[];
   addons: FoodAddonCategory[];
+};
+
+// >>> tipos pra estrutura agrupada <<<
+
+export type FoodWithVersionsMap = Omit<FoodFull, "versions"> & {
+  versions: Record<string, FoodVersion>;
+};
+
+export type FoodsGrouped = Record<
+  string, // id_categorie
+  Record<
+    string, // id da comida
+    FoodWithVersionsMap
+  >
+>;
+
+// retorno da função
+export type FoodsFullResult = {
+  list: FoodFull[];      // lista simples
+  grouped: FoodsGrouped; // agrupado por categoria/comida
 };
