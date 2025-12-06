@@ -20,9 +20,9 @@ FROM
             DISTINCT jsonb_build_object(
               'id',
               fv.id_food_version,
-              'xid_food',
+              'id_food',
               fv.xid_food,
-              'xid_categorie',
+              'id_categorie',
               f.xid_categorie,
               'name',
               (

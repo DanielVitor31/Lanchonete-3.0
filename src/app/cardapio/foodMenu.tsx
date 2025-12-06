@@ -86,7 +86,8 @@ export default function Dashboard({ foods, foods_categories_obj }: Props) {
                 onClick={() => setCategoriesActive(cat)}
                 className={`
                   whitespace-nowrap
-                  cursor-pointer select-none
+                  cursor-pointer 
+                  select-none
                   active:scale-95
                   transition-all
                   px-4 py-2
@@ -175,7 +176,7 @@ export default function Dashboard({ foods, foods_categories_obj }: Props) {
               </div>
             ))}
           </div>
-          {!!foodIDActive && <SelectMenu open={setFoodIDActive} foods={foodsGrouped} food={foodsActiveOBJ[foodIDActive]!} />}
+          {!!foodIDActive && <SelectMenu open={setFoodIDActive} foods={foodsGrouped} food={foodsActiveOBJ[foodIDActive]} foods_categories_obj={foods_categories_obj} />}
           
 
         </main>

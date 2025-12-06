@@ -9,41 +9,45 @@ import type {
 } from "@/types/type";
 import { useState } from "react";
 import { X } from "lucide-react";
+import { buttonClasses } from "@/styles/preset"
 
 type Props = {
   open: (value: null) => void;
   foods: FoodsGrouped;
   food: FoodWithVersionsMap;
+  foods_categories_obj: {[key: string]: string};
 };
 
+type Option = FoodWithVersionsMap | FoodVersion;
 
 
-export default function SelectMenu({ open, foods, food }: Props) {
+export default function SelectMenu({ open, foods, food, foods_categories_obj }: Props) {
   const foodVersionsOBJ = foods[food.id_categorie][food.id].versions
   const foodVersions = !!foodVersionsOBJ ? Object.values(foodVersionsOBJ) : []
   const foodAddons = foods[food.id_categorie][food.id].addons
-  const foodOptions: Array<Array<Array<FoodWithVersionsMap | FoodVersion>>> = [[foodVersions], []]
-  const [teste, setTeste] = useState<number>(foodVersions.length > 0 ? 0 : 1);
-  const pagsMax = foodAddons.length
+  const foodOptions: Option[][] = [foodVersions];
+  const [optionsNumber, setOptionsNumber] = useState<number>(foodVersions.length > 0 ? 0 : 1);
 
   if (!!foodAddons) {
     foodAddons.map((addon) => {
-      const _categorieArray: Array<FoodWithVersionsMap | FoodVersion> = []
+      const _categorieArray: Option[] = [];
       addon.items.map((addonItem) => {
         const _food = foods[addon.category_id][addonItem.id_food]
         const _foodVersion = !!addonItem.id_food_version ? _food.versions[addonItem.id_food_version] : _food
         const _foodprice = addonItem.free === true ? { ..._foodVersion, price: 0 } : _foodVersion
         _categorieArray.push(_foodprice)
       })
-      foodOptions[1].push(_categorieArray)
+      foodOptions.push(_categorieArray);
     })
   }
+  const pagsMax = foodOptions.length -1
 
 
 
-  console.log("versão1", foodVersions)
-  console.log("addons2", foodOptions)
-  console.log("addons3", foodOptions)
+
+  // console.log("versão1", foodVersions)
+  // console.log("addons2", foodOptions)
+  // console.log("addons3", foodOptions)
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
@@ -77,11 +81,12 @@ export default function SelectMenu({ open, foods, food }: Props) {
 
           {/* Addons */}
           <div className="h-full bg-green-300">
-            {foodOptions[teste].map((option) => (
-              <div key={"te"}>
+            {foodOptions[optionsNumber].map((option) => (
+              <div key={option.id}>
+                <p>{optionsNumber === 0 ? "Versão" : foods_categories_obj[option.id_categorie]}</p>
                 <div>
-                  <p>Teste</p>
-                  <p>Valor</p>
+                  <p>{option.name}</p>
+                  <p>{option.price}</p>
                 </div>
               </div>
             ))};
@@ -93,6 +98,13 @@ export default function SelectMenu({ open, foods, food }: Props) {
             <p className="text-sm md:text-base font-bold bg-red-300">
               {moneyFormatBRL(food.price)}
             </p>
+            <button
+            onClick={() => setOptionsNumber(optionsNumber + 1)}
+            className={buttonClasses}
+            disabled={pagsMax === optionsNumber }
+            >
+              Proximo
+            </button>
           </div>
 
         </div>

@@ -5,7 +5,8 @@ export type ColorsDB = {
 
 export type FoodVersion = {
   id: string;                // UUID
-  xid_food: string;
+  id_food: string;
+  id_categorie: string
   name: string;
   description: string;
   img: string;
