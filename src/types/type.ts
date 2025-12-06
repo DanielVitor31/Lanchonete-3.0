@@ -16,7 +16,7 @@ export type FoodVersion = {
 };
 
 export type FoodAddonItem = {
-  id_food: string | null;         // UUID ou null
+  id_food: string;         // UUID ou null
   id_food_version: string | null; // UUID ou null
   free: boolean;
   quant_max: number;
