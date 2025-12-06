@@ -42,7 +42,7 @@ export default function SelectMenu({ open, foods, food, foods_categories_obj }: 
   const [optionsNumber, setOptionsNumber] = useState<number>(pagsMin);
   const [price, setPrice] = useState<number[]>([foodVersions[0].price || food.price]);
    const priceTotal = price.reduce((total, n) => total + n, 0);
-  const [optionsSelect, setOptionsSelect] = useState<{ [key: number]: number }>({ 0: 1 });
+  const [optionsSelect, setOptionsSelect] = useState<{ [key: number]: number }>({ 0: 0 });
 
 
 
@@ -50,7 +50,7 @@ export default function SelectMenu({ open, foods, food, foods_categories_obj }: 
   // console.log("versão1", foodVersions)
   // console.log("addons2", foodOptions)
   // console.log("addons3", foodOptions)
-  console.log("addons4", optionsSelect)
+  //console.log("addons4", optionsSelect)
   //console.log("addons5", optionsNumber)
 
   return (
@@ -86,6 +86,7 @@ export default function SelectMenu({ open, foods, food, foods_categories_obj }: 
           {/* Addons */}
           <div className="h-full bg-green-300">
             {foodOptions[optionsNumber].map((option, indice) => {
+              const _optionSelect = optionsSelect[optionsNumber] === indice
               const _optionVersion = optionsNumber === 0
               return (
                 <div
@@ -99,9 +100,9 @@ export default function SelectMenu({ open, foods, food, foods_categories_obj }: 
                   <p>{_optionVersion ? "Versão" : foods_categories_obj[option.id_categorie]}</p>
                   <div>
                     <p>{option.name}</p>
-                    <p>{option.price}</p>
+                    <p>{moneyFormatBRL(option.price)}</p>
                   </div>
-                  <div className={`w-6 h-6 rounded-full bg-blue-500`}></div>
+                  <div className={`w-6 h-6 rounded-full bg-blue-500${!!_optionSelect ? "" : "/70"}`}></div>
 
                 </div>
               )
