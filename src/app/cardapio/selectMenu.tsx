@@ -1,9 +1,6 @@
 import { supabaseStorageURL, moneyFormatBRL } from "@/ultils/ultils";
 import type {
-  FoodFull,
   FoodVersion,
-  FoodAddonCategory,
-  FoodsFullResult,
   FoodsGrouped,
   FoodWithVersionsMap,
 } from "@/types/type";
@@ -15,7 +12,7 @@ type Props = {
   open: (value: null) => void;
   foods: FoodsGrouped;
   food: FoodWithVersionsMap;
-  foods_categories_obj: {[key: string]: string};
+  foods_categories_obj: { [key: string]: string };
 };
 
 type Option = FoodWithVersionsMap | FoodVersion;
@@ -26,7 +23,6 @@ export default function SelectMenu({ open, foods, food, foods_categories_obj }: 
   const foodVersions = !!foodVersionsOBJ ? Object.values(foodVersionsOBJ) : []
   const foodAddons = foods[food.id_categorie][food.id].addons
   const foodOptions: Option[][] = [foodVersions];
-  const [optionsNumber, setOptionsNumber] = useState<number>(foodVersions.length > 0 ? 0 : 1);
 
   if (!!foodAddons) {
     foodAddons.map((addon) => {
@@ -40,7 +36,13 @@ export default function SelectMenu({ open, foods, food, foods_categories_obj }: 
       foodOptions.push(_categorieArray);
     })
   }
-  const pagsMax = foodOptions.length -1
+
+  const pagsMin = foodVersions.length > 0 ? 0 : 1
+  const pagsMax = foodOptions.length - 1
+  const [optionsNumber, setOptionsNumber] = useState<number>(pagsMin);
+  const [price, setPrice] = useState<number[]>([foodVersions[0].price || food.price]);
+   const priceTotal = price.reduce((total, n) => total + n, 0);
+  const [optionsSelect, setOptionsSelect] = useState<{ [key: number]: number }>({ 0: 1 });
 
 
 
@@ -48,6 +50,8 @@ export default function SelectMenu({ open, foods, food, foods_categories_obj }: 
   // console.log("versão1", foodVersions)
   // console.log("addons2", foodOptions)
   // console.log("addons3", foodOptions)
+  console.log("addons4", optionsSelect)
+  //console.log("addons5", optionsNumber)
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
@@ -81,30 +85,51 @@ export default function SelectMenu({ open, foods, food, foods_categories_obj }: 
 
           {/* Addons */}
           <div className="h-full bg-green-300">
-            {foodOptions[optionsNumber].map((option) => (
-              <div key={option.id}>
-                <p>{optionsNumber === 0 ? "Versão" : foods_categories_obj[option.id_categorie]}</p>
-                <div>
-                  <p>{option.name}</p>
-                  <p>{option.price}</p>
+            {foodOptions[optionsNumber].map((option, indice) => {
+              const _optionVersion = optionsNumber === 0
+              return (
+                <div
+                  className="flex bg-yellow-400"
+                  key={option.id}
+                  onClick={() => {
+                      setOptionsSelect(optionsSelect => ({ ...optionsSelect, [optionsNumber]: indice }));
+                      setPrice(prev => Object.assign([...prev], { [optionsNumber]: option.price }));
+                    }}
+                >
+                  <p>{_optionVersion ? "Versão" : foods_categories_obj[option.id_categorie]}</p>
+                  <div>
+                    <p>{option.name}</p>
+                    <p>{option.price}</p>
+                  </div>
+                  <div className={`w-6 h-6 rounded-full bg-blue-500`}></div>
+
                 </div>
-              </div>
-            ))};
+              )
+            })};
           </div>
 
 
           {/* footer */}
           <div className="h-full">
             <p className="text-sm md:text-base font-bold bg-red-300">
-              {moneyFormatBRL(food.price)}
+              {moneyFormatBRL(priceTotal)}
             </p>
-            <button
-            onClick={() => setOptionsNumber(optionsNumber + 1)}
-            className={buttonClasses}
-            disabled={pagsMax === optionsNumber }
-            >
-              Proximo
-            </button>
+            <div>
+              <button
+                onClick={() => setOptionsNumber(optionsNumber - 1)}
+                className={buttonClasses}
+                disabled={pagsMin === optionsNumber}
+              >
+                Voltar
+              </button>
+              <button
+                onClick={() => setOptionsNumber(optionsNumber + 1)}
+                className={buttonClasses}
+                disabled={pagsMax === optionsNumber || !(optionsNumber in optionsSelect) }
+              >
+                Proximo
+              </button>
+            </div>
           </div>
 
         </div>
