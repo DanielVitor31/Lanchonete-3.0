@@ -1,4 +1,4 @@
-// service
+// service.ts
 
 import { prisma } from "@/lib/prisma";
 import type { Prisma, foods_full } from "@prisma/client";
@@ -14,13 +14,21 @@ import type {
 export async function getFoodsFull(): Promise<FoodsFullResult> {
   const rows: foods_full[] = await prisma.foods_full.findMany();
 
-  // helper interno – parse de JSON -> array
-  const parseJsonArray = <T,>(
-    value: Prisma.JsonValue | null | undefined
-  ): T[] => {
+  const parseJsonArray = <T,>(value: Prisma.JsonValue | null | undefined): T[] => {
     if (!value) return [];
-    if (!Array.isArray(value)) return [];
-    return value as unknown as T[];
+    // se já for array, retorna como T[]
+    if (Array.isArray(value)) return value as unknown as T[];
+    // se for um objeto único, embrulha em array
+    if (typeof value === "object") return [value as unknown as T];
+    // caso seja string ou outro tipo (malformado), tenta parse JSON
+    try {
+      const parsed = typeof value === "string" ? JSON.parse(value) : value;
+      if (Array.isArray(parsed)) return parsed as unknown as T[];
+      if (typeof parsed === "object") return [parsed as unknown as T];
+    } catch {
+      // ignore
+    }
+    return [];
   };
 
   // 1) normaliza tudo pra FoodFull[]
@@ -47,14 +55,12 @@ export async function getFoodsFull(): Promise<FoodsFullResult> {
         promotion: row.promotion ? row.promotion.toString() : null,
         stock: row.stock ?? true,
         sale: row.sale ?? true,
-        versions,
+        versions, // sempre array (pode ser [])
         addons,
       } satisfies FoodFull;
     });
 
-  // 2) monta estrutura agrupada:
-  //    categoria -> comida -> versões em mapa
-  const grouped: FoodsGrouped = {};
+  const grouped: FoodsGrouped = {} as unknown as FoodsGrouped;
 
   for (const food of foods) {
     const catId = food.id_categorie;
@@ -63,16 +69,17 @@ export async function getFoodsFull(): Promise<FoodsFullResult> {
       grouped[catId] = {};
     }
 
-    // monta map de versões: idVersão -> versão
+    // monta map de versões: idVersão -> versão (útil para lookup rápido)
     const versionsMap: Record<string, FoodVersion> = {};
     for (const v of food.versions) {
-      versionsMap[v.id] = v;
+      if (v && (v as any).id) versionsMap[(v as any).id] = v;
     }
 
-    const foodWithMap: FoodWithVersionsMap = {
+    const foodWithMap = {
       ...food,
-      versions: versionsMap,
-    };
+      versions: food.versions, // garante array (mesmo que vazio)
+      versionsMap, // mapa auxiliar (pode ser {} se não houver versões)
+    } as unknown as FoodWithVersionsMap;
 
     grouped[catId][food.id] = foodWithMap;
   }
