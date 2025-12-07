@@ -22,8 +22,10 @@ export default function SelectMenu({ open, foods, food, foods_categories_obj }: 
   const foodVersions = Object.values(foods[food.id_categorie][food.id].versions)
   const foodAddons = foods[food.id_categorie][food.id].addons
   const foodOptions: Option[][] = [foodVersions];
+  const hasAddons = foodAddons.length > 0
+  const hasVersion = foodVersions.length > 0
 
-  if (foodAddons) {
+  if (hasAddons) {
     foodAddons.forEach((addon) => {
       const categoryArray: Option[] = addon.items.map((addonItem) => {
         const foodBase = foods[addon.category_id][addonItem.id_food];
@@ -38,7 +40,6 @@ export default function SelectMenu({ open, foods, food, foods_categories_obj }: 
     });
   }
 
-  const hasVersion = foodVersions.length > 0
   const initialPrice = hasVersion ? foodVersions[0].price : food.price
   const pagsMin = hasVersion ? 0 : 1
   const pagsMax = foodOptions.length - 1
@@ -48,10 +49,10 @@ export default function SelectMenu({ open, foods, food, foods_categories_obj }: 
   const [optionsSelect, setOptionsSelect] = useState<{ [key: number]: number }>({ 0: 0 });
 
 
-
+  console.log(`versão: ${hasVersion} addons: ${hasAddons}`)
 
   // console.log("versão1", foodVersions)
-  console.log("addons2", foods)
+  //console.log("addons2", foods)
   //console.log("addons3", foodOptions)
   //console.log("addons4", optionsSelect)
   //console.log("addons5", optionsNumber)
@@ -91,37 +92,47 @@ export default function SelectMenu({ open, foods, food, foods_categories_obj }: 
 
           {/* Addons */}
           <div className="h-full bg-green-300 overflow-y-auto">
-            <p>{optionsNumber === 0 ? "Versão" : foods_categories_obj[foodOptions[optionsNumber][0].id_categorie]}</p>
 
-            {foodOptions[optionsNumber].map((option, indice) => {
-              const isSelected = optionsSelect[optionsNumber] === indice
-              return (
-                <div
-                  key={option.id}
-                  className="flex px-4 items-center justify-between bg-yellow-400"
-                  onClick={() => {
-                    setOptionsSelect((prev) => ({ ...prev, [optionsNumber]: indice }));
-                    setPrices((prev) => {
-                      const clone = [...prev];
-                      clone[optionsNumber] = option.price;
-                      return clone;
-                    });
-                  }}
-                >
+            {hasVersion || hasAddons ? (
+              <>
+                <p>{optionsNumber === 0 ? "Versão" : foods_categories_obj[foodOptions[optionsNumber][0].id_categorie]}</p>
 
-                  <div
+                {foodOptions[optionsNumber].map((option, indice) => {
+                  const isSelected = optionsSelect[optionsNumber] === indice
+                  return (
+                    <div
+                      key={option.id}
+                      className="flex px-4 items-center justify-between bg-yellow-400"
+                      onClick={() => {
+                        setOptionsSelect((prev) => ({ ...prev, [optionsNumber]: indice }));
+                        setPrices((prev) => {
+                          const clone = [...prev];
+                          clone[optionsNumber] = option.price;
+                          return clone;
+                        });
+                      }}
+                    >
 
-                  >
-                    <p>{option.name}</p>
-                    <p>{moneyFormatBRL(option.price)}</p>
-                  </div>
-                  <div
-                    className={`w-6 h-6 rounded-full ${isSelected ? "bg-blue-500" : "bg-blue-500/70"}`}
-                  />
+                      <div
 
-                </div>
-              )
-            })}
+                      >
+                        <p>{option.name}</p>
+                        <p>{moneyFormatBRL(option.price)}</p>
+                      </div>
+                      <div
+                        className={`w-6 h-6 rounded-full ${isSelected ? "bg-blue-500" : "bg-blue-500/70"}`}
+                      />
+
+                    </div>
+                  )
+                })}
+              </>
+            ) : (
+              <p>Esse item não possui verões e complementos</p>
+            )}
+
+
+
           </div>
 
 
