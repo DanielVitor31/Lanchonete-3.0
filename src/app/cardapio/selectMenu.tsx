@@ -19,36 +19,39 @@ type Option = FoodWithVersionsMap | FoodVersion;
 
 
 export default function SelectMenu({ open, foods, food, foods_categories_obj }: Props) {
-  const foodVersionsOBJ = foods[food.id_categorie][food.id].versions
-  const foodVersions = !!foodVersionsOBJ ? Object.values(foodVersionsOBJ) : []
+  const foodVersions = Object.values(foods[food.id_categorie][food.id].versions)
   const foodAddons = foods[food.id_categorie][food.id].addons
   const foodOptions: Option[][] = [foodVersions];
 
-  if (!!foodAddons) {
-    foodAddons.map((addon) => {
-      const _categorieArray: Option[] = [];
-      addon.items.map((addonItem) => {
-        const _food = foods[addon.category_id][addonItem.id_food]
-        const _foodVersion = !!addonItem.id_food_version ? _food.versions[addonItem.id_food_version] : _food
-        const _foodprice = addonItem.free === true ? { ..._foodVersion, price: 0 } : _foodVersion
-        _categorieArray.push(_foodprice)
-      })
-      foodOptions.push(_categorieArray);
-    })
+  if (foodAddons) {
+    foodAddons.forEach((addon) => {
+      const categoryArray: Option[] = addon.items.map((addonItem) => {
+        const foodBase = foods[addon.category_id][addonItem.id_food];
+        const foodVersion = addonItem.id_food_version
+          ? foodBase.versions[addonItem.id_food_version]
+          : foodBase;
+
+        return addonItem.free ? { ...foodVersion, price: 0 } : foodVersion;
+      });
+
+      foodOptions.push(categoryArray);
+    });
   }
 
-  const pagsMin = foodVersions.length > 0 ? 0 : 1
+  const hasVersion = foodVersions.length > 0
+  const initialPrice = hasVersion ? foodVersions[0].price : food.price
+  const pagsMin = hasVersion ? 0 : 1
   const pagsMax = foodOptions.length - 1
   const [optionsNumber, setOptionsNumber] = useState<number>(pagsMin);
-  const [price, setPrice] = useState<number[]>([foodVersions[0].price || food.price]);
-   const priceTotal = price.reduce((total, n) => total + n, 0);
+  const [price, setPrices] = useState<number[]>([initialPrice]);
+  const priceTotal = price.reduce((total, value) => total + value, 0);
   const [optionsSelect, setOptionsSelect] = useState<{ [key: number]: number }>({ 0: 0 });
 
 
 
 
   // console.log("versão1", foodVersions)
-  // console.log("addons2", foodOptions)
+  console.log("addons2", foods)
   //console.log("addons3", foodOptions)
   //console.log("addons4", optionsSelect)
   //console.log("addons5", optionsNumber)
@@ -88,7 +91,7 @@ export default function SelectMenu({ open, foods, food, foods_categories_obj }: 
 
           {/* Addons */}
           <div className="h-full bg-green-300 overflow-y-auto">
-           <p>{optionsNumber === 0 ? "Versão" : foods_categories_obj[foodOptions[optionsNumber][0].id_categorie]}</p>
+            <p>{optionsNumber === 0 ? "Versão" : foods_categories_obj[foodOptions[optionsNumber][0].id_categorie]}</p>
 
             {foodOptions[optionsNumber].map((option, indice) => {
               const _optionSelect = optionsSelect[optionsNumber] === indice
@@ -97,13 +100,17 @@ export default function SelectMenu({ open, foods, food, foods_categories_obj }: 
                   key={option.id}
                   className="flex px-4 items-center justify-between bg-yellow-400"
                   onClick={() => {
-                      setOptionsSelect(optionsSelect => ({ ...optionsSelect, [optionsNumber]: indice }));
-                      setPrice(prev => Object.assign([...prev], { [optionsNumber]: option.price }));
-                    }}
+                    setOptionsSelect((prev) => ({ ...prev, [optionsNumber]: indice }));
+                    setPrices((prev) => {
+                      const clone = [...prev];
+                      clone[optionsNumber] = option.price;
+                      return clone;
+                    });
+                  }}
                 >
-                  
+
                   <div
-                  
+
                   >
                     <p>{option.name}</p>
                     <p>{moneyFormatBRL(option.price)}</p>
@@ -112,17 +119,18 @@ export default function SelectMenu({ open, foods, food, foods_categories_obj }: 
 
                 </div>
               )
-            })};
+            })}
           </div>
 
 
           {/* footer */}
-          <div className="h-full">
+          <div className="h-full flex">
             <p className="text-sm md:text-base font-bold bg-red-300">
               {moneyFormatBRL(priceTotal)}
             </p>
             <div>
               <button
+               type="button"
                 onClick={() => setOptionsNumber(optionsNumber - 1)}
                 className={buttonClasses}
                 disabled={pagsMin === optionsNumber}
@@ -130,9 +138,10 @@ export default function SelectMenu({ open, foods, food, foods_categories_obj }: 
                 Voltar
               </button>
               <button
+                type="button"
                 onClick={() => setOptionsNumber(optionsNumber + 1)}
-                className={buttonClasses}
-                disabled={pagsMax === optionsNumber || !(optionsNumber in optionsSelect) }
+                className={`${buttonClasses}`}
+                disabled={pagsMax === optionsNumber || !(optionsNumber in optionsSelect)}
               >
                 Proximo
               </button>
