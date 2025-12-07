@@ -13,7 +13,7 @@ type Props = {
 
 
 
-export default function Dashboard({ foods, foods_categories_obj }: Props) {
+export default function FoodMenu({ foods, foods_categories_obj }: Props) {
   const foods_categories_obj_reversa = Object.fromEntries(
     Object.entries(foods_categories_obj).map(([k, v]) => [v, k])
   );

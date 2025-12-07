@@ -1,4 +1,4 @@
-// service.ts
+"use server"
 
 import { prisma } from "@/lib/prisma";
 import type { Prisma, foods_full } from "@prisma/client";

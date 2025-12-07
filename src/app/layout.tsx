@@ -19,7 +19,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       }
     });
 
-    if (!colorsDB) {
+    if (!colorsDB.length) {
       throw new Error("DB_EMPTY");
     }
 
