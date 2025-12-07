@@ -43,8 +43,8 @@ export default function SelectMenu({ open, foods, food, foods_categories_obj }: 
   const pagsMin = hasVersion ? 0 : 1
   const pagsMax = foodOptions.length - 1
   const [optionsNumber, setOptionsNumber] = useState<number>(pagsMin);
-  const [price, setPrices] = useState<number[]>([initialPrice]);
-  const priceTotal = price.reduce((total, value) => total + value, 0);
+  const [prices, setPrices] = useState<number[]>([initialPrice]);
+  const priceTotal = prices.reduce((total, value) => total + value, 0);
   const [optionsSelect, setOptionsSelect] = useState<{ [key: number]: number }>({ 0: 0 });
 
 
@@ -67,7 +67,7 @@ export default function SelectMenu({ open, foods, food, foods_categories_obj }: 
           {/* Cabeçalho */}
           <div className="flex items-center justify-between bg-blue-900">
             <h2 className="text-lg font-semibold">
-              Mini menu
+              {food.name}
             </h2>
             <button
               className="cursor-pointer select-none text-zinc-400 hover:text-zinc-200 text-sm"
@@ -94,7 +94,7 @@ export default function SelectMenu({ open, foods, food, foods_categories_obj }: 
             <p>{optionsNumber === 0 ? "Versão" : foods_categories_obj[foodOptions[optionsNumber][0].id_categorie]}</p>
 
             {foodOptions[optionsNumber].map((option, indice) => {
-              const _optionSelect = optionsSelect[optionsNumber] === indice
+              const isSelected = optionsSelect[optionsNumber] === indice
               return (
                 <div
                   key={option.id}
@@ -115,7 +115,9 @@ export default function SelectMenu({ open, foods, food, foods_categories_obj }: 
                     <p>{option.name}</p>
                     <p>{moneyFormatBRL(option.price)}</p>
                   </div>
-                  <div className={`w-6 h-6 rounded-full bg-blue-500${!!_optionSelect ? "" : "/70"}`}></div>
+                  <div
+                    className={`w-6 h-6 rounded-full ${isSelected ? "bg-blue-500" : "bg-blue-500/70"}`}
+                  />
 
                 </div>
               )
@@ -130,7 +132,7 @@ export default function SelectMenu({ open, foods, food, foods_categories_obj }: 
             </p>
             <div>
               <button
-               type="button"
+                type="button"
                 onClick={() => setOptionsNumber(optionsNumber - 1)}
                 className={buttonClasses}
                 disabled={pagsMin === optionsNumber}
