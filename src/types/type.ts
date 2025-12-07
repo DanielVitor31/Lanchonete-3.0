@@ -29,6 +29,11 @@ export type FoodAddonCategory = {
   items: FoodAddonItem[];
 };
 
+export type FoodsCategory = {
+  id: string;    
+  name: string;
+};
+
 export type FoodFull = {
   id: string;          // UUID
   name: string;

@@ -49,9 +49,12 @@ export default function SelectMenu({ open, foods, food, foods_categories_obj }: 
 
   // console.log("versão1", foodVersions)
   // console.log("addons2", foodOptions)
-  // console.log("addons3", foodOptions)
+  //console.log("addons3", foodOptions)
   //console.log("addons4", optionsSelect)
   //console.log("addons5", optionsNumber)
+  //console.log("addons6", foods_categories_obj[foodOptions[optionsNumber][0].id_categorie])
+  //console.log("addons7",foodOptions[optionsNumber][0].id_categorie)
+  //console.log("addons8", foods_categories_obj[foodOptions[optionsNumber][0].id_categorie])
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
@@ -84,21 +87,24 @@ export default function SelectMenu({ open, foods, food, foods_categories_obj }: 
           </p>
 
           {/* Addons */}
-          <div className="h-full bg-green-300">
+          <div className="h-full bg-green-300 overflow-y-auto">
+           <p>{optionsNumber === 0 ? "Versão" : foods_categories_obj[foodOptions[optionsNumber][0].id_categorie]}</p>
+
             {foodOptions[optionsNumber].map((option, indice) => {
               const _optionSelect = optionsSelect[optionsNumber] === indice
-              const _optionVersion = optionsNumber === 0
               return (
                 <div
-                  className="flex bg-yellow-400"
                   key={option.id}
+                  className="flex px-4 items-center justify-between bg-yellow-400"
                   onClick={() => {
                       setOptionsSelect(optionsSelect => ({ ...optionsSelect, [optionsNumber]: indice }));
                       setPrice(prev => Object.assign([...prev], { [optionsNumber]: option.price }));
                     }}
                 >
-                  <p>{_optionVersion ? "Versão" : foods_categories_obj[option.id_categorie]}</p>
-                  <div>
+                  
+                  <div
+                  
+                  >
                     <p>{option.name}</p>
                     <p>{moneyFormatBRL(option.price)}</p>
                   </div>

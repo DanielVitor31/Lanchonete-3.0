@@ -14,10 +14,14 @@ type Props = {
 
 
 export default function Dashboard({ foods, foods_categories_obj }: Props) {
+  const foods_categories_obj_reversa = Object.fromEntries(
+    Object.entries(foods_categories_obj).map(([k, v]) => [v, k])
+  );
+
   const foodsGrouped = foods.grouped;
-  const foodsCategoriesNames = Object.keys(foods_categories_obj);
+  const foodsCategoriesNames = Object.keys(foods_categories_obj_reversa);
   const [categoriesActive, setCategoriesActive] = useState<string>(foodsCategoriesNames[0]);
-  const foodCategoriesIDActive = foods_categories_obj[categoriesActive];
+  const foodCategoriesIDActive = foods_categories_obj_reversa[categoriesActive];
   const foodsActiveOBJ = foodsGrouped[foodCategoriesIDActive];
   const foodsActive = Object.values(foodsActiveOBJ);
   const [foodIDActive, setFoodIDActive] = useState<string | null>(null);
