@@ -1,9 +1,10 @@
 SELECT
-  f.id_food,
+  f.id_food AS id,
   f.name,
   f.description,
   f.img,
-  f.xid_categorie,
+  f.xid_categorie AS id_categorie,
+  c.name AS name_categorie,
   f.price,
   f.promotion,
   f.stock,
@@ -13,17 +14,22 @@ SELECT
 FROM
   (
     (
-      diner.foods f
+      (
+        diner.foods f
+        JOIN diner.foods_categories c ON ((c.id_foods_categories = f.xid_categorie))
+      )
       LEFT JOIN LATERAL (
         SELECT
           jsonb_agg(
-            DISTINCT jsonb_build_object(
+            jsonb_build_object(
               'id',
               fv.id_food_version,
               'id_food',
               fv.xid_food,
               'id_categorie',
               f.xid_categorie,
+              'name_categorie',
+              c.name,
               'name',
               (
                 ((f.name) :: text || ' - ' :: text) || (fv.name) :: text
@@ -41,6 +47,9 @@ FROM
               'sale',
               fv.sale
             )
+            ORDER BY
+              fv.price,
+              fv.name
           ) AS versions
         FROM
           diner.foods_version fv
@@ -51,7 +60,7 @@ FROM
     LEFT JOIN LATERAL (
       SELECT
         jsonb_agg(
-          DISTINCT jsonb_build_object(
+          jsonb_build_object(
             'category_id',
             cat.id_foods_categories,
             'category_name',
@@ -61,16 +70,18 @@ FROM
               SELECT
                 COALESCE(
                   jsonb_agg(
-                    DISTINCT jsonb_build_object(
+                    jsonb_build_object(
                       'id',
                       fa2.id_foods_addons,
                       'id_food',
-                      fc.id_food,
+                      fai2.xid_food,
                       'id_food_version',
-                      fvv.id_food_version,
+                      fai2.xid_food_version,
                       'free',
                       fai2.free
                     )
+                    ORDER BY
+                      fc.name
                   ),
                   '[]' :: jsonb
                 ) AS "coalesce"
@@ -94,6 +105,8 @@ FROM
                 )
             )
           )
+          ORDER BY
+            cat.name
         ) AS addons
       FROM
         (
@@ -107,4 +120,7 @@ FROM
       WHERE
         (fa.xid_food = f.id_food)
     ) a ON (TRUE)
-  );
+  )
+ORDER BY
+  f.price,
+  f.name;

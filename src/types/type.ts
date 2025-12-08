@@ -6,31 +6,32 @@ export type ColorsDB = {
 export type FoodVersion = {
   id: string;
   id_food: string;
-  id_categorie: string
+  id_categorie: string;
+  name_categorie: string;
   name: string;
-  description: string;
-  img: string;
+  description: string | null;
+  img: string | null;
   price: number;
+  promotion: number | null;
   stock: boolean;
   sale: boolean;
-  promotion: number | null;
 };
 
 export type FoodAddonItem = {
   id: string;
-  id_food: string;        
-  id_food_version: string | null; 
+  id_food: string;
+  id_food_version: string | null;
   free: boolean;
 };
 
 export type FoodAddonCategory = {
-  category_id: string;      
+  category_id: string;
   category_name: string;
   items: FoodAddonItem[];
 };
 
 export type FoodsCategory = {
-  id: string;    
+  id: string;
   name: string;
 };
 
@@ -38,32 +39,27 @@ export type FoodFull = {
   id: string;
   name: string;
   description: string | null;
-  img: string;
+  img: string | null;
   id_categorie: string;
+  name_categorie: string;
   price: number;
-  promotion: string | null;
+  promotion: number | null;
   stock: boolean;
   sale: boolean;
   versions: FoodVersion[];
   addons: FoodAddonCategory[];
 };
 
-// >>> tipos pra estrutura agrupada <<<
-
 export type FoodWithVersionsMap = Omit<FoodFull, "versions"> & {
   versions: Record<string, FoodVersion>;
 };
 
 export type FoodsGrouped = Record<
-  string, // id_categorie
-  Record<
-    string, // id da comida
-    FoodWithVersionsMap
-  >
+  string,
+  Record<string, FoodWithVersionsMap>
 >;
 
-// retorno da função
 export type FoodsFullResult = {
-  list: FoodFull[];      // lista simples
-  grouped: FoodsGrouped; // agrupado por categoria/comida
+  list: FoodFull[];
+  grouped: FoodsGrouped;
 };

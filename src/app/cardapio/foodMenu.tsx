@@ -156,7 +156,7 @@ export default function FoodMenu({ foods, foods_categories_obj }: Props) {
                     mb-1
                     mx-auto
                   "
-                  style={{ backgroundImage: `url("${supabaseStorageURL(food.img)}")` }}
+                  style={{ backgroundImage: `url("${supabaseStorageURL(food.img!)}")` }}
                 />
 
                 <p className="w-full text-center text-base md:text-lg font-semibold">

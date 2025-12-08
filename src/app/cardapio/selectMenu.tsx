@@ -116,7 +116,7 @@ export default function SelectMenu({ open, foods, food, foods_categories_obj }: 
           <div className="relative w-full overflow-hidden rounded-xl bg-zinc-900 border border-zinc-800">
             <div
               className="h-40 md:h-48 w-full bg-cover bg-center"
-              style={{ backgroundImage: `url("${supabaseStorageURL(food.img)}")` }}
+              style={{ backgroundImage: `url("${supabaseStorageURL(food.img!)}")` }}
             />
           </div>
 
