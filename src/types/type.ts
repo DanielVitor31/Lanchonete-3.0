@@ -4,7 +4,7 @@ export type ColorsDB = {
 
 
 export type FoodVersion = {
-  id: string;                // UUID
+  id: string;
   id_food: string;
   id_categorie: string
   name: string;
@@ -17,14 +17,14 @@ export type FoodVersion = {
 };
 
 export type FoodAddonItem = {
-  id_food: string;         // UUID ou null
-  id_food_version: string | null; // UUID ou null
+  id: string;
+  id_food: string;        
+  id_food_version: string | null; 
   free: boolean;
-  quant_max: number;
 };
 
 export type FoodAddonCategory = {
-  category_id: string;      // UUID
+  category_id: string;      
   category_name: string;
   items: FoodAddonItem[];
 };
@@ -35,7 +35,7 @@ export type FoodsCategory = {
 };
 
 export type FoodFull = {
-  id: string;          // UUID
+  id: string;
   name: string;
   description: string | null;
   img: string;

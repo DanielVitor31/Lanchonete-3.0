@@ -62,14 +62,14 @@ FROM
                 COALESCE(
                   jsonb_agg(
                     DISTINCT jsonb_build_object(
+                      'id',
+                      fa2.id_foods_addons,
                       'id_food',
                       fc.id_food,
                       'id_food_version',
                       fvv.id_food_version,
                       'free',
-                      fai2.free,
-                      'quant_max',
-                      fai2.quant_max
+                      fai2.free
                     )
                   ),
                   '[]' :: jsonb

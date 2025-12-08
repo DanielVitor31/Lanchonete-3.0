@@ -46,7 +46,6 @@ model foods_addons_items {
   xid_food              String         @db.Uuid
   xid_food_version      String?        @db.Uuid
   free                  Boolean?       @default(false)
-  quant_max             Int?           @default(1)
   created_at            DateTime?      @default(now()) @db.Timestamp(6)
   foods                 foods          @relation(fields: [xid_food], references: [id_food], onDelete: NoAction, onUpdate: NoAction)
   foods_version         foods_version? @relation(fields: [xid_food_version], references: [id_food_version], onDelete: NoAction, onUpdate: NoAction)
