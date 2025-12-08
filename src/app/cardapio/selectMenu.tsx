@@ -1,3 +1,5 @@
+"use client";
+
 import { supabaseStorageURL, moneyFormatBRL } from "@/ultils/ultils";
 import type { FoodVersion, FoodsGrouped, FoodWithVersionsMap } from "@/types/type";
 import { useState } from "react";
@@ -16,11 +18,12 @@ type Option = FoodWithVersionsMap | FoodVersion;
 
 export default function SelectMenu({ open, foods, food, foods_categories_obj }: Props) {
   const foodVersions = Object.values(foods[food.id_categorie][food.id].versions);
+  const foodVersionsOrder = foodVersions.sort((a, b) => a.price - b.price);
   const foodAddons = foods[food.id_categorie][food.id].addons;
-  const foodOptions: Option[][] = [foodVersions.sort((a, b) => a.price - b.price)];
+  const foodOptions: Option[][] = [foodVersionsOrder];
 
   const hasAddons = foodAddons.length > 0;
-  const hasVersion = foodVersions.length > 0;
+  const hasVersion = foodVersionsOrder.length > 0;
 
   if (hasAddons) {
     foodAddons.forEach((addon) => {
@@ -30,7 +33,7 @@ export default function SelectMenu({ open, foods, food, foods_categories_obj }: 
           ? foodBase.versions[addonItem.id_food_version]
           : foodBase;
 
-        const baseOption = addonItem.free ? { ...foodVersion, price: 0 } : foodVersion;
+        const baseOption: Option = {...foodVersion, price: addonItem.free ? 0 : foodVersion.price};
         return baseOption;
       });
 
@@ -46,7 +49,7 @@ export default function SelectMenu({ open, foods, food, foods_categories_obj }: 
     });
   }
 
-  const initialPrice = hasVersion ? foodVersions[0].price : food.price;
+  const initialPrice = hasVersion ? foodVersionsOrder[0].price : food.price;
   const pagsMin = hasVersion ? 0 : 1;
   const pagsMax = foodOptions.length - 1;
 
@@ -64,6 +67,23 @@ export default function SelectMenu({ open, foods, food, foods_categories_obj }: 
       return clone;
     });
   };
+
+  const orderFinish = Object.entries(optionsSelect).reduce((acc, [key, value]) => {
+    const index = Number(key);
+
+    if (index === 0) {
+      acc.push(hasVersion ? foodVersionsOrder[value] : food);
+    } else if (hasAddons) {
+      acc.push(foodOptions[index][value]);
+    }
+
+    return acc;
+  }, [] as any);
+
+  const handleOrderFinish = () => {
+
+  };
+
 
 
   return (
@@ -210,14 +230,27 @@ export default function SelectMenu({ open, foods, food, foods_categories_obj }: 
               >
                 Voltar
               </button>
-              <button
-                type="button"
-                onClick={() => setOptionsNumber(optionsNumber + 1)}
-                className={`${buttonClasses} px-3 py-1 text-xs md:text-sm`}
-                disabled={pagsMax === optionsNumber || !(optionsNumber in optionsSelect)}
-              >
-                Próximo
-              </button>
+              {pagsMax !== optionsNumber ? (
+                <button
+                  type="button"
+                  onClick={() => setOptionsNumber(optionsNumber + 1)}
+                  className={`${buttonClasses} px-3 py-1 text-xs md:text-sm`}
+                  disabled={!(optionsNumber in optionsSelect)}
+                >
+                  Próximo
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => handleOrderFinish()}
+                  className={`${buttonClasses} px-3 py-1 text-xs md:text-sm`}
+                  disabled={!(optionsNumber in optionsSelect)}
+                >
+                  Finalizar
+                </button>
+              )}
+
+
             </div>
           </footer>
         </div>

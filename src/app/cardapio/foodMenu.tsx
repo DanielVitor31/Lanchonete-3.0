@@ -24,6 +24,7 @@ export default function FoodMenu({ foods, foods_categories_obj }: Props) {
   const foodCategoriesIDActive = foods_categories_obj_reversa[categoriesActive];
   const foodsActiveOBJ = foodsGrouped[foodCategoriesIDActive];
   const foodsActive = Object.values(foodsActiveOBJ);
+  const foodsActiveOrder = foodsActive.sort((a, b) => a.price - b.price);
   const [foodIDActive, setFoodIDActive] = useState<string | null>(null);
 
 
@@ -127,7 +128,7 @@ export default function FoodMenu({ foods, foods_categories_obj }: Props) {
               justify-start
             "
           >
-            {foodsActive.map((food) => (
+            {foodsActiveOrder.map((food) => (
               <div
                 key={food.id}
                 onClick={() => setFoodIDActive(food.id)}
@@ -144,7 +145,6 @@ export default function FoodMenu({ foods, foods_categories_obj }: Props) {
                   bg-zinc-900/60
                   p-4
                   rounded-xl
-                  
                 "
               >
                 <div
