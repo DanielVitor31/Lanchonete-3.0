@@ -3,7 +3,7 @@ import type { FoodVersion, FoodsGrouped, FoodWithVersionsMap } from "@/types/typ
 import { useState } from "react";
 import { X } from "lucide-react";
 import { buttonClasses } from "@/styles/preset";
-import { OPTION_NULL } from "@/constants"
+import { OPTION_NULL } from "@/constants";
 
 type Props = {
   open: (value: null) => void;
@@ -22,7 +22,6 @@ export default function SelectMenu({ open, foods, food, foods_categories_obj }: 
   const hasAddons = foodAddons.length > 0;
   const hasVersion = foodVersions.length > 0;
 
-
   if (hasAddons) {
     foodAddons.forEach((addon) => {
       const categoryArray: Option[] = addon.items.map((addonItem) => {
@@ -31,14 +30,16 @@ export default function SelectMenu({ open, foods, food, foods_categories_obj }: 
           ? foodBase.versions[addonItem.id_food_version]
           : foodBase;
 
-        return addonItem.free ? { ...foodVersion, price: 0 } : foodVersion;
+        const baseOption = addonItem.free ? { ...foodVersion, price: 0 } : foodVersion;
+        return baseOption;
       });
 
-      const orderCategoryArray = categoryArray.sort((a, b) => a.price - b.price)
-      //Adiciona a opção de não escolher nada em cada complemento
+      const orderCategoryArray = categoryArray.sort((a, b) => a.price - b.price);
+
+      // Adiciona a opção de não escolher nada em cada complemento
       const OPTION_NULL_ID = {
         ...OPTION_NULL,
-        id: `null-${Date.now()}`
+        id: `null-${Date.now()}`,
       };
 
       foodOptions.push([OPTION_NULL_ID, ...orderCategoryArray]);
@@ -91,7 +92,7 @@ export default function SelectMenu({ open, foods, food, foods_categories_obj }: 
             </button>
           </header>
 
-          {/* Imagem */}
+          {/* Imagem principal */}
           <div className="relative w-full overflow-hidden rounded-xl bg-zinc-900 border border-zinc-800">
             <div
               className="h-40 md:h-48 w-full bg-cover bg-center"
@@ -110,7 +111,9 @@ export default function SelectMenu({ open, foods, food, foods_categories_obj }: 
               <>
                 <div className="mb-2 flex items-center justify-between gap-2">
                   <p className="text-xs md:text-sm font-medium text-zinc-200 uppercase tracking-wide">
-                    {optionsNumber === 0 ? "Versão" : foods_categories_obj[foodOptions[optionsNumber][0].id_categorie]}
+                    {optionsNumber === 0
+                      ? "Versão"
+                      : foods_categories_obj[foodOptions[optionsNumber][0].id_categorie]}
                   </p>
                   <p className="text-[15px] text-zinc-500">
                     Passo {optionsNumber + 1} de {pagsMax + 1}
@@ -120,6 +123,7 @@ export default function SelectMenu({ open, foods, food, foods_categories_obj }: 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   {foodOptions[optionsNumber].map((option, indice) => {
                     const isSelected = optionsSelect[optionsNumber] === indice;
+                    const optionImg = optionsNumber === 0 ? null : option.img;
 
                     return (
                       <button
@@ -134,32 +138,44 @@ export default function SelectMenu({ open, foods, food, foods_categories_obj }: 
                             : "border-zinc-800 bg-zinc-900 hover:border-zinc-700",
                         ].join(" ")}
                       >
-                        <div className="flex items-start justify-between gap-2">
-                          <div className="flex-1">
-                            <p className="font-small text-zinc-50 line-clamp-2">
-                              {option.name}
-                            </p>
-                            <p className="text-[14px] font-bold text-dinheiro-6 mt-0.5">
-                              {option.price === 0 ? "Gratis" : moneyFormatBRL(option.price)}
-                            </p>
-                          </div>
+                        <div className="flex items-center gap-2">
+                          {/* Imagem só para addons */}
+                          {optionImg && optionsNumber !== 0 && (
+                            <div className="h-12 w-12 rounded-lg overflow-hidden bg-zinc-800 shrink-0 flex items-center justify-center">
+                              <div
+                                className="h-full w-full bg-cover bg-center"
+                                style={{ backgroundImage: `url("${supabaseStorageURL(optionImg)}")` }}
+                              />
+                            </div>
+                          )}
 
-                          <div
-                            className={[
-                              "mt-1 flex h-5 w-5 items-center justify-center rounded-full border transition",
-                              isSelected
-                                ? "border-emerald-500 bg-emerald-500/20"
-                                : "border-zinc-700 bg-zinc-900",
-                            ].join(" ")}
-                          >
-                            <span
+                          <div className="flex-1 flex items-center justify-between gap-2">
+                            <div className="flex flex-col justify-center">
+                              <p className="font-small text-zinc-50 line-clamp-2">
+                                {option.name}
+                              </p>
+                              <p className="text-[14px] font-bold text-dinheiro-6 mt-0.5">
+                                {option.price === 0 ? "Gratis" : moneyFormatBRL(option.price)}
+                              </p>
+                            </div>
+
+                            <div
                               className={[
-                                "h-2.5 w-2.5 rounded-full transition",
+                                "flex h-5 w-5 items-center justify-center rounded-full border transition",
                                 isSelected
-                                  ? "bg-emerald-400"
-                                  : "bg-zinc-600/60 group-hover:bg-zinc-500",
+                                  ? "border-emerald-500 bg-emerald-500/20"
+                                  : "border-zinc-700 bg-zinc-900",
                               ].join(" ")}
-                            />
+                            >
+                              <span
+                                className={[
+                                  "h-2.5 w-2.5 rounded-full transition",
+                                  isSelected
+                                    ? "bg-emerald-400"
+                                    : "bg-zinc-600/60 group-hover:bg-zinc-500",
+                                ].join(" ")}
+                              />
+                            </div>
                           </div>
                         </div>
                       </button>
