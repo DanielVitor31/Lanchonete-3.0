@@ -16,18 +16,18 @@ type Props = {
 
 type Option = FoodWithVersionsMap | FoodVersion;
 
-export default function SelectMenu({ open, foods, food, foods_categories_obj }: Props) {
+export default function SelectMenu({ open, foods, food }: Props) {
   const foodVersions = Object.values(foods[food.id_categorie][food.id].versions);
-  const foodVersionsOrder = foodVersions.sort((a, b) => a.price - b.price);
-  const foodAddons = foods[food.id_categorie][food.id].addons;
-  const foodOptions: Option[][] = [foodVersionsOrder];
+  const foodAddonsIDS = foods[food.id_categorie][food.id].addons;
+  const foodAddons: Option[][] = [foodVersions];
+  console.log(foodAddons)
 
-  const hasAddons = foodAddons.length > 0;
-  const hasVersion = foodVersionsOrder.length > 0;
+  const hasAddons = foodAddonsIDS.length > 0;
+  const hasVersion = foodVersions.length > 0;
 
   if (hasAddons) {
-    foodAddons.forEach((addon) => {
-      const categoryArray: Option[] = addon.items.map((addonItem) => {
+    foodAddonsIDS.forEach((addon) => {
+      const categoryComplement: Option[] = addon.items.map((addonItem) => {
         const foodBase = foods[addon.category_id][addonItem.id_food];
         const foodVersion = addonItem.id_food_version
           ? foodBase.versions[addonItem.id_food_version]
@@ -37,7 +37,7 @@ export default function SelectMenu({ open, foods, food, foods_categories_obj }: 
         return baseOption;
       });
 
-      const orderCategoryArray = categoryArray.sort((a, b) => a.price - b.price);
+      const ordercategoryComplement = categoryComplement.sort((a, b) => a.price - b.price);
 
       // Adiciona a opção de não escolher nada em cada complemento
       const OPTION_NULL_ID = {
@@ -45,13 +45,13 @@ export default function SelectMenu({ open, foods, food, foods_categories_obj }: 
         id: `null-${Date.now()}`,
       };
 
-      foodOptions.push([OPTION_NULL_ID, ...orderCategoryArray]);
+      foodAddons.push([OPTION_NULL_ID, ...ordercategoryComplement]);
     });
   }
 
-  const initialPrice = hasVersion ? foodVersionsOrder[0].price : food.price;
+  const initialPrice = hasVersion ? foodVersions[0].price : food.price;
   const pagsMin = hasVersion ? 0 : 1;
-  const pagsMax = foodOptions.length - 1;
+  const pagsMax = foodAddons.length - 1;
 
   const [optionsNumber, setOptionsNumber] = useState<number>(pagsMin);
   const [prices, setPrices] = useState<number[]>([initialPrice]);
@@ -72,9 +72,9 @@ export default function SelectMenu({ open, foods, food, foods_categories_obj }: 
     const index = Number(key);
 
     if (index === 0) {
-      acc.push(hasVersion ? foodVersionsOrder[value] : food);
+      acc.push(hasVersion ? foodVersions[value] : food);
     } else if (hasAddons) {
-      acc.push(foodOptions[index][value]);
+      acc.push(foodAddons[index][value]);
     }
 
     return acc;
@@ -133,7 +133,7 @@ export default function SelectMenu({ open, foods, food, foods_categories_obj }: 
                   <p className="text-xs md:text-sm font-medium text-zinc-200 uppercase tracking-wide">
                     {optionsNumber === 0
                       ? "Versão"
-                      : foods_categories_obj[foodOptions[optionsNumber][0].id_categorie]}
+                      : foodAddons[optionsNumber][0].name_categorie}
                   </p>
                   <p className="text-[15px] text-zinc-500">
                     Passo {optionsNumber + 1} de {pagsMax + 1}
@@ -141,7 +141,7 @@ export default function SelectMenu({ open, foods, food, foods_categories_obj }: 
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  {foodOptions[optionsNumber].map((option, indice) => {
+                  {foodAddons[optionsNumber].map((option, indice) => {
                     const isSelected = optionsSelect[optionsNumber] === indice;
                     const optionImg = optionsNumber === 0 ? null : option.img;
 

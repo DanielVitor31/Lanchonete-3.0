@@ -24,7 +24,7 @@ export default function FoodMenu({ foods, foods_categories_obj }: Props) {
   const foodCategoriesIDActive = foods_categories_obj_reversa[categoriesActive];
   const foodsActiveOBJ = foodsGrouped[foodCategoriesIDActive];
   const foodsActive = Object.values(foodsActiveOBJ);
-  const foodsActiveOrder = foodsActive.sort((a, b) => a.price - b.price);
+  const foodsActiveOrder = foodsActive;
   const [foodIDActive, setFoodIDActive] = useState<string | null>(null);
 
 
