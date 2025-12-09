@@ -3,18 +3,16 @@
 import { supabaseStorageURL, moneyFormatBRL } from "@/ultils/ultils";
 import { useState } from "react";
 import { buttonClasses } from "@/styles/preset";
-import type { Option } from "./functions";
+import type { Option, PagesType } from "./functions";
 
 
 type Props = {
-    setOptionsNumber: (valor: number) => void;
-    optionsNumber: number;
-    pagsMin: number;
-    pagsMax: number;
+    setPageCurrent: (valor: number) => void;
+    page: PagesType;
     optionsSelect: { [key: number]: number };
 }
 
-export default function ButtonsElement({ setOptionsNumber, optionsNumber, pagsMin, pagsMax, optionsSelect }: Props) {
+export default function ButtonsElement({ setPageCurrent, page, optionsSelect }: Props) {
 
 
 
@@ -22,18 +20,18 @@ export default function ButtonsElement({ setOptionsNumber, optionsNumber, pagsMi
         <>
             <button
                 type="button"
-                onClick={() => setOptionsNumber(optionsNumber - 1)}
+                onClick={() => setPageCurrent(page.current - 1)}
                 className={`${buttonClasses} px-3 py-1 text-xs md:text-sm`}
-                disabled={pagsMin === optionsNumber}
+                disabled={page.min === page.current}
             >
                 Voltar
             </button>
-            {pagsMax !== optionsNumber ? (
+            {page.max !== page.current ? (
                 <button
                     type="button"
-                    onClick={() => setOptionsNumber(optionsNumber + 1)}
+                    onClick={() => setPageCurrent(page.current + 1)}
                     className={`${buttonClasses} px-3 py-1 text-xs md:text-sm`}
-                    disabled={!(optionsNumber in optionsSelect)}
+                    disabled={!(page.current in optionsSelect)}
                 >
                     Próximo
                 </button>
@@ -42,7 +40,7 @@ export default function ButtonsElement({ setOptionsNumber, optionsNumber, pagsMi
                     type="button"
                     // onClick={() => handleOrderFinish()}
                     className={`${buttonClasses} px-3 py-1 text-xs md:text-sm`}
-                    disabled={!(optionsNumber in optionsSelect)}
+                    disabled={!(page.current in optionsSelect)}
                 >
                     Finalizar
                 </button>

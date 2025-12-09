@@ -4,9 +4,11 @@ import { supabaseStorageURL, moneyFormatBRL } from "@/ultils/ultils";
 import type { FoodsGrouped, FoodWithVersionsMap } from "@/types/type";
 import { useState } from "react";
 import { X } from "lucide-react";
-import { loadAddons } from "./functions"
-import  AddonsElement  from "./addons"
+import { loadAddons,  pages} from "./functions"
+import AddonsElement from "./addons"
 import ButtonsElement from "./buttons"
+
+
 
 type Props = {
   open: (value: null) => void;
@@ -25,13 +27,13 @@ export default function SelectMenu({ open, foods, food }: Props) {
   const hasVersion = foodVersions.length > 0;
   const foodAddons = loadAddons(hasAddons, foodAddonsIDS, foodVersions, foods);
 
- 
+
 
   const initialPrice = hasVersion ? foodVersions[0].price : food.price;
   const pagsMin = hasVersion ? 0 : 1;
-  const pagsMax = foodAddons.length - 1;
+  const [pageCurrent, setPageCurrent] = useState<number>(pagsMin);
+  const page = pages({min: pagsMin, max: foodAddons.length - 1, current: pageCurrent})
 
-  const [optionsNumber, setOptionsNumber] = useState<number>(pagsMin);
   const [prices, setPrices] = useState<number[]>([initialPrice]);
   const [optionsSelect, setOptionsSelect] = useState<{ [key: number]: number }>({ 0: 0 });
 
@@ -63,7 +65,6 @@ export default function SelectMenu({ open, foods, food }: Props) {
       return clone;
     });
   };
-
 
 
   return (
@@ -108,7 +109,11 @@ export default function SelectMenu({ open, foods, food }: Props) {
           {/* Opções (versões / addons) */}
           <section className="min-h-0 overflow-y-auto rounded-xl border border-zinc-800 bg-zinc-900/70 p-3">
             {hasVersion || hasAddons ? (
-              <AddonsElement handleSelectOption={handleSelectOption} optionsNumber={optionsNumber} foodAddons={foodAddons} pagsMax={pagsMax} optionsSelect={optionsSelect } />
+              <>
+                {!page.isOnLast && (
+                  <AddonsElement handleSelectOption={handleSelectOption} foodAddons={foodAddons} page={page} optionsSelect={optionsSelect} />
+                )}
+              </>
             ) : (
               <p className="text-xs md:text-sm text-zinc-400 text-center">
                 Esse item não possui versões ou complementos.
@@ -128,7 +133,7 @@ export default function SelectMenu({ open, foods, food }: Props) {
             </div>
 
             <div className="flex items-center gap-2">
-              <ButtonsElement setOptionsNumber={setOptionsNumber} optionsNumber={optionsNumber} pagsMin={pagsMin} pagsMax={pagsMax} optionsSelect={optionsSelect } />
+              <ButtonsElement setPageCurrent={setPageCurrent} page={page} optionsSelect={optionsSelect} />
             </div>
           </footer>
         </div>

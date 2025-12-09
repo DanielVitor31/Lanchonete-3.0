@@ -34,3 +34,31 @@ export function loadAddons(hasAddons: boolean, foodAddonsIDS: FoodAddonCategory[
 
     return foodAddons
 }
+
+type PagesTypeFunction = {
+    min:        number;
+    max:        number;
+    current:    number;
+}
+
+export type PagesType = {
+    min:        number;
+    max:        number;
+    last:       number;
+    current:    number;
+    isOnLast:   boolean;
+}
+
+export function pages({min, max, current} :PagesTypeFunction) {
+
+    const pagLast = max + 1
+    const pagIsOnLast = current === pagLast
+
+    return { 
+        "min":        min,
+        "max":        max,
+        "last":       pagLast,
+        "current":    current,
+        "isOnLast":   pagIsOnLast
+    }
+}

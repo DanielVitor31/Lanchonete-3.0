@@ -4,43 +4,42 @@ import { supabaseStorageURL, moneyFormatBRL } from "@/ultils/ultils";
 import { useState } from "react";
 import { buttonClasses } from "@/styles/preset";
 import type { Option } from "./functions";
+import type { PagesType } from "./functions";
 
 
 type Props = {
   handleSelectOption: (groupIndex: number, optionIndex: number, price: number) => void;
-  optionsNumber: number;
   foodAddons: Option[][];
-  pagsMax: number;
-  optionsSelect: {[key: number]: number};
+  page: PagesType;
+  optionsSelect: { [key: number]: number };
 }
 
-export default function AddonsElement({handleSelectOption, optionsNumber, foodAddons, pagsMax, optionsSelect}: Props) {
+export default function AddonsElement({ handleSelectOption, foodAddons, page, optionsSelect }: Props) {
 
-  
 
   return (
     <>
       <div className="mb-2 flex items-center justify-between gap-2">
         <p className="text-xs md:text-sm font-medium text-zinc-200 uppercase tracking-wide">
-          {optionsNumber === 0
+          {page.current === 0
             ? "Versão"
-            : foodAddons[optionsNumber][0].name_categorie}
+            : foodAddons[page.current][0].name_categorie}
         </p>
         <p className="text-[15px] text-zinc-500">
-          Passo {optionsNumber + 1} de {pagsMax + 1}
+          Passo {page.current + 1} de {page.max + 1}
         </p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-        {foodAddons[optionsNumber].map((option, indice) => {
-          const isSelected = optionsSelect[optionsNumber] === indice;
-          const optionImg = optionsNumber === 0 ? null : option.img;
+        {foodAddons[page.current].map((option, indice) => {
+          const isSelected = optionsSelect[page.current] === indice;
+          const optionImg = page.current === 0 ? null : option.img;
 
           return (
             <button
               key={option.id}
               type="button"
-              onClick={() => handleSelectOption(optionsNumber, indice, option.price)}
+              onClick={() => handleSelectOption(page.current, indice, option.price)}
               className={[
                 "group flex h-full flex-col justify-between rounded-xl border px-3 py-2 text-left text-xs md:text-sm transition",
                 "shadow-sm hover:shadow-md",
@@ -51,7 +50,7 @@ export default function AddonsElement({handleSelectOption, optionsNumber, foodAd
             >
               <div className="flex items-center gap-2">
                 {/* Imagem só para addons */}
-                {optionImg && optionsNumber !== 0 && (
+                {optionImg && page.current !== 0 && (
                   <div className="h-12 w-12 rounded-lg overflow-hidden bg-zinc-800 shrink-0 flex items-center justify-center">
                     <div
                       className="h-full w-full bg-cover bg-center"
