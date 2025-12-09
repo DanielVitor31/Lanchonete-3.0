@@ -5,7 +5,7 @@ import type { FoodVersion, FoodsGrouped, FoodWithVersionsMap } from "@/types/typ
 import { useState } from "react";
 import { X } from "lucide-react";
 import { buttonClasses } from "@/styles/preset";
-import { OPTION_NULL } from "@/constants";
+import { loadAddons } from "./functions"
 
 type Props = {
   open: (value: null) => void;
@@ -14,40 +14,20 @@ type Props = {
   foods_categories_obj: { [key: string]: string };
 };
 
-type Option = FoodWithVersionsMap | FoodVersion;
 
 export default function SelectMenu({ open, foods, food }: Props) {
   const foodVersions = Object.values(foods[food.id_categorie][food.id].versions);
   const foodAddonsIDS = foods[food.id_categorie][food.id].addons;
-  const foodAddons: Option[][] = [foodVersions];
-  console.log(foodAddons)
+
 
   const hasAddons = foodAddonsIDS.length > 0;
   const hasVersion = foodVersions.length > 0;
 
-  if (hasAddons) {
-    foodAddonsIDS.forEach((addon) => {
-      const categoryComplement: Option[] = addon.items.map((addonItem) => {
-        const foodBase = foods[addon.category_id][addonItem.id_food];
-        const foodVersion = addonItem.id_food_version
-          ? foodBase.versions[addonItem.id_food_version]
-          : foodBase;
+  const foodAddons = loadAddons(hasAddons, foodAddonsIDS, foodVersions, foods);
 
-        const baseOption: Option = {...foodVersion, price: addonItem.free ? 0 : foodVersion.price};
-        return baseOption;
-      });
 
-      const ordercategoryComplement = categoryComplement.sort((a, b) => a.price - b.price);
 
-      // Adiciona a opção de não escolher nada em cada complemento
-      const OPTION_NULL_ID = {
-        ...OPTION_NULL,
-        id: `null-${Date.now()}`,
-      };
-
-      foodAddons.push([OPTION_NULL_ID, ...ordercategoryComplement]);
-    });
-  }
+ 
 
   const initialPrice = hasVersion ? foodVersions[0].price : food.price;
   const pagsMin = hasVersion ? 0 : 1;
