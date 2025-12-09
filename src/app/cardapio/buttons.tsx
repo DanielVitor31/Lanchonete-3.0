@@ -26,7 +26,7 @@ export default function ButtonsElement({ setPageCurrent, page, optionsSelect }: 
             >
                 Voltar
             </button>
-            {page.max !== page.current ? (
+            {page.last !== page.current ? (
                 <button
                     type="button"
                     onClick={() => setPageCurrent(page.current + 1)}
@@ -40,7 +40,6 @@ export default function ButtonsElement({ setPageCurrent, page, optionsSelect }: 
                     type="button"
                     // onClick={() => handleOrderFinish()}
                     className={`${buttonClasses} px-3 py-1 text-xs md:text-sm`}
-                    disabled={!(page.current in optionsSelect)}
                 >
                     Finalizar
                 </button>
