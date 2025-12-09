@@ -2,7 +2,7 @@
 import type { FoodVersion, FoodsGrouped, FoodWithVersionsMap, FoodAddonCategory } from "@/types/type";
 import { OPTION_NULL } from "@/constants";
 
-type Option = FoodWithVersionsMap | FoodVersion;
+export type Option = FoodWithVersionsMap | FoodVersion;
 
 export function loadAddons(hasAddons: boolean, foodAddonsIDS: FoodAddonCategory[], foodVersions: FoodVersion[], foods: FoodsGrouped ) {
     const foodAddons: Option[][] = [foodVersions];

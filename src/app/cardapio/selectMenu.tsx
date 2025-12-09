@@ -1,11 +1,12 @@
 "use client";
 
 import { supabaseStorageURL, moneyFormatBRL } from "@/ultils/ultils";
-import type { FoodVersion, FoodsGrouped, FoodWithVersionsMap } from "@/types/type";
+import type { FoodsGrouped, FoodWithVersionsMap } from "@/types/type";
 import { useState } from "react";
 import { X } from "lucide-react";
-import { buttonClasses } from "@/styles/preset";
 import { loadAddons } from "./functions"
+import  AddonsElement  from "./addons"
+import ButtonsElement from "./buttons"
 
 type Props = {
   open: (value: null) => void;
@@ -22,10 +23,7 @@ export default function SelectMenu({ open, foods, food }: Props) {
 
   const hasAddons = foodAddonsIDS.length > 0;
   const hasVersion = foodVersions.length > 0;
-
   const foodAddons = loadAddons(hasAddons, foodAddonsIDS, foodVersions, foods);
-
-
 
  
 
@@ -39,14 +37,7 @@ export default function SelectMenu({ open, foods, food }: Props) {
 
   const priceTotal = prices.reduce((total, value) => total + value, 0);
 
-  const handleSelectOption = (groupIndex: number, optionIndex: number, price: number) => {
-    setOptionsSelect((prev) => ({ ...prev, [groupIndex]: optionIndex }));
-    setPrices((prev) => {
-      const clone = [...prev];
-      clone[groupIndex] = price;
-      return clone;
-    });
-  };
+
 
   const orderFinish = Object.entries(optionsSelect).reduce((acc, [key, value]) => {
     const index = Number(key);
@@ -62,6 +53,15 @@ export default function SelectMenu({ open, foods, food }: Props) {
 
   const handleOrderFinish = () => {
 
+  };
+
+  const handleSelectOption = (groupIndex: number, optionIndex: number, price: number) => {
+    setOptionsSelect((prev) => ({ ...prev, [groupIndex]: optionIndex }));
+    setPrices((prev) => {
+      const clone = [...prev];
+      clone[groupIndex] = price;
+      return clone;
+    });
   };
 
 
@@ -108,81 +108,7 @@ export default function SelectMenu({ open, foods, food }: Props) {
           {/* Opções (versões / addons) */}
           <section className="min-h-0 overflow-y-auto rounded-xl border border-zinc-800 bg-zinc-900/70 p-3">
             {hasVersion || hasAddons ? (
-              <>
-                <div className="mb-2 flex items-center justify-between gap-2">
-                  <p className="text-xs md:text-sm font-medium text-zinc-200 uppercase tracking-wide">
-                    {optionsNumber === 0
-                      ? "Versão"
-                      : foodAddons[optionsNumber][0].name_categorie}
-                  </p>
-                  <p className="text-[15px] text-zinc-500">
-                    Passo {optionsNumber + 1} de {pagsMax + 1}
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  {foodAddons[optionsNumber].map((option, indice) => {
-                    const isSelected = optionsSelect[optionsNumber] === indice;
-                    const optionImg = optionsNumber === 0 ? null : option.img;
-
-                    return (
-                      <button
-                        key={option.id}
-                        type="button"
-                        onClick={() => handleSelectOption(optionsNumber, indice, option.price)}
-                        className={[
-                          "group flex h-full flex-col justify-between rounded-xl border px-3 py-2 text-left text-xs md:text-sm transition",
-                          "shadow-sm hover:shadow-md",
-                          isSelected
-                            ? "border-emerald-500 bg-emerald-500/10"
-                            : "border-zinc-800 bg-zinc-900 hover:border-zinc-700",
-                        ].join(" ")}
-                      >
-                        <div className="flex items-center gap-2">
-                          {/* Imagem só para addons */}
-                          {optionImg && optionsNumber !== 0 && (
-                            <div className="h-12 w-12 rounded-lg overflow-hidden bg-zinc-800 shrink-0 flex items-center justify-center">
-                              <div
-                                className="h-full w-full bg-cover bg-center"
-                                style={{ backgroundImage: `url("${supabaseStorageURL(optionImg)}")` }}
-                              />
-                            </div>
-                          )}
-
-                          <div className="flex-1 flex items-center justify-between gap-2">
-                            <div className="flex flex-col justify-center">
-                              <p className="font-small text-zinc-50 line-clamp-2">
-                                {option.name}
-                              </p>
-                              <p className="text-[14px] font-bold text-dinheiro-6 mt-0.5">
-                                {option.price === 0 ? "Gratis" : moneyFormatBRL(option.price)}
-                              </p>
-                            </div>
-
-                            <div
-                              className={[
-                                "flex h-5 w-5 items-center justify-center rounded-full border transition",
-                                isSelected
-                                  ? "border-emerald-500 bg-emerald-500/20"
-                                  : "border-zinc-700 bg-zinc-900",
-                              ].join(" ")}
-                            >
-                              <span
-                                className={[
-                                  "h-2.5 w-2.5 rounded-full transition",
-                                  isSelected
-                                    ? "bg-emerald-400"
-                                    : "bg-zinc-600/60 group-hover:bg-zinc-500",
-                                ].join(" ")}
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      </button>
-                    );
-                  })}
-                </div>
-              </>
+              <AddonsElement handleSelectOption={handleSelectOption} optionsNumber={optionsNumber} foodAddons={foodAddons} pagsMax={pagsMax} optionsSelect={optionsSelect } />
             ) : (
               <p className="text-xs md:text-sm text-zinc-400 text-center">
                 Esse item não possui versões ou complementos.
@@ -202,35 +128,7 @@ export default function SelectMenu({ open, foods, food }: Props) {
             </div>
 
             <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() => setOptionsNumber(optionsNumber - 1)}
-                className={`${buttonClasses} px-3 py-1 text-xs md:text-sm`}
-                disabled={pagsMin === optionsNumber}
-              >
-                Voltar
-              </button>
-              {pagsMax !== optionsNumber ? (
-                <button
-                  type="button"
-                  onClick={() => setOptionsNumber(optionsNumber + 1)}
-                  className={`${buttonClasses} px-3 py-1 text-xs md:text-sm`}
-                  disabled={!(optionsNumber in optionsSelect)}
-                >
-                  Próximo
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => handleOrderFinish()}
-                  className={`${buttonClasses} px-3 py-1 text-xs md:text-sm`}
-                  disabled={!(optionsNumber in optionsSelect)}
-                >
-                  Finalizar
-                </button>
-              )}
-
-
+              <ButtonsElement setOptionsNumber={setOptionsNumber} optionsNumber={optionsNumber} pagsMin={pagsMin} pagsMax={pagsMax} optionsSelect={optionsSelect } />
             </div>
           </footer>
         </div>
