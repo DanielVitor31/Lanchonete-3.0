@@ -62,3 +62,20 @@ export function pages({min, max, current} :PagesTypeFunction) {
         "isOnLast":   pagIsOnLast
     }
 }
+
+
+export function orderFinishOBJ(hasAddons: boolean, hasVersion: boolean, foodVersions: FoodVersion[], optionsSelect: { [key: number]: number }, food: FoodWithVersionsMap, foodAddons: Option[][]) {
+    const orderFinish = Object.entries(optionsSelect).reduce((acc, [key, value]) => {
+    const index = Number(key);
+
+    if (index === 0) {
+      acc.push(hasVersion ? foodVersions[value] : food);
+    } else if (hasAddons) {
+      acc.push(foodAddons[index][value]);
+    }
+
+    return acc;
+  }, [] as any);
+
+  return orderFinish
+}

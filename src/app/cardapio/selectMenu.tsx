@@ -4,7 +4,7 @@ import { supabaseStorageURL, moneyFormatBRL } from "@/ultils/ultils";
 import type { FoodsGrouped, FoodWithVersionsMap } from "@/types/type";
 import { useState } from "react";
 import { X } from "lucide-react";
-import { loadAddons,  pages} from "./functions"
+import { loadAddons, pages, orderFinishOBJ } from "./functions"
 import AddonsElement from "./addons"
 import ButtonsElement from "./buttons"
 
@@ -31,8 +31,9 @@ export default function SelectMenu({ open, foods, food }: Props) {
 
   const initialPrice = hasVersion ? foodVersions[0].price : food.price;
   const pagsMin = hasVersion ? 0 : 1;
+  const pagsMax = hasVersion || hasAddons ? foodAddons.length - 1 : 2;
   const [pageCurrent, setPageCurrent] = useState<number>(pagsMin);
-  const page = pages({min: pagsMin, max: foodAddons.length - 1, current: pageCurrent})
+  const page = pages({ min: pagsMin, max: pagsMax, current: pageCurrent })
 
   const [prices, setPrices] = useState<number[]>([initialPrice]);
   const [optionsSelect, setOptionsSelect] = useState<{ [key: number]: number }>({ 0: 0 });
@@ -40,21 +41,9 @@ export default function SelectMenu({ open, foods, food }: Props) {
   const priceTotal = prices.reduce((total, value) => total + value, 0);
 
 
-
-  const orderFinish = Object.entries(optionsSelect).reduce((acc, [key, value]) => {
-    const index = Number(key);
-
-    if (index === 0) {
-      acc.push(hasVersion ? foodVersions[value] : food);
-    } else if (hasAddons) {
-      acc.push(foodAddons[index][value]);
-    }
-
-    return acc;
-  }, [] as any);
-
   const handleOrderFinish = () => {
-
+    const orderFinish = orderFinishOBJ(hasAddons, hasVersion, foodVersions, optionsSelect, food, foodAddons)
+    console.log(orderFinish)
   };
 
   const handleSelectOption = (groupIndex: number, optionIndex: number, price: number) => {
@@ -108,17 +97,22 @@ export default function SelectMenu({ open, foods, food }: Props) {
 
           {/* Opções (versões / addons) */}
           <section className="min-h-0 overflow-y-auto rounded-xl border border-zinc-800 bg-zinc-900/70 p-3">
-            {hasVersion || hasAddons ? (
-              <>
-                {!page.isOnLast && (
-                  <AddonsElement handleSelectOption={handleSelectOption} foodAddons={foodAddons} page={page} optionsSelect={optionsSelect} />
-                )}
-              </>
-            ) : (
-              <p className="text-xs md:text-sm text-zinc-400 text-center">
-                Esse item não possui versões ou complementos.
-              </p>
-            )}
+            {!page.isOnLast ?
+              (
+                <>
+                  {hasVersion || hasAddons ? (
+                    <AddonsElement handleSelectOption={handleSelectOption} foodAddons={foodAddons} page={page} optionsSelect={optionsSelect} />
+                  ) : (
+                    <p className="text-xs md:text-sm text-zinc-400 text-center">
+                      Esse item não possui versões ou complementos.
+                    </p>
+                  )}
+                </>
+              ) : (
+                <p></p>
+              )
+            }
+
           </section>
 
           {/* Footer */}
@@ -133,7 +127,7 @@ export default function SelectMenu({ open, foods, food }: Props) {
             </div>
 
             <div className="flex items-center gap-2">
-              <ButtonsElement setPageCurrent={setPageCurrent} page={page} optionsSelect={optionsSelect} />
+              <ButtonsElement setPageCurrent={setPageCurrent} handleOrderFinish={handleOrderFinish} page={page} optionsSelect={optionsSelect} />
             </div>
           </footer>
         </div>

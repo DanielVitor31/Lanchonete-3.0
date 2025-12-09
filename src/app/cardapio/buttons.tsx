@@ -8,11 +8,12 @@ import type { Option, PagesType } from "./functions";
 
 type Props = {
     setPageCurrent: (valor: number) => void;
+    handleOrderFinish: () => void;
     page: PagesType;
     optionsSelect: { [key: number]: number };
 }
 
-export default function ButtonsElement({ setPageCurrent, page, optionsSelect }: Props) {
+export default function ButtonsElement({ setPageCurrent, handleOrderFinish, page, optionsSelect }: Props) {
 
 
 
@@ -38,7 +39,7 @@ export default function ButtonsElement({ setPageCurrent, page, optionsSelect }: 
             ) : (
                 <button
                     type="button"
-                    // onClick={() => handleOrderFinish()}
+                    onClick={() => handleOrderFinish()}
                     className={`${buttonClasses} px-3 py-1 text-xs md:text-sm`}
                 >
                     Finalizar
