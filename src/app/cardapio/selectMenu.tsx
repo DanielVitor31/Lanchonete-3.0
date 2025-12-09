@@ -25,15 +25,15 @@ export default function SelectMenu({ open, foods, food }: Props) {
 
   const hasAddons = foodAddonsIDS.length > 0;
   const hasVersion = foodVersions.length > 0;
+  const foodSimple = !hasVersion && !hasAddons
   const foodAddons = loadAddons(hasAddons, foodAddonsIDS, foodVersions, foods);
 
 
 
   const initialPrice = hasVersion ? foodVersions[0].price : food.price;
   const pagsMin = hasVersion ? 0 : 1;
-  const pagsMax = hasVersion || hasAddons ? foodAddons.length - 1 : 2;
   const [pageCurrent, setPageCurrent] = useState<number>(pagsMin);
-  const page = pages({ min: pagsMin, max: pagsMax, current: pageCurrent })
+  const page = pages({ min: pagsMin, max: foodAddons.length - 1, current: pageCurrent })
 
   const [prices, setPrices] = useState<number[]>([initialPrice]);
   const [optionsSelect, setOptionsSelect] = useState<{ [key: number]: number }>({ 0: 0 });
@@ -66,7 +66,7 @@ export default function SelectMenu({ open, foods, food }: Props) {
               <h2 className="text-base md:text-lg font-semibold text-zinc-50 leading-tight">
                 {food.name}
               </h2>
-              {(hasVersion || hasAddons) && (
+              {(!foodSimple) && (
                 <span className="inline-flex items-center rounded-full bg-zinc-900 px-2 py-0.5 text-[10px] uppercase tracking-wide text-zinc-400 border border-zinc-800">
                   Personalize seu pedido
                 </span>
@@ -83,12 +83,13 @@ export default function SelectMenu({ open, foods, food }: Props) {
           </header>
 
           {/* Imagem principal */}
-          <div className="relative w-full overflow-hidden rounded-xl bg-zinc-900 border border-zinc-800">
+          <div className="w-60 h-60 flex items-center justify-center mx-auto">
             <div
-              className="h-40 md:h-48 w-full bg-cover bg-center"
+              className="w-full h-full bg-center bg-contain bg-no-repeat"
               style={{ backgroundImage: `url("${supabaseStorageURL(food.img!)}")` }}
             />
           </div>
+
 
           {/* Descrição */}
           <p className="w-full text-xs md:text-sm text-zinc-300 leading-snug line-clamp-3 bg-zinc-900/40 rounded-xl px-3 py-2 border border-zinc-800/60">
@@ -99,17 +100,17 @@ export default function SelectMenu({ open, foods, food }: Props) {
           <section className="min-h-0 overflow-y-auto rounded-xl border border-zinc-800 bg-zinc-900/70 p-3">
             {!page.isOnLast ?
               (
+                <AddonsElement handleSelectOption={handleSelectOption} foodAddons={foodAddons} page={page} optionsSelect={optionsSelect} />
+              ) : (
                 <>
-                  {hasVersion || hasAddons ? (
-                    <AddonsElement handleSelectOption={handleSelectOption} foodAddons={foodAddons} page={page} optionsSelect={optionsSelect} />
-                  ) : (
+                  {foodSimple ? (
                     <p className="text-xs md:text-sm text-zinc-400 text-center">
                       Esse item não possui versões ou complementos.
                     </p>
+                  ) : (
+                    <p>batata</p>
                   )}
                 </>
-              ) : (
-                <p></p>
               )
             }
 

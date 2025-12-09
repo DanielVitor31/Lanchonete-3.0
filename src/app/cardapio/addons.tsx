@@ -23,7 +23,7 @@ export default function AddonsElement({ handleSelectOption, foodAddons, page, op
         <p className="text-xs md:text-sm font-medium text-zinc-200 uppercase tracking-wide">
           {page.current === 0
             ? "Versão"
-            : foodAddons[page.current][0].name_categorie}
+            : foodAddons[page.current][1].name_categorie}
         </p>
         <p className="text-[15px] text-zinc-500">
           Passo {page.current + 1} de {page.max + 1}
