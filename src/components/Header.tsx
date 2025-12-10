@@ -40,7 +40,7 @@ export default function Header({ colorsDB }: Props) {
             bg-cover bg-center
           "
           style={{
-            backgroundImage: `url("${supabaseStorageURL("logos", "logo")}")`,
+            backgroundImage: `url("${supabaseStorageURL("logos/logo")}")`,
           }}
         />
       </Link>
@@ -83,7 +83,7 @@ export default function Header({ colorsDB }: Props) {
                   absolute left-1/2 -bottom-1
                   h-[3px] rounded-full
                   -translate-x-1/2
-                  bg-gradient-to-r from-white/0 via-white to-white/0
+                  bg-linear-to-r from-white/0 via-white to-white/0
                   transition-all duration-300 ease-out
                   ${
                     isActive

@@ -1,16 +1,12 @@
-"use client";
+"use server"
 
-import { Typography } from "@mui/material";
+import { getFoodsFull } from "@/app/actions/getFoodsFull";
+import { getFoodsCategories } from "@/app/actions/getFoodsCategories";
+import FoodListClient from "./foodMenu";
 
-export default function CardapioPage() {
-  return (
-    <>
-      <Typography variant="h4" fontWeight={700} mb={2}>
-        Cardápio
-      </Typography>
-      <Typography variant="body1" color="text.secondary">
-        Aqui depois você lista os lanches, combos, bebidas, etc.
-      </Typography>
-    </>
-  );
+export default async function CardapioPage() {
+  const foods = await getFoodsFull(); 
+  const foods_categories = await getFoodsCategories(); 
+
+  return <FoodListClient foods={foods} foods_categories_obj={foods_categories} />;
 }

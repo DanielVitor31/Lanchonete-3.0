@@ -5,6 +5,7 @@
 @theme {
   --color-base-tematica-1: var(--base-tematica);
   --color-tematica-2: var(--tematica);
+  --color-dinheiro-6: var(--dinheiro);
 }
 
 @keyframes slideDown {
