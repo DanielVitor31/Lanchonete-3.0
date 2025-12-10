@@ -32,7 +32,9 @@ FROM
               c.name,
               'name',
               (
-                ((f.name) :: text || ' - ' :: text) || (fv.name) :: text
+                (
+                  ((f.name) :: text || ' (' :: text) || (fv.name) :: text
+                ) || ')' :: text
               ),
               'description',
               fv.description,

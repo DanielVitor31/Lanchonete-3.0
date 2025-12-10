@@ -4,7 +4,7 @@ import { supabaseStorageURL, moneyFormatBRL } from "@/ultils/ultils";
 import type { FoodsGrouped, FoodWithVersionsMap } from "@/types/type";
 import { useState } from "react";
 import { X } from "lucide-react";
-import { loadAddons, pages, orderFinishOBJ } from "./functions"
+import { loadAddons, pages, orderFinishOBJ, orderString } from "./functions"
 import AddonsElement from "./addons"
 import ButtonsElement from "./buttons"
 
@@ -43,7 +43,7 @@ export default function SelectMenu({ open, foods, food }: Props) {
 
   const handleOrderFinish = () => {
     const orderFinish = orderFinishOBJ(hasAddons, hasVersion, foodVersions, optionsSelect, food, foodAddons)
-    console.log(orderFinish)
+    console.log(orderString(orderFinish, hasVersion))
   };
 
   const handleSelectOption = (groupIndex: number, optionIndex: number, price: number) => {

@@ -4,7 +4,7 @@ import { OPTION_NULL } from "@/constants";
 
 export type Option = FoodWithVersionsMap | FoodVersion;
 
-export function loadAddons(hasAddons: boolean, foodAddonsIDS: FoodAddonCategory[], foodVersions: FoodVersion[], foods: FoodsGrouped ) {
+export function loadAddons(hasAddons: boolean, foodAddonsIDS: FoodAddonCategory[], foodVersions: FoodVersion[], foods: FoodsGrouped) {
     const foodAddons: Option[][] = [foodVersions];
 
 
@@ -36,46 +36,73 @@ export function loadAddons(hasAddons: boolean, foodAddonsIDS: FoodAddonCategory[
 }
 
 type PagesTypeFunction = {
-    min:        number;
-    max:        number;
-    current:    number;
+    min: number;
+    max: number;
+    current: number;
 }
 
 export type PagesType = {
-    min:        number;
-    max:        number;
-    last:       number;
-    current:    number;
-    isOnLast:   boolean;
+    min: number;
+    max: number;
+    last: number;
+    current: number;
+    isOnLast: boolean;
 }
 
-export function pages({min, max, current} :PagesTypeFunction) {
+export function pages({ min, max, current }: PagesTypeFunction) {
 
     const pagLast = max + 1
     const pagIsOnLast = current === pagLast
 
-    return { 
-        "min":        min,
-        "max":        max,
-        "last":       pagLast,
-        "current":    current,
-        "isOnLast":   pagIsOnLast
+    return {
+        "min": min,
+        "max": max,
+        "last": pagLast,
+        "current": current,
+        "isOnLast": pagIsOnLast
     }
 }
 
 
 export function orderFinishOBJ(hasAddons: boolean, hasVersion: boolean, foodVersions: FoodVersion[], optionsSelect: { [key: number]: number }, food: FoodWithVersionsMap, foodAddons: Option[][]) {
     const orderFinish = Object.entries(optionsSelect).reduce((acc, [key, value]) => {
-    const index = Number(key);
+        const index = Number(key);
 
-    if (index === 0) {
-      acc.push(hasVersion ? foodVersions[value] : food);
-    } else if (hasAddons) {
-      acc.push(foodAddons[index][value]);
-    }
+        if (index === 0) {
+            acc.push(hasVersion ? foodVersions[value] : food);
+        } else if (hasAddons) {
+            acc.push(foodAddons[index][value]);
+        }
 
-    return acc;
-  }, [] as any);
+        return acc;
+    }, [] as any);
 
-  return orderFinish
+    return orderFinish
 }
+
+
+export function orderString(orderFinish: any[], hasVersion: boolean) {
+  return orderFinish
+    .map((item, i) => {
+      let name = item.name;
+      let version: string | null = null;
+
+      if (hasVersion) {
+        version = name.match(/\(([^)]+)\)/)?.[1] ?? null;
+        name = name.split("(")[0].trim();
+      }
+
+      const title = i === 0 ? name : `Complemento ${i}: \n${name}`;
+      const versionLine = version ? `Versão ${version}` : "";
+
+      return [
+        title,
+        versionLine,
+        `Valor: ${item.price}`,
+        "\n" 
+      ].filter(Boolean).join("\n");
+    })
+    .join("")
+    .trim();
+}
+
