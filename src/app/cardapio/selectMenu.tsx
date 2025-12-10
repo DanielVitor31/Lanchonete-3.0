@@ -7,6 +7,7 @@ import { X } from "lucide-react";
 import { loadAddons, pages, orderFinishOBJ, orderString } from "./functions"
 import AddonsElement from "./addons"
 import ButtonsElement from "./buttons"
+import Check from "./check"
 
 
 
@@ -39,10 +40,10 @@ export default function SelectMenu({ open, foods, food }: Props) {
   const [optionsSelect, setOptionsSelect] = useState<{ [key: number]: number }>({ 0: 0 });
 
   const priceTotal = prices.reduce((total, value) => total + value, 0);
+  const orderFinish = orderFinishOBJ(hasAddons, hasVersion, foodVersions, optionsSelect, food, foodAddons)
 
 
   const handleOrderFinish = () => {
-    const orderFinish = orderFinishOBJ(hasAddons, hasVersion, foodVersions, optionsSelect, food, foodAddons)
     console.log(orderString(orderFinish, hasVersion))
   };
 
@@ -108,7 +109,7 @@ export default function SelectMenu({ open, foods, food }: Props) {
                       Esse item não possui versões ou complementos.
                     </p>
                   ) : (
-                    <p>batata</p>
+                    <Check text={orderString(orderFinish, hasVersion)} />
                   )}
                 </>
               )
@@ -120,7 +121,7 @@ export default function SelectMenu({ open, foods, food }: Props) {
           <footer className="flex items-center justify-between gap-3">
             <div className="flex flex-col">
               <span className="text-[11px] text-zinc-400 uppercase tracking-wide">
-                Total
+                Valor Total
               </span>
               <span className="text-base md:text-lg font-bold text-dinheiro-6">
                 {moneyFormatBRL(priceTotal)}

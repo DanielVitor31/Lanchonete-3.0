@@ -82,8 +82,7 @@ export function orderFinishOBJ(hasAddons: boolean, hasVersion: boolean, foodVers
 
 
 export function orderString(orderFinish: any[], hasVersion: boolean) {
-  return orderFinish
-    .map((item, i) => {
+  const str = orderFinish.map((item, i) => {
       let name = item.name;
       let version: string | null = null;
 
@@ -104,5 +103,7 @@ export function orderString(orderFinish: any[], hasVersion: boolean) {
     })
     .join("")
     .trim();
+
+    return str
 }
 
