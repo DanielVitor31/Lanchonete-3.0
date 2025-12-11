@@ -24,7 +24,7 @@ LEFT JOIN LATERAL (
                 'id_food',        fv.xid_food,
                 'id_categorie',   f.xid_categorie,
                 'name_categorie', c.name,
-                'name',           f.name || ' - ' || fv.name,
+                'name',           f.name || ' (' || fv.name || ')',
                 'description',    fv.description,
                 'img',            f.img,
                 'price',          fv.price,
