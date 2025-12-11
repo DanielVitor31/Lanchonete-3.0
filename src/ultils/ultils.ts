@@ -47,3 +47,21 @@ export function applyCssVars(items: CssVarItem[]) {
     root.style.setProperty(name, value);
   });
 }
+
+type ArrayToKeyedObjectParams<T, K extends keyof T> = {
+  key: K
+  obj: T[]
+}
+
+export function arrayObjToObjKey<T, K extends keyof T>({key, obj}: ArrayToKeyedObjectParams<T, K>): Record<string, T> {
+  return obj.reduce((acc, item) => {
+
+    const index = String(item[key])
+    acc[index] = item
+    
+    return acc
+  }, {} as Record<string, T>)
+}
+
+
+

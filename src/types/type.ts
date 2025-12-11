@@ -1,5 +1,11 @@
 export type ColorsDB = {
-  [key: string]: string;
+  name: string;
+  value: string;
+};
+
+export type GeneralSettings = {
+  id_settings: string;
+  info: string;
 };
 
 

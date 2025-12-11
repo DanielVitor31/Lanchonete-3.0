@@ -23,6 +23,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       throw new Error("DB_EMPTY");
     }
 
+    const settings  = await prisma.settings.findMany();
+
 
 
     return (
@@ -31,6 +33,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <Suspense fallback={<Loading />}>
             <RootLayoutClient
               colorsDB={colorsDB}
+              settings={settings}
             >
               {children}
             </RootLayoutClient>

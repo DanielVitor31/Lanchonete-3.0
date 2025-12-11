@@ -9,7 +9,7 @@ import { usePathname } from "next/navigation";
 import type { ColorsDB } from "@/types/type";
 
 type Props = {
-  colorsDB: ColorsDB;
+  colorsDB: Record<string, ColorsDB>;
 };
 
 export default function Header({ colorsDB }: Props) {
@@ -67,10 +67,9 @@ export default function Header({ colorsDB }: Props) {
                 text-sm md:text-base lg:text-lg
                 font-medium tracking-wide
                 select-none group
-                ${
-                  isActive
-                    ? "text-white cursor-default pointer-events-none"
-                    : "text-zinc-300 hover:text-white"
+                ${isActive
+                  ? "text-white cursor-default pointer-events-none"
+                  : "text-zinc-300 hover:text-white"
                 }
               `}
             >
@@ -85,10 +84,9 @@ export default function Header({ colorsDB }: Props) {
                   -translate-x-1/2
                   bg-linear-to-r from-white/0 via-white to-white/0
                   transition-all duration-300 ease-out
-                  ${
-                    isActive
-                      ? "w-16 opacity-100"
-                      : "w-0 opacity-0 group-hover:w-20 group-hover:opacity-100"
+                  ${isActive
+                    ? "w-16 opacity-100"
+                    : "w-0 opacity-0 group-hover:w-20 group-hover:opacity-100"
                   }
                 `}
               />
@@ -139,10 +137,9 @@ export default function Header({ colorsDB }: Props) {
                   text-base font-medium
                   select-none
                   transition-colors duration-200
-                  ${
-                    isActive
-                      ? "text-white bg-white/10 backdrop-blur-sm cursor-default pointer-events-none"
-                      : "text-zinc-300 hover:bg-white/5 hover:text-white"
+                  ${isActive
+                    ? "text-white bg-white/10 backdrop-blur-sm cursor-default pointer-events-none"
+                    : "text-zinc-300 hover:bg-white/5 hover:text-white"
                   }
                 `}
               >

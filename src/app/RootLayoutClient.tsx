@@ -1,49 +1,50 @@
 "use client";
 
-import { ReactNode, useEffect, useMemo, useState, useRef } from "react";
-import { Box } from "@mui/material";
+import type { ReactNode } from "react";
+import { useEffect, useMemo } from "react";
 import Header from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { applyCssVars } from "@/ultils/ultils";
-import { culoriCalc } from "@/ultils/colors";
+import { applyCssVars, arrayObjToObjKey } from "@/ultils/ultils";
+import { AppSettingsProvider } from "@/context/AppSettingsContext";
+import type { ColorsDB, GeneralSettings } from "@/types/type"
+
+
 
 type Props = {
   children: ReactNode;
-  colorsDB: { name: string; value: string }[];
+  colorsDB: ColorsDB[];
+  settings: GeneralSettings[];
 };
 
-export default function RootLayoutClient({ children, colorsDB, }: Props) {
-
+export default function RootLayoutClient({ children, colorsDB, settings }: Props) {
   useEffect(() => {
     applyCssVars(colorsDB);
   }, [colorsDB]);
 
+  const colorsDB_obj = arrayObjToObjKey({ key: "name", obj: colorsDB })
 
-
-
-  const colorsDB_obj = Object.fromEntries(
-    colorsDB.map(item => [item.name, item.value])
+  const appSettingsValue = useMemo(() => ({
+    colorsDB_obj,
+    settings,
+  }),
+    [colorsDB, settings]
   );
-
 
   return (
-    <div className="w-screen h-screen grid grid-rows-[0.6fr_6fr_0.7fr]">
-      {/* Item 1 */}
-      <div className="h-full flex items-center">
-        <Header colorsDB={colorsDB_obj} />
-      </div>
+    <AppSettingsProvider value={appSettingsValue}>
+      <div className="min-h-screen flex flex-col">
+        <header className="shrink-0 flex items-center">
+          <Header colorsDB={colorsDB_obj} />
+        </header>
 
-      {/* Item 2 */}
-      <div className="bg-green-500 overflow-hidden">
-        <div className="w-full">{children}</div>
-      </div>
+        <main className="flex-1 w-full overflow-y-auto">
+          {children}
+        </main>
 
-      {/* Item 3 */}
-      <div className="bg-blue-500 overflow-hidden">
-        <div className="w-full">Conteúdo gigante também</div>
+        <footer className="shrink-0">
+          <Footer />
+        </footer>
       </div>
-    </div>
+    </AppSettingsProvider>
   );
-
-
 }

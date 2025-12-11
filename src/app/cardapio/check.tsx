@@ -1,7 +1,7 @@
 "use client";
 
 import { supabaseStorageURL, moneyFormatBRL } from "@/ultils/ultils";
-
+import { useAppSettings } from "@/context/AppSettingsContext";
 
 type OrderSummaryCardProps = {
   text: string;
@@ -9,6 +9,8 @@ type OrderSummaryCardProps = {
 
 export default function Check({ text }: OrderSummaryCardProps) {
   const blocks = text.trim().split(/\n\s*\n/);
+  const { colorsDB_obj: colorDB, settings } = useAppSettings();
+
 
   return (
     <div
