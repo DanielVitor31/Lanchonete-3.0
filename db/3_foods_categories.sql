@@ -12,4 +12,5 @@ INSERT INTO diner.foods_categories (id_foods_categories, name) VALUES
 ('afb1a4a3-00f1-454c-9aac-8b091e269a74', 'Bebidas'),
 ('18a6ad4f-9dca-4353-bc2e-dd43c0e31916', 'Sobremesas'),
 ('884f9d6b-8fd8-4ae0-bb25-c16f26186b9f', 'Pizzas'),
-('66c4c918-ac03-49ef-aba5-84a05ee16799', 'Hot Dog');
+('66c4c918-ac03-49ef-aba5-84a05ee16799', 'Hot Dog'),
+('fb48376a-2748-4223-92eb-40cfae91d069', 'Molhos');

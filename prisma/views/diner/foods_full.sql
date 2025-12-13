@@ -64,9 +64,9 @@ FROM
         jsonb_agg(
           jsonb_build_object(
             'category_id',
-            cat.id_foods_categories,
+            catlist.id_foods_categories,
             'category_name',
-            cat.name,
+            catlist.name,
             'items',
             (
               SELECT
@@ -74,7 +74,7 @@ FROM
                   jsonb_agg(
                     jsonb_build_object(
                       'id',
-                      fa2.id_foods_addons,
+                      fai2.id_foods_addons,
                       'id_food',
                       fai2.xid_food,
                       'id_food_version',
@@ -83,44 +83,44 @@ FROM
                       fai2.free
                     )
                     ORDER BY
-                      fc.name
+                      fc2.name
                   ),
                   '[]' :: jsonb
                 ) AS "coalesce"
               FROM
                 (
                   (
-                    (
-                      diner.foods_addons fa2
-                      JOIN diner.foods_addons_items fai2 ON ((fai2.xid_foods_addons = fa2.id_foods_addons))
-                    )
-                    LEFT JOIN diner.foods fc ON ((fc.id_food = fai2.xid_food))
+                    diner.foods_addons fai2
+                    LEFT JOIN diner.foods fc2 ON ((fc2.id_food = fai2.xid_food))
                   )
-                  LEFT JOIN diner.foods_version fvv ON ((fvv.id_food_version = fai2.xid_food_version))
+                  LEFT JOIN diner.foods_version fvv2 ON ((fvv2.id_food_version = fai2.xid_food_version))
                 )
               WHERE
                 (
-                  (fa2.xid_food = f.id_food)
-                  AND (
-                    fa2.xid_foods_categories = cat.id_foods_categories
-                  )
+                  (fai2.xid_food_base = f.id_food)
+                  AND (fc2.xid_categorie = catlist.id_foods_categories)
                 )
             )
           )
           ORDER BY
-            cat.name
+            catlist.name
         ) AS addons
       FROM
         (
-          diner.foods_addons fa
-          JOIN diner.foods_categories cat ON (
+          SELECT
+            DISTINCT cat.id_foods_categories,
+            cat.name
+          FROM
             (
-              cat.id_foods_categories = fa.xid_foods_categories
+              (
+                diner.foods_addons fai
+                JOIN diner.foods fc ON ((fc.id_food = fai.xid_food))
+              )
+              JOIN diner.foods_categories cat ON ((cat.id_foods_categories = fc.xid_categorie))
             )
-          )
-        )
-      WHERE
-        (fa.xid_food = f.id_food)
+          WHERE
+            (fai.xid_food_base = f.id_food)
+        ) catlist
     ) a ON (TRUE)
   )
 ORDER BY

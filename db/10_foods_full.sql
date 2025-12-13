@@ -38,39 +38,45 @@ LEFT JOIN LATERAL (
     WHERE fv.xid_food = f.id_food
 ) v ON TRUE
 
--- addons por categoria (ordenados)
+-- addons por categoria (ordenados) [AGORA USANDO foods_addons_items2]
 LEFT JOIN LATERAL (
     SELECT
         jsonb_agg(
             jsonb_build_object(
-                'category_id',   cat.id_foods_categories,
-                'category_name', cat.name,
+                'category_id',   catlist.id_foods_categories,
+                'category_name', catlist.name,
                 'items',
                     (
                         SELECT COALESCE(
                             jsonb_agg(
                                 jsonb_build_object(
-                                    'id',              fa2.id_foods_addons,
+                                    'id',              fai2.id_foods_addons_items,
                                     'id_food',         fai2.xid_food,
                                     'id_food_version', fai2.xid_food_version,
                                     'free',            fai2.free
                                 )
-                                ORDER BY fc.name NULLS LAST
+                                ORDER BY fc2.name NULLS LAST
                             ),
                             '[]'::jsonb
                         )
-                        FROM diner.foods_addons fa2
-                        JOIN diner.foods_addons_items fai2 ON fai2.xid_foods_addons = fa2.id_foods_addons
-                        LEFT JOIN diner.foods fc ON fc.id_food = fai2.xid_food
-                        LEFT JOIN diner.foods_version fvv ON fvv.id_food_version = fai2.xid_food_version
-                        WHERE fa2.xid_food = f.id_food AND fa2.xid_foods_categories = cat.id_foods_categories
+                        FROM diner.foods_addons_items2 fai2
+                        LEFT JOIN diner.foods fc2 ON fc2.id_food = fai2.xid_food
+                        LEFT JOIN diner.foods_version fvv2 ON fvv2.id_food_version = fai2.xid_food_version
+                        WHERE fai2.xid_food_base = f.id_food
+                          AND fc2.xid_categorie = catlist.id_foods_categories
                     )
             )
-            ORDER BY cat.name
+            ORDER BY catlist.name
         ) AS addons
-    FROM diner.foods_addons fa
-    JOIN diner.foods_categories cat ON cat.id_foods_categories = fa.xid_foods_categories
-    WHERE fa.xid_food = f.id_food
+    FROM (
+        SELECT DISTINCT
+            cat.id_foods_categories,
+            cat.name
+        FROM diner.foods_addons_items2 fai
+        JOIN diner.foods fc ON fc.id_food = fai.xid_food
+        JOIN diner.foods_categories cat ON cat.id_foods_categories = fc.xid_categorie
+        WHERE fai.xid_food_base = f.id_food
+    ) AS catlist
 ) a ON TRUE
 
 ORDER BY
