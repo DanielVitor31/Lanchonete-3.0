@@ -1,17 +1,16 @@
 "use client";
 
 import { supabaseStorageURL, moneyFormatBRL } from "@/ultils/ultils";
+import { culoriCalc } from "@/ultils/colors";
 import { useState } from "react";
-import type { FoodsFullResult  } from "@/types/type";
+import type { FoodsFullResult } from "@/types/type";
 import SelectMenu from "./selectMenu";
-
+import { useAppSettings } from "@/context/AppSettingsContext";
 
 type Props = {
   foods: FoodsFullResult;
-  foods_categories_obj: {[key: string]: string};
+  foods_categories_obj: { [key: string]: string };
 };
-
-
 
 export default function FoodMenu({ foods, foods_categories_obj }: Props) {
   const foods_categories_obj_reversa = Object.fromEntries(
@@ -20,171 +19,181 @@ export default function FoodMenu({ foods, foods_categories_obj }: Props) {
 
   const foodsGrouped = foods.grouped;
   const foodsCategoriesNames = Object.keys(foods_categories_obj_reversa);
-  const [categoriesActive, setCategoriesActive] = useState<string>(foodsCategoriesNames[0]);
+
+  const [categoriesActive, setCategoriesActive] = useState(
+    foodsCategoriesNames[0]
+  );
+  const [foodIDActive, setFoodIDActive] = useState<string | null>(null);
+
   const foodCategoriesIDActive = foods_categories_obj_reversa[categoriesActive];
   const foodsActiveOBJ = foodsGrouped[foodCategoriesIDActive];
   const foodsActive = Object.values(foodsActiveOBJ);
-  const foodsActiveOrder = foodsActive;
-  const [foodIDActive, setFoodIDActive] = useState<string | null>(null);
 
+  const { colorsDB_obj: colorDB } = useAppSettings();
 
+  const StyleBorder = culoriCalc(
+    colorDB["--food-menu-fundo"].value,
+    [0.1832, 0.0016, 0.21]
+  );
 
-  // console.log("Teste valores1", foodsGrouped)
-  // console.log("Teste valores2", foodsCategoriesNames)
-  // console.log("Teste valores3", active)
-  // console.log("Teste valores4", foodCategoriesIDActive)
-  // console.log("Teste valores5", foodsActiveOBJ)
-  // console.log("Teste valores6", foodsActive)
-  // console.log("Teste valores7", foodsActiveOBJ)
-  //console.log("Teste valores8", foodActive)
-
-    return (
-      <div
+  return (
+    <div className="min-h-screen bg-food-menu-fundo-7 flex flex-col md:flex-row overflow-hidden">
+      {/* MENU */}
+      <aside
         className="
-          min-h-screen
-          bg-zinc-950
-          text-white
-          flex
-          flex-col md:flex-row
-          overflow-hidden
+          w-full md:w-64
+          max-h-[40vh] md:max-h-none
+          shrink-0
+          border-b md:border-b-0 md:border-r
+          text-food-menu-escrita-5
+          flex flex-col
         "
+        style={{
+          background: culoriCalc(
+            colorDB["--food-menu-fundo"].value,
+            [0.0695, 0.0015, 0.07, -0.2]
+          ),
+          borderColor: StyleBorder,
+        }}
       >
-        {/* MENU */}
-        <aside
-          className="
-            w-full md:w-64
-            shrink-0
-            border-b md:border-b-0 md:border-r
-            border-zinc-800
-            bg-zinc-900/70
-            flex
-            flex-col
-            max-h-[40vh] md:max-h-none
-          "
+        <div
+          className="p-4 border-b backdrop-blur sticky top-0 z-10"
+          style={{
+            background: culoriCalc(
+              colorDB["--food-menu-fundo"].value,
+              [0.0395, 0.0015, 0.07, -0.2]
+            ),
+            borderColor: StyleBorder,
+          }}
         >
-          <div
-            className="
-              p-4
-              border-b
-              border-zinc-800
-              bg-zinc-900/80
-              backdrop-blur
-              sticky top-0
-              z-10
-            "
-          >
-            <h1 className="text-lg md:text-xl font-bold">Categorias</h1>
-          </div>
+          <h1 className="text-lg md:text-xl font-bold">Categorias</h1>
+        </div>
 
-          <nav
-            className="
-              p-2
-              flex
-              gap-2
-              overflow-x-auto md:overflow-x-hidden
-              md:flex-col
-            "
-          >
-            {foodsCategoriesNames.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setCategoriesActive(cat)}
-                className={`
-                  whitespace-nowrap
-                  cursor-pointer 
-                  select-none
-                  active:scale-95
-                  transition-all
-                  px-4 py-2
-                  text-left
-                  rounded-lg
-                  text-sm md:text-base
-                  ${
-                    categoriesActive === cat
-                      ? "bg-zinc-800 text-white"
-                      : "text-zinc-300 hover:bg-zinc-800/40"
-                  }
-                `}
-              >
-                {cat}
-              </button>
-            ))}
-          </nav>
-        </aside>
+        <nav className="p-2 flex gap-2 overflow-x-auto md:flex-col md:overflow-x-hidden">
+          {foodsCategoriesNames.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setCategoriesActive(cat)}
+              className="
+                whitespace-nowrap
+                cursor-pointer
+                select-none
+                active:scale-95
+                transition-all
+                px-4 py-2
+                text-left
+                rounded-lg
+                text-sm md:text-base
+              "
+              style={
+                categoriesActive === cat
+                  ? {
+                      backgroundColor: culoriCalc(
+                        colorDB["--food-menu-fundo"].value,
+                        [0.1331, 0.0011, 0.21]
+                      ),
+                      color: colorDB["--food-menu-escrita"].value,
+                    }
+                  : {
+                      color: culoriCalc(
+                        colorDB["--food-menu-escrita"].value,
+                        [-0.1189, 0.0155, 286.29]
+                      ),
+                    }
+              }
+            >
+              {cat}
+            </button>
+          ))}
+        </nav>
+      </aside>
 
-        {/* CONTEÚDO */}
-        <main
-          className="
-            flex-1
-            overflow-y-auto
-            p-4
-          "
-        >
-          <div
-            className="
-              flex
-              flex-wrap
-              gap-4
-              justify-start
-            "
-          >
-            {foodsActiveOrder.map((food) => (
+      {/* CONTEÚDO */}
+      <main className="flex-1 overflow-y-auto p-4">
+        <div className="flex flex-col gap-3 md:flex-row md:flex-wrap md:gap-4">
+          {foodsActive.map((food) => (
+            <div
+              key={food.id}
+              onClick={() => setFoodIDActive(food.id)}
+              className="
+                relative
+                w-full
+                min-h-[104px]
+                bg-food-menu-card-fundo-3
+                text-food-menu-card-escrita-4
+                flex items-center gap-3
+                cursor-pointer select-none
+                active:scale-[0.99]
+                hover:md:scale-95
+                transition-transform duration-150
+                border
+                p-3
+                rounded-xl
+
+                md:w-50
+                md:h-80
+                md:p-4
+                md:grid
+                md:grid-rows-[auto_auto_1fr_auto]
+                md:items-start
+                md:gap-6
+              "
+              style={{ borderColor: StyleBorder }}
+            >
+              {/* IMAGEM */}
               <div
-                key={food.id}
-                onClick={() => setFoodIDActive(food.id)}
                 className="
-                  w-50
-                  h-80
-                  grid grid-rows-[1fr_1fr_1fr_1fr]
-                  items-center
-                  gap-6
-                  cursor-pointer select-none
-                  hover:scale-95
-                  transition-transform duration-150
-                  border border-zinc-800
-                  bg-zinc-900/60
-                  p-4
-                  rounded-xl
-                "
-              >
-                <div
-                  className="
-                    w-24 h-24
-                    md:w-28 md:h-28
-                    bg-zinc-800
-                    bg-cover bg-center
-                    mb-1
-                    mx-auto
-                  "
-                  style={{ backgroundImage: `url("${supabaseStorageURL(food.img!)}")` }}
-                />
+                  w-20 h-20
+                  shrink-0
+                  bg-cover bg-center
+                  rounded-lg
 
-                <p className="w-full text-center text-base md:text-lg font-semibold">
+                  md:w-28 md:h-28
+                  md:mx-auto
+                "
+                style={{
+                  backgroundImage: `url("${supabaseStorageURL(food.img!)}")`,
+                }}
+              />
+
+              {/* TEXTO */}
+              <div className="flex-1 min-w-0 md:block">
+                <p className="text-food-menu-card-escrita-3 text-left text-base font-semibold md:text-center md:text-lg">
                   {food.name}
                 </p>
 
-                  <p
-                    className="
-                      w-full text-center
-                      text-xs md:text-sm
-                      text-zinc-300
-                      line-clamp-2
-                    "
-                  >
-                    {food.description}
-                  </p>
-
-                <p className="w-full text-center text-sm md:text-base font-bold mt-1">
-                  {moneyFormatBRL(food.price)}
+                <p className="mt-1 text-xs text-food-menu-card-escrita-3 line-clamp-2 md:mt-0 md:text-center md:text-sm md:line-clamp-3">
+                  {food.description}
                 </p>
               </div>
-            ))}
-          </div>
-          {!!foodIDActive && <SelectMenu open={setFoodIDActive} foods={foodsGrouped} food={foodsActiveOBJ[foodIDActive]} foods_categories_obj={foods_categories_obj} />}
-          
 
-        </main>
-      </div>
+              {/* PREÇO */}
+              <p
+                className="
+                  absolute bottom-0 right-3
+                  text-sm font-bold
+
+                  md:static
+                  md:text-center
+                  md:text-base
+                "
+                style={{color: culoriCalc( colorDB["--dinheiro"].value, [-0.16, -0.06, 0.06])}}
+              >
+                {moneyFormatBRL(food.price)}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        {!!foodIDActive && (
+          <SelectMenu
+            open={setFoodIDActive}
+            foods={foodsGrouped}
+            food={foodsActiveOBJ[foodIDActive]}
+            foods_categories_obj={foods_categories_obj}
+          />
+        )}
+      </main>
+    </div>
   );
-
 }

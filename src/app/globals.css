@@ -3,10 +3,20 @@
 
 /* nome que deve seguir um padrão "--color-<nome>-<nível>" */
 @theme {
+  /* Cores tematicas */
   --color-base-tematica-1: var(--base-tematica);
   --color-tematica-2: var(--tematica);
+
+  /* Food Menu */
+  --color-food-menu-card-fundo-3: var(--food-menu-card-fundo);
+  --color-food-menu-card-escrita-4: var(--food-menu-card-escrita);
+  --color-food-menu-escrita-5: var(--food-menu-escrita);
+  --color-food-menu-fundo-7: var(--food-menu-fundo);
+  
   --color-dinheiro-6: var(--dinheiro);
 }
+
+
 
 @keyframes slideDown {
   from { opacity: 0; transform: translateY(-10px); }

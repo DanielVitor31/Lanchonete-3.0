@@ -27,23 +27,26 @@ export default function RootLayoutClient({ children, colorsDB, settings }: Props
     colorsDB_obj,
     settings,
   }),
-    [colorsDB, settings]
+    [colorsDB_obj, settings]
   );
 
   return (
     <AppSettingsProvider value={appSettingsValue}>
-      <div className="min-h-screen flex flex-col">
-        <header className="shrink-0 flex items-center">
+      <div className="w-screen h-screen grid grid-rows-[0.6fr_6fr_0.7fr]">
+        {/* Item 1 */}
+        <div className="h-full flex items-center">
           <Header colorsDB={colorsDB_obj} />
-        </header>
+        </div>
 
-        <main className="flex-1 w-full overflow-y-auto">
-          {children}
-        </main>
+        {/* Item 2 */}
+        <div className="bg-green-500 overflow-hidden">
+          <div className="w-full">{children}</div>
+        </div>
 
-        <footer className="shrink-0">
-          <Footer />
-        </footer>
+        {/* Item 3 */}
+        <div className="bg-blue-500 overflow-hidden">
+          <div className="w-full">Conteúdo gigante também</div>
+        </div>
       </div>
     </AppSettingsProvider>
   );
