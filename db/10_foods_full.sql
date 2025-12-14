@@ -1,6 +1,6 @@
 CREATE OR REPLACE VIEW diner.foods_full AS
 SELECT
-    f.id_food        AS id,
+    f.id_food        AS id_food,
     f.name           AS name,
     f.description    AS description,
     f.img            AS img,
@@ -20,7 +20,7 @@ LEFT JOIN LATERAL (
     SELECT
         jsonb_agg(
             jsonb_build_object(
-                'id',             fv.id_food_version,
+                'id_version',     fv.id_food_version,
                 'id_food',        fv.xid_food,
                 'id_categorie',   f.xid_categorie,
                 'name_categorie', c.name,
@@ -38,7 +38,7 @@ LEFT JOIN LATERAL (
     WHERE fv.xid_food = f.id_food
 ) v ON TRUE
 
--- addons por categoria (ordenados) [AGORA USANDO foods_addons_items2]
+-- addons por categoria (ordenados) [AGORA USANDO foods_addons]
 LEFT JOIN LATERAL (
     SELECT
         jsonb_agg(
@@ -50,7 +50,7 @@ LEFT JOIN LATERAL (
                         SELECT COALESCE(
                             jsonb_agg(
                                 jsonb_build_object(
-                                    'id',              fai2.id_foods_addons_items,
+                                    'id',              fai2.id_foods_addon,
                                     'id_food',         fai2.xid_food,
                                     'id_food_version', fai2.xid_food_version,
                                     'free',            fai2.free
@@ -59,11 +59,10 @@ LEFT JOIN LATERAL (
                             ),
                             '[]'::jsonb
                         )
-                        FROM diner.foods_addons_items2 fai2
+                        FROM diner.foods_addons fai2
                         LEFT JOIN diner.foods fc2 ON fc2.id_food = fai2.xid_food
                         LEFT JOIN diner.foods_version fvv2 ON fvv2.id_food_version = fai2.xid_food_version
-                        WHERE fai2.xid_food_base = f.id_food
-                          AND fc2.xid_categorie = catlist.id_foods_categories
+                        WHERE fai2.xid_food_base = f.id_food AND fc2.xid_categorie = catlist.id_foods_categories
                     )
             )
             ORDER BY catlist.name
@@ -72,7 +71,7 @@ LEFT JOIN LATERAL (
         SELECT DISTINCT
             cat.id_foods_categories,
             cat.name
-        FROM diner.foods_addons_items2 fai
+        FROM diner.foods_addons fai
         JOIN diner.foods fc ON fc.id_food = fai.xid_food
         JOIN diner.foods_categories cat ON cat.id_foods_categories = fc.xid_categorie
         WHERE fai.xid_food_base = f.id_food
@@ -82,3 +81,5 @@ LEFT JOIN LATERAL (
 ORDER BY
     f.price,
     f.name;
+
+DROP VIEW diner.foods_full;

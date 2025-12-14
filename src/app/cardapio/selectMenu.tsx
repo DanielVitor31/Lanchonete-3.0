@@ -1,7 +1,7 @@
 "use client";
 
 import { supabaseStorageURL, moneyFormatBRL } from "@/ultils/ultils";
-import type { FoodsGrouped, FoodWithVersionsMap } from "@/types/type";
+import type { FoodsGrouped, FoodFull } from "@/types/typeFood";
 import { useState } from "react";
 import { X } from "lucide-react";
 import { loadAddons, pages, orderFinishOBJ, orderString } from "./functions"
@@ -14,14 +14,13 @@ import Check from "./check"
 type Props = {
   open: (value: null) => void;
   foods: FoodsGrouped;
-  food: FoodWithVersionsMap;
-  foods_categories_obj: { [key: string]: string };
+  food: FoodFull;
 };
 
 
 export default function SelectMenu({ open, foods, food }: Props) {
-  const foodVersions = Object.values(foods[food.id_categorie][food.id].versions);
-  const foodAddonsIDS = foods[food.id_categorie][food.id].addons;
+  const foodVersions = Object.values(foods[food.id_categorie][food.id_food].versions);
+  const foodAddonsIDS = foods[food.id_categorie][food.id_food].addons;
 
 
   const hasAddons = foodAddonsIDS.length > 0;
@@ -45,6 +44,7 @@ export default function SelectMenu({ open, foods, food }: Props) {
 
   const handleOrderFinish = () => {
     console.log(orderString(orderFinish, hasVersion))
+    console.log(orderFinish)
   };
 
   const handleSelectOption = (groupIndex: number, optionIndex: number, price: number) => {

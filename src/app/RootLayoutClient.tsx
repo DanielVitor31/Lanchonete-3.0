@@ -6,7 +6,7 @@ import Header from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { applyCssVars, arrayObjToObjKey } from "@/ultils/ultils";
 import { AppSettingsProvider } from "@/context/AppSettingsContext";
-import type { ColorsDB, GeneralSettings } from "@/types/type"
+import type { ColorsDB, GeneralSettings } from "@/types/types"
 
 
 

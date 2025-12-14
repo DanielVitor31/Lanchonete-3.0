@@ -6,7 +6,7 @@
   ];
 
 export const OPTION_NULL = {
-    "id": "null",
+    "id_food": "null",
     "name": "Não obrigado",
     "description": "null",
     "img": "extras/noOption",
@@ -20,4 +20,4 @@ export const OPTION_NULL = {
     "addons": []
 }
 
-const USER_DEFAULT = '7a79adde-991d-4004-8b7b-846eca204e29'
+export const USER_DEFAULT = '7a79adde-991d-4004-8b7b-846eca204e29'

@@ -1,40 +1,28 @@
 "use client";
 
-import { supabaseStorageURL, moneyFormatBRL } from "@/ultils/ultils";
+import { supabaseStorageURL, moneyFormatBRL} from "@/ultils/ultils";
 import { culoriCalc } from "@/ultils/colors";
 import { useState } from "react";
-import type { FoodsFullResult } from "@/types/type";
+import type { FoodsGrouped, FoodsCategory, FoodsCategoryObj } from "@/types/typeFood";
 import SelectMenu from "./selectMenu";
 import { useAppSettings } from "@/context/AppSettingsContext";
 
 type Props = {
-  foods: FoodsFullResult;
-  foods_categories_obj: { [key: string]: string };
+  foodsGrouped: FoodsGrouped;
+  foods_categories: FoodsCategoryObj;
 };
 
-export default function FoodMenu({ foods, foods_categories_obj }: Props) {
-  const foods_categories_obj_reversa = Object.fromEntries(
-    Object.entries(foods_categories_obj).map(([k, v]) => [v, k])
-  );
-
-  const foodsGrouped = foods.grouped;
-  const foodsCategoriesNames = Object.keys(foods_categories_obj_reversa);
-
-  const [categoriesActive, setCategoriesActive] = useState(
-    foodsCategoriesNames[0]
-  );
+export default function FoodMenu({ foodsGrouped, foods_categories }: Props) {
+  console.log(foodsGrouped)
+  const [categoriesActive, setCategoriesActive] = useState(Object.keys(foods_categories)[0]);
   const [foodIDActive, setFoodIDActive] = useState<string | null>(null);
 
-  const foodCategoriesIDActive = foods_categories_obj_reversa[categoriesActive];
-  const foodsActiveOBJ = foodsGrouped[foodCategoriesIDActive];
+  const foodsActiveOBJ = foodsGrouped[categoriesActive];
   const foodsActive = Object.values(foodsActiveOBJ);
 
   const { colorsDB_obj: colorDB } = useAppSettings();
 
-  const StyleBorder = culoriCalc(
-    colorDB["--food-menu-fundo"].value,
-    [0.1832, 0.0016, 0.21]
-  );
+  const StyleBorder = culoriCalc(colorDB["--food-menu-fundo"].value,[0.1832, 0.0016, 0.21]);
 
   return (
     <div className="min-h-screen bg-food-menu-fundo-7 flex flex-col md:flex-row overflow-hidden">
@@ -49,20 +37,14 @@ export default function FoodMenu({ foods, foods_categories_obj }: Props) {
           flex flex-col
         "
         style={{
-          background: culoriCalc(
-            colorDB["--food-menu-fundo"].value,
-            [0.0695, 0.0015, 0.07, -0.2]
-          ),
+          background: culoriCalc(colorDB["--food-menu-fundo"].value, [0.0695, 0.0015, 0.07, -0.2]),
           borderColor: StyleBorder,
         }}
       >
         <div
           className="p-4 border-b backdrop-blur sticky top-0 z-10"
           style={{
-            background: culoriCalc(
-              colorDB["--food-menu-fundo"].value,
-              [0.0395, 0.0015, 0.07, -0.2]
-            ),
+            background: culoriCalc(colorDB["--food-menu-fundo"].value, [0.0395, 0.0015, 0.07, -0.2]),
             borderColor: StyleBorder,
           }}
         >
@@ -70,10 +52,10 @@ export default function FoodMenu({ foods, foods_categories_obj }: Props) {
         </div>
 
         <nav className="p-2 flex gap-2 overflow-x-auto md:flex-col md:overflow-x-hidden">
-          {foodsCategoriesNames.map((cat) => (
+          {Object.entries(foods_categories).map(([key, cat]) => (
             <button
-              key={cat}
-              onClick={() => setCategoriesActive(cat)}
+              key={key}
+              onClick={() => setCategoriesActive(key)}
               className="
                 whitespace-nowrap
                 cursor-pointer
@@ -86,23 +68,17 @@ export default function FoodMenu({ foods, foods_categories_obj }: Props) {
                 text-sm md:text-base
               "
               style={
-                categoriesActive === cat
+                categoriesActive === key
                   ? {
-                      backgroundColor: culoriCalc(
-                        colorDB["--food-menu-fundo"].value,
-                        [0.1331, 0.0011, 0.21]
-                      ),
-                      color: colorDB["--food-menu-escrita"].value,
-                    }
+                    backgroundColor: culoriCalc(colorDB["--food-menu-fundo"].value, [0.1331, 0.0011, 0.21]),
+                    color: colorDB["--food-menu-escrita"].value,
+                  }
                   : {
-                      color: culoriCalc(
-                        colorDB["--food-menu-escrita"].value,
-                        [-0.1189, 0.0155, 286.29]
-                      ),
-                    }
+                    color: culoriCalc(colorDB["--food-menu-escrita"].value, [-0.1189, 0.0155, 286.29]),
+                  }
               }
             >
-              {cat}
+              {cat.name}
             </button>
           ))}
         </nav>
@@ -113,8 +89,8 @@ export default function FoodMenu({ foods, foods_categories_obj }: Props) {
         <div className="flex flex-col gap-3 md:flex-row md:flex-wrap md:gap-4">
           {foodsActive.map((food) => (
             <div
-              key={food.id}
-              onClick={() => setFoodIDActive(food.id)}
+              key={food.id_food}
+              onClick={() => setFoodIDActive(food.id_food)}
               className="
                 relative
                 w-full
@@ -151,9 +127,7 @@ export default function FoodMenu({ foods, foods_categories_obj }: Props) {
                   md:w-28 md:h-28
                   md:mx-auto
                 "
-                style={{
-                  backgroundImage: `url("${supabaseStorageURL(food.img!)}")`,
-                }}
+                style={{backgroundImage: `url("${supabaseStorageURL(food.img!)}")`}}
               />
 
               {/* TEXTO */}
@@ -177,7 +151,7 @@ export default function FoodMenu({ foods, foods_categories_obj }: Props) {
                   md:text-center
                   md:text-base
                 "
-                style={{color: culoriCalc( colorDB["--dinheiro"].value, [-0.16, -0.06, 0.06])}}
+                style={{ color: culoriCalc(colorDB["--dinheiro"].value, [-0.16, -0.06, 0.06]) }}
               >
                 {moneyFormatBRL(food.price)}
               </p>
@@ -190,7 +164,6 @@ export default function FoodMenu({ foods, foods_categories_obj }: Props) {
             open={setFoodIDActive}
             foods={foodsGrouped}
             food={foodsActiveOBJ[foodIDActive]}
-            foods_categories_obj={foods_categories_obj}
           />
         )}
       </main>

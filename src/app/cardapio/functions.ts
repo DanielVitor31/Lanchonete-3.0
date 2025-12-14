@@ -1,22 +1,24 @@
 
-import type { FoodVersion, FoodsGrouped, FoodWithVersionsMap, FoodAddonCategory } from "@/types/type";
+import type { FoodVersion, FoodsGrouped, FoodAddon, FoodFull, FoodAddonGroupedCategory } from "@/types/typeFood";
 import { OPTION_NULL } from "@/constants";
 
-export type Option = FoodWithVersionsMap | FoodVersion;
+export type Option = FoodFull | FoodVersion | FoodAddon;
 
-export function loadAddons(hasAddons: boolean, foodAddonsIDS: FoodAddonCategory[], foodVersions: FoodVersion[], foods: FoodsGrouped) {
+export function loadAddons(hasAddons: boolean, foodAddonsIDS: FoodAddonGroupedCategory[], foodVersions: FoodVersion[], foods: FoodsGrouped) {
     const foodAddons: Option[][] = [foodVersions];
 
 
     if (hasAddons) {
         foodAddonsIDS.forEach((addon) => {
             const categoryComplement: Option[] = addon.items.map((addonItem) => {
+                console.log(addonItem.id_food_version)
                 const foodBase = foods[addon.category_id][addonItem.id_food];
+                console.log(foodBase)
                 const foodVersion = addonItem.id_food_version
                     ? foodBase.versions[addonItem.id_food_version]
                     : foodBase;
 
-                const baseOption: Option = { ...foodVersion, price: addonItem.free ? 0 : foodVersion.price };
+                const baseOption: Option = { ...foodVersion, price: addonItem.free ? 0 : foodVersion.price, id_addon: addonItem.id };
                 return baseOption;
             });
 
@@ -64,7 +66,7 @@ export function pages({ min, max, current }: PagesTypeFunction) {
 }
 
 
-export function orderFinishOBJ(hasAddons: boolean, hasVersion: boolean, foodVersions: FoodVersion[], optionsSelect: { [key: number]: number }, food: FoodWithVersionsMap, foodAddons: Option[][]) {
+export function orderFinishOBJ(hasAddons: boolean, hasVersion: boolean, foodVersions: FoodVersion[], optionsSelect: { [key: number]: number }, food: FoodFull, foodAddons: Option[][]) {
     const orderFinish = Object.entries(optionsSelect).reduce((acc, [key, value]) => {
         const index = Number(key);
 
@@ -75,34 +77,34 @@ export function orderFinishOBJ(hasAddons: boolean, hasVersion: boolean, foodVers
         }
 
         return acc;
-    }, [] as any);
+    }, [] as Option[]);
 
     return orderFinish
 }
 
 
 export function orderString(orderFinish: any[], hasVersion: boolean) {
-  const str = orderFinish.map((item, i) => {
-      let name = item.name;
-      let version: string | null = null;
+    const str = orderFinish.map((item, i) => {
+        let name = item.name;
+        let version: string | null = null;
 
-      if (hasVersion) {
-        version = name.match(/\(([^)]+)\)/)?.[1] ?? null;
-        name = name.split("(")[0].trim();
-      }
+        if (hasVersion) {
+            version = name.match(/\(([^)]+)\)/)?.[1] ?? null;
+            name = name.split("(")[0].trim();
+        }
 
-      const title = i === 0 ? name : `Complemento ${i}: \n${name}`;
-      const versionLine = version ? `Versão ${version}` : "";
+        const title = i === 0 ? name : `Complemento ${i}: \n${name}`;
+        const versionLine = version ? `Versão ${version}` : "";
 
-      return [
-        title,
-        versionLine,
-        `Valor: ${item.price}`,
-        "\n" 
-      ].filter(Boolean).join("\n");
+        return [
+            title,
+            versionLine,
+            `Valor: ${item.price}`,
+            "\n"
+        ].filter(Boolean).join("\n");
     })
-    .join("")
-    .trim();
+        .join("")
+        .trim();
 
     return str
 }

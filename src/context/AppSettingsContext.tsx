@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, ReactNode } from "react";
-import type { ColorsDB, GeneralSettings } from "@/types/type"
+import type { ColorsDB, GeneralSettings } from "@/types/typeFood"
 
 
 type AppSettings = {

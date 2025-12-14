@@ -1,5 +1,5 @@
 SELECT
-  f.id_food AS id,
+  f.id_food,
   f.name,
   f.description,
   f.img,
@@ -22,7 +22,7 @@ FROM
         SELECT
           jsonb_agg(
             jsonb_build_object(
-              'id',
+              'id_version',
               fv.id_food_version,
               'id_food',
               fv.xid_food,
@@ -74,7 +74,7 @@ FROM
                   jsonb_agg(
                     jsonb_build_object(
                       'id',
-                      fai2.id_foods_addons,
+                      fai2.id_foods_addon,
                       'id_food',
                       fai2.xid_food,
                       'id_food_version',

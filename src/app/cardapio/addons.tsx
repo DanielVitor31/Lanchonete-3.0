@@ -37,7 +37,7 @@ export default function AddonsElement({ handleSelectOption, foodAddons, page, op
 
           return (
             <button
-              key={option.id}
+              key={("id_version" in option) ? option.id_version : option.id_food}
               type="button"
               onClick={() => handleSelectOption(page.current, indice, option.price)}
               className={[

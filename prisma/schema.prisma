@@ -34,7 +34,7 @@ model foods {
   stock                                          Boolean          @default(true)
   sale                                           Boolean          @default(true)
   created_at                                     DateTime?        @default(now()) @db.Timestamp(6)
-  foods_categories                               foods_categories @relation(fields: [xid_categorie], references: [id_foods_categories], onDelete: Cascade, onUpdate: NoAction)
+  foods_categories                               foods_categories @relation(fields: [xid_categorie], references: [id], onDelete: Cascade, onUpdate: NoAction)
   foods_addons_foods_addons_xid_food_baseTofoods foods_addons[]   @relation("foods_addons_xid_food_baseTofoods")
   foods_addons_foods_addons_xid_foodTofoods      foods_addons[]   @relation("foods_addons_xid_foodTofoods")
   foods_version                                  foods_version[]
@@ -43,7 +43,7 @@ model foods {
 }
 
 model foods_addons {
-  id_foods_addons                         String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id_foods_addon                          String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   xid_food_base                           String         @db.Uuid
   xid_food                                String         @db.Uuid
   xid_food_version                        String?        @db.Uuid
@@ -53,12 +53,15 @@ model foods_addons {
   foods_foods_addons_xid_foodTofoods      foods          @relation("foods_addons_xid_foodTofoods", fields: [xid_food], references: [id_food], onDelete: Cascade, onUpdate: NoAction)
   foods_version                           foods_version? @relation(fields: [xid_food_version], references: [id_food_version], onDelete: Cascade, onUpdate: NoAction)
 
+  @@unique([xid_food_base, xid_food, xid_food_version], map: "uq_tabela_ids")
   @@schema("diner")
 }
 
 model foods_categories {
-  id_foods_categories String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id String @id @default(dbgenerated("gen_random_uuid()")) @map("id_foods_categories") @db.Uuid
   name                String  @unique @db.VarChar(35)
+  position_menu       Int     @unique(map: "uq_foods_categories_position_menu")
+  position_addons     Int     @unique(map: "uq_foods_categories_position_addons")
   foods               foods[]
 
   @@schema("diner")
@@ -136,7 +139,7 @@ model settings_colors {
 }
 
 view foods_full {
-  id             String?  @db.Uuid
+  id_food        String?  @db.Uuid
   name           String?  @db.VarChar(30)
   description    String?
   img            String?  @db.VarChar(35)

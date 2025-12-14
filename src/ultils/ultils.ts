@@ -64,4 +64,22 @@ export function arrayObjToObjKey<T, K extends keyof T>({key, obj}: ArrayToKeyedO
 }
 
 
+type invertObject<T extends Record<PropertyKey, PropertyKey>> = {
+  [K in keyof T as T[K]]: K
+};
+
+export function invertObject<T extends Record<PropertyKey, PropertyKey>>(obj: T): invertObject<T> {
+  return (Object.keys(obj) as Array<keyof T>).reduce((acc, key) => {
+    const value = obj[key];
+    (acc as Record<PropertyKey, PropertyKey>)[value] = key;
+    return acc;
+  }, {} as invertObject<T>);
+}
+
+
+
+
+
+
+
 

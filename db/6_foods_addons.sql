@@ -1,185 +1,126 @@
 CREATE TABLE diner.foods_addons (
-    id_foods_addons UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id_foods_addon UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     xid_food_base UUID NOT NULL REFERENCES diner.foods(id_food) ON DELETE CASCADE NOT NULL,
     xid_food UUID NOT NULL REFERENCES diner.foods(id_food) ON DELETE CASCADE NOT NULL,
     xid_food_version UUID REFERENCES diner.foods_version(id_food_version) ON DELETE CASCADE,
     free BOOLEAN DEFAULT FALSE NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+    CONSTRAINT uq_tabela_ids UNIQUE NULLS NOT DISTINCT (xid_food_base, xid_food, xid_food_version) -- Unicidade de IDs mesmo com null
 );
 
 
-INSERT INTO diner.foods_addons (xid_food_base, xid_food, xid_food_version, free) VALUES
-
--- Molhos Wrap de Frango
-('102ebd48-d62e-47b2-8a7e-92eabdea0a1d', '55c20be6-a8b7-4e3f-8129-ba6238dbd1ea', null, false),
-('102ebd48-d62e-47b2-8a7e-92eabdea0a1d', '147a2301-4baa-4cc1-810f-186d1ff19ef1', null, false),
-('102ebd48-d62e-47b2-8a7e-92eabdea0a1d', 'a956f62e-e0ec-4e94-a71c-48dce5ecdb23', null, true),
-('102ebd48-d62e-47b2-8a7e-92eabdea0a1d', '9cadee5e-5489-4724-92e4-f82721a4a865', null, false),
-('102ebd48-d62e-47b2-8a7e-92eabdea0a1d', '50d88775-5c3c-4e06-affc-eb05691ecdbe', null, true),
-
-
---Bebidas Wrap de Frango
-('102ebd48-d62e-47b2-8a7e-92eabdea0a1d', '4208b7cb-1148-4e27-8a60-8f99c40454b0', null, false),
-('102ebd48-d62e-47b2-8a7e-92eabdea0a1d', '62b57b28-9acd-474e-91fa-fbe8a498402c', null, false),
-('102ebd48-d62e-47b2-8a7e-92eabdea0a1d', '119dc1a1-9c0e-43e0-8cfb-a4d97464b33a', '96e61241-134a-4a2a-9e8b-8298bf1244a9', true),
-('102ebd48-d62e-47b2-8a7e-92eabdea0a1d', 'aebeac60-5d2f-4b7d-9dfe-7a5e6364cfd8', null, false),
-('102ebd48-d62e-47b2-8a7e-92eabdea0a1d', '2a3ee679-c333-4f67-8479-917d164bc9e7', null, false),
-
-
---Porcões Wrap de Frango
-('102ebd48-d62e-47b2-8a7e-92eabdea0a1d', '29282015-dd36-4967-846f-b44218122c4f', '5b92449b-95c7-4c35-a05c-9593f610cd43', false),
-('102ebd48-d62e-47b2-8a7e-92eabdea0a1d', '1dd09eeb-38f3-4394-99d4-6438cc16cc1d', null, false),
-('102ebd48-d62e-47b2-8a7e-92eabdea0a1d', '31bfb9e8-2f66-4712-a90e-ffb0fdcae226', '4c937479-8d5b-4f32-9bc6-f803ac0e3c90', true),
-('102ebd48-d62e-47b2-8a7e-92eabdea0a1d', '8e257901-a2fd-4272-9c79-a785b9f4e4b5', 'b24e187c-b510-4611-974a-5b6d0d26de4c', false),
-('102ebd48-d62e-47b2-8a7e-92eabdea0a1d', '6b71a096-3905-4008-a8cd-1835353cbd70', '44188ef2-941b-4851-91ff-ee4a95407db4', false),
-('102ebd48-d62e-47b2-8a7e-92eabdea0a1d', '421fa2b1-15fb-42ef-aa93-256cb24fe5ff', null, false),
-
--- Molhos X-salada
-('abbfa861-2b5d-455d-b904-f441487f5091', '55c20be6-a8b7-4e3f-8129-ba6238dbd1ea', null, false),
-('abbfa861-2b5d-455d-b904-f441487f5091', '147a2301-4baa-4cc1-810f-186d1ff19ef1', null, false),
-('abbfa861-2b5d-455d-b904-f441487f5091', 'a956f62e-e0ec-4e94-a71c-48dce5ecdb23', null, true),
-('abbfa861-2b5d-455d-b904-f441487f5091', '9cadee5e-5489-4724-92e4-f82721a4a865', null, false),
-('abbfa861-2b5d-455d-b904-f441487f5091', '50d88775-5c3c-4e06-affc-eb05691ecdbe', null, true),
-
-
---Bebidas X-salada
-('abbfa861-2b5d-455d-b904-f441487f5091', '4208b7cb-1148-4e27-8a60-8f99c40454b0', null, false),
-('abbfa861-2b5d-455d-b904-f441487f5091', '62b57b28-9acd-474e-91fa-fbe8a498402c', null, false),
-('abbfa861-2b5d-455d-b904-f441487f5091', '119dc1a1-9c0e-43e0-8cfb-a4d97464b33a', '96e61241-134a-4a2a-9e8b-8298bf1244a9', true),
-('abbfa861-2b5d-455d-b904-f441487f5091', 'aebeac60-5d2f-4b7d-9dfe-7a5e6364cfd8', null, false),
-('abbfa861-2b5d-455d-b904-f441487f5091', '2a3ee679-c333-4f67-8479-917d164bc9e7', null, false),
-
-
---Porcões X-salada
-('abbfa861-2b5d-455d-b904-f441487f5091', '29282015-dd36-4967-846f-b44218122c4f', '5b92449b-95c7-4c35-a05c-9593f610cd43', false),
-('abbfa861-2b5d-455d-b904-f441487f5091', '1dd09eeb-38f3-4394-99d4-6438cc16cc1d', null, false),
-('abbfa861-2b5d-455d-b904-f441487f5091', '31bfb9e8-2f66-4712-a90e-ffb0fdcae226', '4c937479-8d5b-4f32-9bc6-f803ac0e3c90', true),
-('abbfa861-2b5d-455d-b904-f441487f5091', '8e257901-a2fd-4272-9c79-a785b9f4e4b5', 'b24e187c-b510-4611-974a-5b6d0d26de4c', false),
-('abbfa861-2b5d-455d-b904-f441487f5091', '6b71a096-3905-4008-a8cd-1835353cbd70', '44188ef2-941b-4851-91ff-ee4a95407db4', false),
-('abbfa861-2b5d-455d-b904-f441487f5091', '421fa2b1-15fb-42ef-aa93-256cb24fe5ff', null, false),
-
-
--- Molhos X-Frango Crocante
-('e9a827a8-a6ef-4916-8b83-4168720a0327', '55c20be6-a8b7-4e3f-8129-ba6238dbd1ea', null, false),
-('e9a827a8-a6ef-4916-8b83-4168720a0327', '147a2301-4baa-4cc1-810f-186d1ff19ef1', null, false),
-('e9a827a8-a6ef-4916-8b83-4168720a0327', 'a956f62e-e0ec-4e94-a71c-48dce5ecdb23', null, true),
-('e9a827a8-a6ef-4916-8b83-4168720a0327', '9cadee5e-5489-4724-92e4-f82721a4a865', null, false),
-('e9a827a8-a6ef-4916-8b83-4168720a0327', '50d88775-5c3c-4e06-affc-eb05691ecdbe', null, true),
-
-
---Bebidas X-Frango Crocante
-('e9a827a8-a6ef-4916-8b83-4168720a0327', '4208b7cb-1148-4e27-8a60-8f99c40454b0', null, false),
-('e9a827a8-a6ef-4916-8b83-4168720a0327', '62b57b28-9acd-474e-91fa-fbe8a498402c', null, false),
-('e9a827a8-a6ef-4916-8b83-4168720a0327', '119dc1a1-9c0e-43e0-8cfb-a4d97464b33a', '96e61241-134a-4a2a-9e8b-8298bf1244a9', true),
-('e9a827a8-a6ef-4916-8b83-4168720a0327', 'aebeac60-5d2f-4b7d-9dfe-7a5e6364cfd8', null, false),
-('e9a827a8-a6ef-4916-8b83-4168720a0327', '2a3ee679-c333-4f67-8479-917d164bc9e7', null, false),
-
-
---Porcões X-Frango Crocante
-('e9a827a8-a6ef-4916-8b83-4168720a0327', '29282015-dd36-4967-846f-b44218122c4f', '5b92449b-95c7-4c35-a05c-9593f610cd43', false),
-('e9a827a8-a6ef-4916-8b83-4168720a0327', '1dd09eeb-38f3-4394-99d4-6438cc16cc1d', null, false),
-('e9a827a8-a6ef-4916-8b83-4168720a0327', '31bfb9e8-2f66-4712-a90e-ffb0fdcae226', '4c937479-8d5b-4f32-9bc6-f803ac0e3c90', true),
-('e9a827a8-a6ef-4916-8b83-4168720a0327', '8e257901-a2fd-4272-9c79-a785b9f4e4b5', 'b24e187c-b510-4611-974a-5b6d0d26de4c', false),
-('e9a827a8-a6ef-4916-8b83-4168720a0327', '6b71a096-3905-4008-a8cd-1835353cbd70', '44188ef2-941b-4851-91ff-ee4a95407db4', false),
-('e9a827a8-a6ef-4916-8b83-4168720a0327', '421fa2b1-15fb-42ef-aa93-256cb24fe5ff', null, false),
-
--- Molhos X-Cheddar
-('174ba785-a68d-47e6-a89f-a5986d1bef5d', '55c20be6-a8b7-4e3f-8129-ba6238dbd1ea', null, false),
-('174ba785-a68d-47e6-a89f-a5986d1bef5d', '147a2301-4baa-4cc1-810f-186d1ff19ef1', null, false),
-('174ba785-a68d-47e6-a89f-a5986d1bef5d', 'a956f62e-e0ec-4e94-a71c-48dce5ecdb23', null, true),
-('174ba785-a68d-47e6-a89f-a5986d1bef5d', '9cadee5e-5489-4724-92e4-f82721a4a865', null, false),
-('174ba785-a68d-47e6-a89f-a5986d1bef5d', '50d88775-5c3c-4e06-affc-eb05691ecdbe', null, true),
-
-
---Bebidas X-Cheddar
-('174ba785-a68d-47e6-a89f-a5986d1bef5d', '4208b7cb-1148-4e27-8a60-8f99c40454b0', null, false),
-('174ba785-a68d-47e6-a89f-a5986d1bef5d', '62b57b28-9acd-474e-91fa-fbe8a498402c', null, false),
-('174ba785-a68d-47e6-a89f-a5986d1bef5d', '119dc1a1-9c0e-43e0-8cfb-a4d97464b33a', '96e61241-134a-4a2a-9e8b-8298bf1244a9', true),
-('174ba785-a68d-47e6-a89f-a5986d1bef5d', 'aebeac60-5d2f-4b7d-9dfe-7a5e6364cfd8', null, false),
-('174ba785-a68d-47e6-a89f-a5986d1bef5d', '2a3ee679-c333-4f67-8479-917d164bc9e7', null, false),
-
-
---Porcões X-Cheddar
-('174ba785-a68d-47e6-a89f-a5986d1bef5d', '29282015-dd36-4967-846f-b44218122c4f', '5b92449b-95c7-4c35-a05c-9593f610cd43', false),
-('174ba785-a68d-47e6-a89f-a5986d1bef5d', '1dd09eeb-38f3-4394-99d4-6438cc16cc1d', null, false),
-('174ba785-a68d-47e6-a89f-a5986d1bef5d', '31bfb9e8-2f66-4712-a90e-ffb0fdcae226', '4c937479-8d5b-4f32-9bc6-f803ac0e3c90', true),
-('174ba785-a68d-47e6-a89f-a5986d1bef5d', '8e257901-a2fd-4272-9c79-a785b9f4e4b5', 'b24e187c-b510-4611-974a-5b6d0d26de4c', false),
-('174ba785-a68d-47e6-a89f-a5986d1bef5d', '6b71a096-3905-4008-a8cd-1835353cbd70', '44188ef2-941b-4851-91ff-ee4a95407db4', false),
-('174ba785-a68d-47e6-a89f-a5986d1bef5d', '421fa2b1-15fb-42ef-aa93-256cb24fe5ff', null, false),
-
--- Molhos X-Bacon
-('6357d744-1ced-40bb-83fd-1ed66af04226', '55c20be6-a8b7-4e3f-8129-ba6238dbd1ea', null, false),
-('6357d744-1ced-40bb-83fd-1ed66af04226', '147a2301-4baa-4cc1-810f-186d1ff19ef1', null, false),
-('6357d744-1ced-40bb-83fd-1ed66af04226', 'a956f62e-e0ec-4e94-a71c-48dce5ecdb23', null, true),
-('6357d744-1ced-40bb-83fd-1ed66af04226', '9cadee5e-5489-4724-92e4-f82721a4a865', null, false),
-('6357d744-1ced-40bb-83fd-1ed66af04226', '50d88775-5c3c-4e06-affc-eb05691ecdbe', null, true),
-
-
---Bebidas X-Bacon
-('6357d744-1ced-40bb-83fd-1ed66af04226', '4208b7cb-1148-4e27-8a60-8f99c40454b0', null, false),
-('6357d744-1ced-40bb-83fd-1ed66af04226', '62b57b28-9acd-474e-91fa-fbe8a498402c', null, false),
-('6357d744-1ced-40bb-83fd-1ed66af04226', '119dc1a1-9c0e-43e0-8cfb-a4d97464b33a', '96e61241-134a-4a2a-9e8b-8298bf1244a9', true),
-('6357d744-1ced-40bb-83fd-1ed66af04226', 'aebeac60-5d2f-4b7d-9dfe-7a5e6364cfd8', null, false),
-('6357d744-1ced-40bb-83fd-1ed66af04226', '2a3ee679-c333-4f67-8479-917d164bc9e7', null, false),
-
-
---Porcões X-Bacon
-('6357d744-1ced-40bb-83fd-1ed66af04226', '29282015-dd36-4967-846f-b44218122c4f', '5b92449b-95c7-4c35-a05c-9593f610cd43', false),
-('6357d744-1ced-40bb-83fd-1ed66af04226', '1dd09eeb-38f3-4394-99d4-6438cc16cc1d', null, false),
-('6357d744-1ced-40bb-83fd-1ed66af04226', '31bfb9e8-2f66-4712-a90e-ffb0fdcae226', '4c937479-8d5b-4f32-9bc6-f803ac0e3c90', true),
-('6357d744-1ced-40bb-83fd-1ed66af04226', '8e257901-a2fd-4272-9c79-a785b9f4e4b5', 'b24e187c-b510-4611-974a-5b6d0d26de4c', false),
-('6357d744-1ced-40bb-83fd-1ed66af04226', '6b71a096-3905-4008-a8cd-1835353cbd70', '44188ef2-941b-4851-91ff-ee4a95407db4', false),
-('6357d744-1ced-40bb-83fd-1ed66af04226', '421fa2b1-15fb-42ef-aa93-256cb24fe5ff', null, false),
-
-
--- Molhos Onion Rings
-('6b71a096-3905-4008-a8cd-1835353cbd70', '55c20be6-a8b7-4e3f-8129-ba6238dbd1ea', null, false),
-('6b71a096-3905-4008-a8cd-1835353cbd70', '147a2301-4baa-4cc1-810f-186d1ff19ef1', null, false),
-('6b71a096-3905-4008-a8cd-1835353cbd70', 'a956f62e-e0ec-4e94-a71c-48dce5ecdb23', null, true),
-('6b71a096-3905-4008-a8cd-1835353cbd70', '9cadee5e-5489-4724-92e4-f82721a4a865', null, false),
-('6b71a096-3905-4008-a8cd-1835353cbd70', '50d88775-5c3c-4e06-affc-eb05691ecdbe', null, true),
-
-
--- Molhos Batata Frita
-('29282015-dd36-4967-846f-b44218122c4f', '55c20be6-a8b7-4e3f-8129-ba6238dbd1ea', null, false),
-('29282015-dd36-4967-846f-b44218122c4f', '147a2301-4baa-4cc1-810f-186d1ff19ef1', null, false),
-('29282015-dd36-4967-846f-b44218122c4f', 'a956f62e-e0ec-4e94-a71c-48dce5ecdb23', null, true),
-('29282015-dd36-4967-846f-b44218122c4f', '9cadee5e-5489-4724-92e4-f82721a4a865', null, false),
-('29282015-dd36-4967-846f-b44218122c4f', '50d88775-5c3c-4e06-affc-eb05691ecdbe', null, true),
-
-
--- Molhos Salada Veggie
-('8e257901-a2fd-4272-9c79-a785b9f4e4b5', '55c20be6-a8b7-4e3f-8129-ba6238dbd1ea', null, false),
-('8e257901-a2fd-4272-9c79-a785b9f4e4b5', '147a2301-4baa-4cc1-810f-186d1ff19ef1', null, false),
-('8e257901-a2fd-4272-9c79-a785b9f4e4b5', 'a956f62e-e0ec-4e94-a71c-48dce5ecdb23', null, true),
-('8e257901-a2fd-4272-9c79-a785b9f4e4b5', '9cadee5e-5489-4724-92e4-f82721a4a865', null, false),
-('8e257901-a2fd-4272-9c79-a785b9f4e4b5', '50d88775-5c3c-4e06-affc-eb05691ecdbe', null, true),
-
-
--- Molhos Torresmo Crocante
-('31bfb9e8-2f66-4712-a90e-ffb0fdcae226', '55c20be6-a8b7-4e3f-8129-ba6238dbd1ea', null, false),
-('31bfb9e8-2f66-4712-a90e-ffb0fdcae226', '147a2301-4baa-4cc1-810f-186d1ff19ef1', null, false),
-('31bfb9e8-2f66-4712-a90e-ffb0fdcae226', 'a956f62e-e0ec-4e94-a71c-48dce5ecdb23', null, true),
-('31bfb9e8-2f66-4712-a90e-ffb0fdcae226', '9cadee5e-5489-4724-92e4-f82721a4a865', null, false),
-('31bfb9e8-2f66-4712-a90e-ffb0fdcae226', '50d88775-5c3c-4e06-affc-eb05691ecdbe', null, true),
-
-
--- Molhos Frango Frito Crocante
-('1dd09eeb-38f3-4394-99d4-6438cc16cc1d', '55c20be6-a8b7-4e3f-8129-ba6238dbd1ea', null, false),
-('1dd09eeb-38f3-4394-99d4-6438cc16cc1d', '147a2301-4baa-4cc1-810f-186d1ff19ef1', null, false),
-('1dd09eeb-38f3-4394-99d4-6438cc16cc1d', 'a956f62e-e0ec-4e94-a71c-48dce5ecdb23', null, true),
-('1dd09eeb-38f3-4394-99d4-6438cc16cc1d', '9cadee5e-5489-4724-92e4-f82721a4a865', null, false),
-('1dd09eeb-38f3-4394-99d4-6438cc16cc1d', '50d88775-5c3c-4e06-affc-eb05691ecdbe', null, true),
-
-
--- Molhos Frango Porção de Mariscos
-('421fa2b1-15fb-42ef-aa93-256cb24fe5ff', '55c20be6-a8b7-4e3f-8129-ba6238dbd1ea', null, false),
-('421fa2b1-15fb-42ef-aa93-256cb24fe5ff', '147a2301-4baa-4cc1-810f-186d1ff19ef1', null, false),
-('421fa2b1-15fb-42ef-aa93-256cb24fe5ff', 'a956f62e-e0ec-4e94-a71c-48dce5ecdb23', null, true),
-('421fa2b1-15fb-42ef-aa93-256cb24fe5ff', '9cadee5e-5489-4724-92e4-f82721a4a865', null, false),
-('421fa2b1-15fb-42ef-aa93-256cb24fe5ff', '50d88775-5c3c-4e06-affc-eb05691ecdbe', null, true);
-
-
+INSERT INTO diner.foods_addons ("id_foods_addon", "xid_food_base", "xid_food", "xid_food_version", "free") VALUES
+    ('8e415ff9-c8f4-4e2b-9529-3f7c9b530850', '102ebd48-d62e-47b2-8a7e-92eabdea0a1d', '55c20be6-a8b7-4e3f-8129-ba6238dbd1ea', NULL, FALSE),
+    ('26caf282-2d23-49a9-9c32-2692a3bbff97', '102ebd48-d62e-47b2-8a7e-92eabdea0a1d', '147a2301-4baa-4cc1-810f-186d1ff19ef1', NULL, FALSE),
+    ('27c134e7-ffc3-4dfa-847c-2bc24eafc0cd', '102ebd48-d62e-47b2-8a7e-92eabdea0a1d', 'a956f62e-e0ec-4e94-a71c-48dce5ecdb23', NULL, TRUE),
+    ('471b0730-1715-40b5-8bfa-d2facae31ee2', '102ebd48-d62e-47b2-8a7e-92eabdea0a1d', '9cadee5e-5489-4724-92e4-f82721a4a865', NULL, FALSE),
+    ('57b48d1d-2807-462b-bc07-ef8e7d393ef8', '102ebd48-d62e-47b2-8a7e-92eabdea0a1d', '50d88775-5c3c-4e06-affc-eb05691ecdbe', NULL, TRUE),
+    ('9677dc7c-a97d-4b86-9b84-3b7584b6d9f8', '102ebd48-d62e-47b2-8a7e-92eabdea0a1d', '4208b7cb-1148-4e27-8a60-8f99c40454b0', NULL, FALSE),
+    ('6b46f6c5-43e5-491e-ade1-aac6e601cf16', '102ebd48-d62e-47b2-8a7e-92eabdea0a1d', '62b57b28-9acd-474e-91fa-fbe8a498402c', NULL, FALSE),
+    ('ccca2f54-dabd-499c-beb2-ddb8e90b7d2e', '102ebd48-d62e-47b2-8a7e-92eabdea0a1d', '119dc1a1-9c0e-43e0-8cfb-a4d97464b33a', '96e61241-134a-4a2a-9e8b-8298bf1244a9', TRUE),
+    ('98c8db67-bbac-4828-94ea-8a027d52e55f', '102ebd48-d62e-47b2-8a7e-92eabdea0a1d', 'aebeac60-5d2f-4b7d-9dfe-7a5e6364cfd8', NULL, FALSE),
+    ('3ef742e5-3f85-4995-a41a-594fc0de483d', '102ebd48-d62e-47b2-8a7e-92eabdea0a1d', '2a3ee679-c333-4f67-8479-917d164bc9e7', NULL, FALSE),
+    ('aea2834b-b1f7-4e2d-8d3b-992b1fa03e16', '102ebd48-d62e-47b2-8a7e-92eabdea0a1d', '29282015-dd36-4967-846f-b44218122c4f', '5b92449b-95c7-4c35-a05c-9593f610cd43', FALSE),
+    ('dc19f398-91a6-493d-b471-36078fafa311', '102ebd48-d62e-47b2-8a7e-92eabdea0a1d', '1dd09eeb-38f3-4394-99d4-6438cc16cc1d', NULL, FALSE),
+    ('ffe14c33-20b3-4f0c-8000-ea4bb16e42db', '102ebd48-d62e-47b2-8a7e-92eabdea0a1d', '31bfb9e8-2f66-4712-a90e-ffb0fdcae226', '4c937479-8d5b-4f32-9bc6-f803ac0e3c90', TRUE),
+    ('48f20e70-4d5c-45a6-9c7c-c4a3c86ca20b', '102ebd48-d62e-47b2-8a7e-92eabdea0a1d', '8e257901-a2fd-4272-9c79-a785b9f4e4b5', 'b24e187c-b510-4611-974a-5b6d0d26de4c', FALSE),
+    ('287587e4-508f-4799-9f1d-857abb45fe98', '102ebd48-d62e-47b2-8a7e-92eabdea0a1d', '6b71a096-3905-4008-a8cd-1835353cbd70', '44188ef2-941b-4851-91ff-ee4a95407db4', FALSE),
+    ('64cc7e65-11ee-4fb1-9ff9-428f7b39d91c', '102ebd48-d62e-47b2-8a7e-92eabdea0a1d', '421fa2b1-15fb-42ef-aa93-256cb24fe5ff', NULL, FALSE),
+    ('5d517aa5-b7f5-4be9-b2dd-e6c2087cc6a7', 'abbfa861-2b5d-455d-b904-f441487f5091', '55c20be6-a8b7-4e3f-8129-ba6238dbd1ea', NULL, FALSE),
+    ('66e0f288-e555-418a-9c79-54fcb0546b85', 'abbfa861-2b5d-455d-b904-f441487f5091', '147a2301-4baa-4cc1-810f-186d1ff19ef1', NULL, FALSE),
+    ('a27197c5-90ad-440d-80fe-6b6c8f8fc435', 'abbfa861-2b5d-455d-b904-f441487f5091', 'a956f62e-e0ec-4e94-a71c-48dce5ecdb23', NULL, TRUE),
+    ('44daff29-a7d0-4d57-a35d-aacfb37a90b3', 'abbfa861-2b5d-455d-b904-f441487f5091', '9cadee5e-5489-4724-92e4-f82721a4a865', NULL, FALSE),
+    ('4ed37930-8a2e-444c-a5bd-9eed5a08b97b', 'abbfa861-2b5d-455d-b904-f441487f5091', '50d88775-5c3c-4e06-affc-eb05691ecdbe', NULL, TRUE),
+    ('7608b50e-d97b-4c8c-8dac-9fba256f2157', 'abbfa861-2b5d-455d-b904-f441487f5091', '4208b7cb-1148-4e27-8a60-8f99c40454b0', NULL, FALSE),
+    ('b86e5ded-b7f3-41bb-a252-ee2bfb83ae74', 'abbfa861-2b5d-455d-b904-f441487f5091', '62b57b28-9acd-474e-91fa-fbe8a498402c', NULL, FALSE),
+    ('bb5c2681-5be4-474b-89a2-970afca1d90a', 'abbfa861-2b5d-455d-b904-f441487f5091', '119dc1a1-9c0e-43e0-8cfb-a4d97464b33a', '96e61241-134a-4a2a-9e8b-8298bf1244a9', TRUE),
+    ('addefbe2-a45d-4b35-905c-c0395fbad8ca', 'abbfa861-2b5d-455d-b904-f441487f5091', 'aebeac60-5d2f-4b7d-9dfe-7a5e6364cfd8', NULL, FALSE),
+    ('0649aa33-ad2a-44a0-832f-4539d2f75e5f', 'abbfa861-2b5d-455d-b904-f441487f5091', '2a3ee679-c333-4f67-8479-917d164bc9e7', NULL, FALSE),
+    ('a3e3040d-082a-4960-8738-32b7317d5583', 'abbfa861-2b5d-455d-b904-f441487f5091', '29282015-dd36-4967-846f-b44218122c4f', '5b92449b-95c7-4c35-a05c-9593f610cd43', FALSE),
+    ('220b6123-480f-44c9-b97b-ebaf801e0dc6', 'abbfa861-2b5d-455d-b904-f441487f5091', '1dd09eeb-38f3-4394-99d4-6438cc16cc1d', NULL, FALSE),
+    ('4a1851b6-fa71-4d03-b228-a2454112146d', 'abbfa861-2b5d-455d-b904-f441487f5091', '31bfb9e8-2f66-4712-a90e-ffb0fdcae226', '4c937479-8d5b-4f32-9bc6-f803ac0e3c90', TRUE),
+    ('4041969c-eec4-4111-8f73-a7e0f57187db', 'abbfa861-2b5d-455d-b904-f441487f5091', '8e257901-a2fd-4272-9c79-a785b9f4e4b5', 'b24e187c-b510-4611-974a-5b6d0d26de4c', FALSE),
+    ('46ea18b1-e726-4d62-9083-846b978510e6', 'abbfa861-2b5d-455d-b904-f441487f5091', '6b71a096-3905-4008-a8cd-1835353cbd70', '44188ef2-941b-4851-91ff-ee4a95407db4', FALSE),
+    ('cfe03448-67dd-4d28-b987-c8a03b9cf8d7', 'abbfa861-2b5d-455d-b904-f441487f5091', '421fa2b1-15fb-42ef-aa93-256cb24fe5ff', NULL, FALSE),
+    ('3c5412c9-c1db-4faa-992b-d7ab2ca0dacc', 'e9a827a8-a6ef-4916-8b83-4168720a0327', '55c20be6-a8b7-4e3f-8129-ba6238dbd1ea', NULL, FALSE),
+    ('2761dba3-ee94-4061-9ec6-85a6594a49e1', 'e9a827a8-a6ef-4916-8b83-4168720a0327', '147a2301-4baa-4cc1-810f-186d1ff19ef1', NULL, FALSE),
+    ('eb9f3acb-1789-402b-9e18-0adaff8d77c7', 'e9a827a8-a6ef-4916-8b83-4168720a0327', 'a956f62e-e0ec-4e94-a71c-48dce5ecdb23', NULL, TRUE),
+    ('3e5db00f-9826-4b83-a826-30ec0d9a2899', 'e9a827a8-a6ef-4916-8b83-4168720a0327', '9cadee5e-5489-4724-92e4-f82721a4a865', NULL, FALSE),
+    ('d7692321-d93f-4d31-b925-481349c3e5c3', 'e9a827a8-a6ef-4916-8b83-4168720a0327', '50d88775-5c3c-4e06-affc-eb05691ecdbe', NULL, TRUE),
+    ('b797a944-7cc6-4af8-9f70-02b6d942a352', 'e9a827a8-a6ef-4916-8b83-4168720a0327', '4208b7cb-1148-4e27-8a60-8f99c40454b0', NULL, FALSE),
+    ('07b61c9d-7668-40ba-9120-84441848854a', 'e9a827a8-a6ef-4916-8b83-4168720a0327', '62b57b28-9acd-474e-91fa-fbe8a498402c', NULL, FALSE),
+    ('c876d310-1256-4cee-8fa6-3c7619193f0b', 'e9a827a8-a6ef-4916-8b83-4168720a0327', '119dc1a1-9c0e-43e0-8cfb-a4d97464b33a', '96e61241-134a-4a2a-9e8b-8298bf1244a9', TRUE),
+    ('231d5bc7-e784-44af-9a20-70cc6196b3c9', 'e9a827a8-a6ef-4916-8b83-4168720a0327', 'aebeac60-5d2f-4b7d-9dfe-7a5e6364cfd8', NULL, FALSE),
+    ('f80845d8-db67-4f64-9038-a409d263027e', 'e9a827a8-a6ef-4916-8b83-4168720a0327', '2a3ee679-c333-4f67-8479-917d164bc9e7', NULL, FALSE),
+    ('7c4ebc5e-6030-4533-8aab-37eef5d63c33', 'e9a827a8-a6ef-4916-8b83-4168720a0327', '29282015-dd36-4967-846f-b44218122c4f', '5b92449b-95c7-4c35-a05c-9593f610cd43', FALSE),
+    ('36142a95-7a86-4c31-bd86-393b4920a578', 'e9a827a8-a6ef-4916-8b83-4168720a0327', '1dd09eeb-38f3-4394-99d4-6438cc16cc1d', NULL, FALSE),
+    ('d2a3835e-1203-413a-b4e9-3b2fcc923e9b', 'e9a827a8-a6ef-4916-8b83-4168720a0327', '31bfb9e8-2f66-4712-a90e-ffb0fdcae226', '4c937479-8d5b-4f32-9bc6-f803ac0e3c90', TRUE),
+    ('d4344a8c-a2a5-4cbc-831b-999914432027', 'e9a827a8-a6ef-4916-8b83-4168720a0327', '8e257901-a2fd-4272-9c79-a785b9f4e4b5', 'b24e187c-b510-4611-974a-5b6d0d26de4c', FALSE),
+    ('54f13428-2d74-4c69-b6ed-37b0c464260f', 'e9a827a8-a6ef-4916-8b83-4168720a0327', '6b71a096-3905-4008-a8cd-1835353cbd70', '44188ef2-941b-4851-91ff-ee4a95407db4', FALSE),
+    ('bd267596-fe2b-456f-899b-971c058dd917', 'e9a827a8-a6ef-4916-8b83-4168720a0327', '421fa2b1-15fb-42ef-aa93-256cb24fe5ff', NULL, FALSE),
+    ('1fa876e7-c477-4f07-b773-ad442ed32cad', '174ba785-a68d-47e6-a89f-a5986d1bef5d', '55c20be6-a8b7-4e3f-8129-ba6238dbd1ea', NULL, FALSE),
+    ('7a09721d-eba5-4595-a3e2-3b89c48dda1a', '174ba785-a68d-47e6-a89f-a5986d1bef5d', '147a2301-4baa-4cc1-810f-186d1ff19ef1', NULL, FALSE),
+    ('f98cad2a-a84e-4ccd-8379-05a175ad4be3', '174ba785-a68d-47e6-a89f-a5986d1bef5d', 'a956f62e-e0ec-4e94-a71c-48dce5ecdb23', NULL, TRUE),
+    ('7208c1f9-b003-450e-ae61-eca3f669bda1', '174ba785-a68d-47e6-a89f-a5986d1bef5d', '9cadee5e-5489-4724-92e4-f82721a4a865', NULL, FALSE),
+    ('4fb00987-c078-401c-b4b1-ade8f3bf1915', '174ba785-a68d-47e6-a89f-a5986d1bef5d', '50d88775-5c3c-4e06-affc-eb05691ecdbe', NULL, TRUE),
+    ('bde82988-6955-4e93-9780-96ab7232cfa0', '174ba785-a68d-47e6-a89f-a5986d1bef5d', '4208b7cb-1148-4e27-8a60-8f99c40454b0', NULL, FALSE),
+    ('d4dd34f5-3f7b-4f11-9bbb-096be85f8e5f', '174ba785-a68d-47e6-a89f-a5986d1bef5d', '62b57b28-9acd-474e-91fa-fbe8a498402c', NULL, FALSE),
+    ('e2f40548-e77c-4d24-9b7b-8b7195e27a6d', '174ba785-a68d-47e6-a89f-a5986d1bef5d', '119dc1a1-9c0e-43e0-8cfb-a4d97464b33a', '96e61241-134a-4a2a-9e8b-8298bf1244a9', TRUE),
+    ('9f204832-67b8-4a9a-ba3a-6235c4d28cf8', '174ba785-a68d-47e6-a89f-a5986d1bef5d', 'aebeac60-5d2f-4b7d-9dfe-7a5e6364cfd8', NULL, FALSE),
+    ('6ba208ea-2622-4823-a3b9-6437283fbd0f', '174ba785-a68d-47e6-a89f-a5986d1bef5d', '2a3ee679-c333-4f67-8479-917d164bc9e7', NULL, FALSE),
+    ('228860dc-d248-49ad-8df9-1e3df130f893', '174ba785-a68d-47e6-a89f-a5986d1bef5d', '29282015-dd36-4967-846f-b44218122c4f', '5b92449b-95c7-4c35-a05c-9593f610cd43', FALSE),
+    ('a786797b-6cd0-42cb-9b8d-e21be042b437', '174ba785-a68d-47e6-a89f-a5986d1bef5d', '1dd09eeb-38f3-4394-99d4-6438cc16cc1d', NULL, FALSE),
+    ('c20ccdd2-1b8d-43a7-937d-7a787974b01a', '174ba785-a68d-47e6-a89f-a5986d1bef5d', '31bfb9e8-2f66-4712-a90e-ffb0fdcae226', '4c937479-8d5b-4f32-9bc6-f803ac0e3c90', TRUE),
+    ('b22f1d64-c6af-44a2-93df-ce75e12986da', '174ba785-a68d-47e6-a89f-a5986d1bef5d', '8e257901-a2fd-4272-9c79-a785b9f4e4b5', 'b24e187c-b510-4611-974a-5b6d0d26de4c', FALSE),
+    ('294de315-e123-4601-8ae2-00fdb36e05f3', '174ba785-a68d-47e6-a89f-a5986d1bef5d', '6b71a096-3905-4008-a8cd-1835353cbd70', '44188ef2-941b-4851-91ff-ee4a95407db4', FALSE),
+    ('4cedef17-3cfb-42e7-8a79-0da0dabb56f1', '174ba785-a68d-47e6-a89f-a5986d1bef5d', '421fa2b1-15fb-42ef-aa93-256cb24fe5ff', NULL, FALSE),
+    ('1cc9d7c0-9079-4ead-9bf5-06d69d976d2c', '6357d744-1ced-40bb-83fd-1ed66af04226', '55c20be6-a8b7-4e3f-8129-ba6238dbd1ea', NULL, FALSE),
+    ('262ca687-cbfb-46c7-b23e-fdae78e67c44', '6357d744-1ced-40bb-83fd-1ed66af04226', '147a2301-4baa-4cc1-810f-186d1ff19ef1', NULL, FALSE),
+    ('094e8a4b-a0ed-4f5e-8837-2e9309c4d1e1', '6357d744-1ced-40bb-83fd-1ed66af04226', 'a956f62e-e0ec-4e94-a71c-48dce5ecdb23', NULL, TRUE),
+    ('af2ea752-fe3e-4664-8d99-04f777143823', '6357d744-1ced-40bb-83fd-1ed66af04226', '9cadee5e-5489-4724-92e4-f82721a4a865', NULL, FALSE),
+    ('7036a209-cbb6-4c63-988e-3dc8e1827483', '6357d744-1ced-40bb-83fd-1ed66af04226', '50d88775-5c3c-4e06-affc-eb05691ecdbe', NULL, TRUE),
+    ('f7c31801-9932-4beb-9612-9b51d3311f85', '6357d744-1ced-40bb-83fd-1ed66af04226', '4208b7cb-1148-4e27-8a60-8f99c40454b0', NULL, FALSE),
+    ('4a057aef-adb3-481a-b2bb-8815197f614c', '6357d744-1ced-40bb-83fd-1ed66af04226', '62b57b28-9acd-474e-91fa-fbe8a498402c', NULL, FALSE),
+    ('e8eca26a-88b8-4d65-b9e0-0a5e8293bab1', '6357d744-1ced-40bb-83fd-1ed66af04226', '119dc1a1-9c0e-43e0-8cfb-a4d97464b33a', '96e61241-134a-4a2a-9e8b-8298bf1244a9', TRUE),
+    ('20991408-8289-42a2-b805-07f69d872650', '6357d744-1ced-40bb-83fd-1ed66af04226', 'aebeac60-5d2f-4b7d-9dfe-7a5e6364cfd8', NULL, FALSE),
+    ('5e67462b-45ca-479e-86ae-231ed3ed62e4', '6357d744-1ced-40bb-83fd-1ed66af04226', '2a3ee679-c333-4f67-8479-917d164bc9e7', NULL, FALSE),
+    ('8ef15b7e-ed1d-4525-ac67-fa629eef8038', '6357d744-1ced-40bb-83fd-1ed66af04226', '29282015-dd36-4967-846f-b44218122c4f', '5b92449b-95c7-4c35-a05c-9593f610cd43', FALSE),
+    ('8f37e9e4-f213-42a9-802c-2444360e2bfa', '6357d744-1ced-40bb-83fd-1ed66af04226', '1dd09eeb-38f3-4394-99d4-6438cc16cc1d', NULL, FALSE),
+    ('6706d9ea-dd37-4087-bb85-6df8ee5b215c', '6357d744-1ced-40bb-83fd-1ed66af04226', '31bfb9e8-2f66-4712-a90e-ffb0fdcae226', '4c937479-8d5b-4f32-9bc6-f803ac0e3c90', TRUE),
+    ('cd694da8-15da-4d2c-9d6f-a3499a5871b8', '6357d744-1ced-40bb-83fd-1ed66af04226', '8e257901-a2fd-4272-9c79-a785b9f4e4b5', 'b24e187c-b510-4611-974a-5b6d0d26de4c', FALSE),
+    ('9f8a7ff3-cebb-4c95-a189-2f34c3e885aa', '6357d744-1ced-40bb-83fd-1ed66af04226', '6b71a096-3905-4008-a8cd-1835353cbd70', '44188ef2-941b-4851-91ff-ee4a95407db4', FALSE),
+    ('0f056203-14be-4261-8e39-58f0f5eac275', '6357d744-1ced-40bb-83fd-1ed66af04226', '421fa2b1-15fb-42ef-aa93-256cb24fe5ff', NULL, FALSE),
+    ('a473229d-8da7-470d-b6ff-cbbac5c5b87f', '6b71a096-3905-4008-a8cd-1835353cbd70', '55c20be6-a8b7-4e3f-8129-ba6238dbd1ea', NULL, FALSE),
+    ('8962f870-d29d-4772-9b86-0bb39df3fa13', '6b71a096-3905-4008-a8cd-1835353cbd70', '147a2301-4baa-4cc1-810f-186d1ff19ef1', NULL, FALSE),
+    ('f95621ea-0403-4836-99a1-e6ffbf9d4d69', '6b71a096-3905-4008-a8cd-1835353cbd70', 'a956f62e-e0ec-4e94-a71c-48dce5ecdb23', NULL, TRUE),
+    ('2adf3698-2c3c-4ed3-b9d5-0cf36395eb0e', '6b71a096-3905-4008-a8cd-1835353cbd70', '9cadee5e-5489-4724-92e4-f82721a4a865', NULL, FALSE),
+    ('c6d786be-84af-4319-a6ed-12133ebdcf7d', '6b71a096-3905-4008-a8cd-1835353cbd70', '50d88775-5c3c-4e06-affc-eb05691ecdbe', NULL, TRUE),
+    ('22ee37eb-02a4-442d-b27c-9a6d032375b5', '29282015-dd36-4967-846f-b44218122c4f', '55c20be6-a8b7-4e3f-8129-ba6238dbd1ea', NULL, FALSE),
+    ('67744247-1ff5-4427-8b55-786f5568ccef', '29282015-dd36-4967-846f-b44218122c4f', '147a2301-4baa-4cc1-810f-186d1ff19ef1', NULL, FALSE),
+    ('ac3f79b3-1b5c-47a9-9cf4-22241735cf4c', '29282015-dd36-4967-846f-b44218122c4f', 'a956f62e-e0ec-4e94-a71c-48dce5ecdb23', NULL, TRUE),
+    ('599d124f-eaa8-49c9-a442-3afbb9385824', '29282015-dd36-4967-846f-b44218122c4f', '9cadee5e-5489-4724-92e4-f82721a4a865', NULL, FALSE),
+    ('ed5541f0-e586-4412-9e3c-555ed6ecc308', '29282015-dd36-4967-846f-b44218122c4f', '50d88775-5c3c-4e06-affc-eb05691ecdbe', NULL, TRUE),
+    ('0b3befe1-3297-4a1d-a82b-2259377f22f6', '8e257901-a2fd-4272-9c79-a785b9f4e4b5', '55c20be6-a8b7-4e3f-8129-ba6238dbd1ea', NULL, FALSE),
+    ('5356b1dc-4b23-4ed4-bba6-f29f46c1ab32', '8e257901-a2fd-4272-9c79-a785b9f4e4b5', '147a2301-4baa-4cc1-810f-186d1ff19ef1', NULL, FALSE),
+    ('b1ffbbf6-17da-4496-a736-dbfbd38f9452', '8e257901-a2fd-4272-9c79-a785b9f4e4b5', 'a956f62e-e0ec-4e94-a71c-48dce5ecdb23', NULL, TRUE),
+    ('1d818a48-a7c9-48d2-a954-3d521e53ada4', '8e257901-a2fd-4272-9c79-a785b9f4e4b5', '9cadee5e-5489-4724-92e4-f82721a4a865', NULL, FALSE),
+    ('fc2536d6-7dbd-434e-815d-89b89fde77f3', '8e257901-a2fd-4272-9c79-a785b9f4e4b5', '50d88775-5c3c-4e06-affc-eb05691ecdbe', NULL, TRUE),
+    ('d8a147d7-3051-454e-9831-2359b6eb6484', '31bfb9e8-2f66-4712-a90e-ffb0fdcae226', '55c20be6-a8b7-4e3f-8129-ba6238dbd1ea', NULL, FALSE),
+    ('3077c962-ced8-487e-ae3d-1846e28e5627', '31bfb9e8-2f66-4712-a90e-ffb0fdcae226', '147a2301-4baa-4cc1-810f-186d1ff19ef1', NULL, FALSE),
+    ('382941b0-86da-48c5-8abf-f0178d5c7018', '31bfb9e8-2f66-4712-a90e-ffb0fdcae226', 'a956f62e-e0ec-4e94-a71c-48dce5ecdb23', NULL, TRUE),
+    ('9767f7d6-8484-49da-a890-d0e650812858', '31bfb9e8-2f66-4712-a90e-ffb0fdcae226', '9cadee5e-5489-4724-92e4-f82721a4a865', NULL, FALSE),
+    ('e502772e-9288-45ae-ad79-64781c4b8420', '31bfb9e8-2f66-4712-a90e-ffb0fdcae226', '50d88775-5c3c-4e06-affc-eb05691ecdbe', NULL, TRUE),
+    ('fb52f772-9df1-4eca-bdd6-dcc59356153a', '1dd09eeb-38f3-4394-99d4-6438cc16cc1d', '55c20be6-a8b7-4e3f-8129-ba6238dbd1ea', NULL, FALSE),
+    ('dff4cc23-9104-4a8a-a464-7e79a718f373', '1dd09eeb-38f3-4394-99d4-6438cc16cc1d', '147a2301-4baa-4cc1-810f-186d1ff19ef1', NULL, FALSE),
+    ('b938d06b-f264-4864-a744-0d169ca8a8d3', '1dd09eeb-38f3-4394-99d4-6438cc16cc1d', 'a956f62e-e0ec-4e94-a71c-48dce5ecdb23', NULL, TRUE),
+    ('97ba5aac-125b-46a4-9183-4f6375a534fa', '1dd09eeb-38f3-4394-99d4-6438cc16cc1d', '9cadee5e-5489-4724-92e4-f82721a4a865', NULL, FALSE),
+    ('7dbdc67f-970f-4843-97c2-d9e7d710f7ad', '1dd09eeb-38f3-4394-99d4-6438cc16cc1d', '50d88775-5c3c-4e06-affc-eb05691ecdbe', NULL, TRUE),
+    ('8d402242-ca17-4a2f-8d66-5606355ebc06', '421fa2b1-15fb-42ef-aa93-256cb24fe5ff', '55c20be6-a8b7-4e3f-8129-ba6238dbd1ea', NULL, FALSE),
+    ('e6d184ed-6666-40f7-bf0f-011beaae376e', '421fa2b1-15fb-42ef-aa93-256cb24fe5ff', '147a2301-4baa-4cc1-810f-186d1ff19ef1', NULL, FALSE),
+    ('60c347d1-7280-460e-9e87-41841103bab3', '421fa2b1-15fb-42ef-aa93-256cb24fe5ff', 'a956f62e-e0ec-4e94-a71c-48dce5ecdb23', NULL, TRUE),
+    ('cd6876bc-774c-4f01-a362-1f25833c9fef', '421fa2b1-15fb-42ef-aa93-256cb24fe5ff', '9cadee5e-5489-4724-92e4-f82721a4a865', NULL, FALSE),
+    ('c58e8471-98b1-446e-b6d9-83fb22ffaf18', '421fa2b1-15fb-42ef-aa93-256cb24fe5ff', '50d88775-5c3c-4e06-affc-eb05691ecdbe', NULL, TRUE);
 
 
 
