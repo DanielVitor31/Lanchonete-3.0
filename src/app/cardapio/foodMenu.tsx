@@ -13,7 +13,6 @@ type Props = {
 };
 
 export default function FoodMenu({ foodsGrouped, foods_categories }: Props) {
-  console.log(foodsGrouped)
   const [categoriesActive, setCategoriesActive] = useState(Object.keys(foods_categories)[0]);
   const [foodIDActive, setFoodIDActive] = useState<string | null>(null);
 

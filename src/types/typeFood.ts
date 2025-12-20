@@ -1,5 +1,5 @@
 export type FoodsCategory = {
-  id: string;
+  id_foods_categories: string;
   name: string;
   position_menu: number;
   position_addons: number;

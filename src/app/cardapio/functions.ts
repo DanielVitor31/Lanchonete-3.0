@@ -11,9 +11,7 @@ export function loadAddons(hasAddons: boolean, foodAddonsIDS: FoodAddonGroupedCa
     if (hasAddons) {
         foodAddonsIDS.forEach((addon) => {
             const categoryComplement: Option[] = addon.items.map((addonItem) => {
-                console.log(addonItem.id_food_version)
                 const foodBase = foods[addon.category_id][addonItem.id_food];
-                console.log(foodBase)
                 const foodVersion = addonItem.id_food_version
                     ? foodBase.versions[addonItem.id_food_version]
                     : foodBase;
@@ -83,7 +81,7 @@ export function orderFinishOBJ(hasAddons: boolean, hasVersion: boolean, foodVers
 }
 
 
-export function orderString(orderFinish: any[], hasVersion: boolean) {
+export function orderStringResume(orderFinish: any[], hasVersion: boolean) {
     const str = orderFinish.map((item, i) => {
         let name = item.name;
         let version: string | null = null;

@@ -11,8 +11,7 @@ export async function getFoodsCategories() {
   },
 });
 
-   const foods_categories_obj = arrayObjToObjKey({key: "id", obj: foods_categories})
-   console.log(foods_categories_obj)
+   const foods_categories_obj = arrayObjToObjKey({key: "id_foods_categories", obj: foods_categories})
 
   return foods_categories_obj
 

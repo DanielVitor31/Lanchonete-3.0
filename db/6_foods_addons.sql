@@ -4,7 +4,8 @@ CREATE TABLE diner.foods_addons (
     xid_food UUID NOT NULL REFERENCES diner.foods(id_food) ON DELETE CASCADE NOT NULL,
     xid_food_version UUID REFERENCES diner.foods_version(id_food_version) ON DELETE CASCADE,
     free BOOLEAN DEFAULT FALSE NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+
 
     CONSTRAINT uq_tabela_ids UNIQUE NULLS NOT DISTINCT (xid_food_base, xid_food, xid_food_version) -- Unicidade de IDs mesmo com null
 );

@@ -4,11 +4,13 @@ import { supabaseStorageURL, moneyFormatBRL } from "@/ultils/ultils";
 import type { FoodsGrouped, FoodFull } from "@/types/typeFood";
 import { useState } from "react";
 import { X } from "lucide-react";
-import { loadAddons, pages, orderFinishOBJ, orderString } from "./functions"
+import { loadAddons, pages, orderFinishOBJ, orderStringResume } from "./functions"
 import AddonsElement from "./addons"
 import ButtonsElement from "./buttons"
 import Check from "./check"
-
+import createOrder from "@/app/cardapio/createOrderDB"
+import OrderStatus from "@/app/finalizar_pedido/page"
+import { USER_DEFAULT } from "@/constants"
 
 
 type Props = {
@@ -28,6 +30,7 @@ export default function SelectMenu({ open, foods, food }: Props) {
   const foodSimple = !hasVersion && !hasAddons
   const foodAddons = loadAddons(hasAddons, foodAddonsIDS, foodVersions, foods);
 
+  const [teste, setTeste] = useState<boolean>(false);
 
 
   const initialPrice = hasVersion ? foodVersions[0].price : food.price;
@@ -43,9 +46,16 @@ export default function SelectMenu({ open, foods, food }: Props) {
 
 
   const handleOrderFinish = () => {
-    console.log(orderString(orderFinish, hasVersion))
-    console.log(orderFinish)
+    const orderString = orderStringResume(orderFinish, hasVersion)
+    createOrder({ cleinte: USER_DEFAULT, total_price: priceTotal, orderString: orderString, orderReady: orderFinish, status: "cart", hasAddons: hasAddons })
+
   };
+
+  // const handleOrderFinish = () => {
+  //   setTeste(true)
+
+  // };
+
 
   const handleSelectOption = (groupIndex: number, optionIndex: number, price: number) => {
     setOptionsSelect((prev) => ({ ...prev, [groupIndex]: optionIndex }));
@@ -55,6 +65,7 @@ export default function SelectMenu({ open, foods, food }: Props) {
       return clone;
     });
   };
+
 
 
   return (
@@ -109,7 +120,7 @@ export default function SelectMenu({ open, foods, food }: Props) {
                       Esse item não possui versões ou complementos.
                     </p>
                   ) : (
-                    <Check text={orderString(orderFinish, hasVersion)} />
+                    <Check text={orderStringResume(orderFinish, hasVersion)} />
                   )}
                 </>
               )
@@ -134,6 +145,11 @@ export default function SelectMenu({ open, foods, food }: Props) {
           </footer>
         </div>
       </div>
+      {teste && (
+        <div className="fixed inset-0 z-9999 bg-black">
+          <OrderStatus />
+        </div>
+      )}
     </div>
   );
 }

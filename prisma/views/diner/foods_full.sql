@@ -10,106 +10,66 @@ SELECT
   f.stock,
   f.sale,
   COALESCE(v.versions, '[]' :: jsonb) AS versions,
-  COALESCE(a.addons, '[]' :: jsonb) AS addons
+  COALESCE(a.addons, '[]' :: jsonb) AS addons,
+  COALESCE(x.extra_ingredients, '[]' :: jsonb) AS extra_ingredients
 FROM
   (
     (
       (
-        diner.foods f
-        JOIN diner.foods_categories c ON ((c.id_foods_categories = f.xid_categorie))
+        (
+          diner.foods f
+          JOIN diner.foods_categories c ON ((c.id_foods_categories = f.xid_categorie))
+        )
+        LEFT JOIN LATERAL (
+          SELECT
+            COALESCE(
+              jsonb_agg(
+                jsonb_build_object(
+                  'id_version',
+                  fv.id_food_version,
+                  'id_food',
+                  fv.xid_food,
+                  'id_categorie',
+                  f.xid_categorie,
+                  'name_categorie',
+                  c.name,
+                  'name',
+                  (
+                    (
+                      ((f.name) :: text || ' (' :: text) || (fv.name) :: text
+                    ) || ')' :: text
+                  ),
+                  'description',
+                  fv.description,
+                  'img',
+                  f.img,
+                  'price',
+                  fv.price,
+                  'promotion',
+                  fv.promotion,
+                  'stock',
+                  fv.stock,
+                  'sale',
+                  fv.sale
+                )
+                ORDER BY
+                  fv.price,
+                  fv.name
+              ),
+              '[]' :: jsonb
+            ) AS versions
+          FROM
+            diner.foods_version fv
+          WHERE
+            (fv.xid_food = f.id_food)
+        ) v ON (TRUE)
       )
       LEFT JOIN LATERAL (
-        SELECT
-          jsonb_agg(
-            jsonb_build_object(
-              'id_version',
-              fv.id_food_version,
-              'id_food',
-              fv.xid_food,
-              'id_categorie',
-              f.xid_categorie,
-              'name_categorie',
-              c.name,
-              'name',
-              (
-                (
-                  ((f.name) :: text || ' (' :: text) || (fv.name) :: text
-                ) || ')' :: text
-              ),
-              'description',
-              fv.description,
-              'img',
-              f.img,
-              'price',
-              fv.price,
-              'promotion',
-              fv.promotion,
-              'stock',
-              fv.stock,
-              'sale',
-              fv.sale
-            )
-            ORDER BY
-              fv.price,
-              fv.name
-          ) AS versions
-        FROM
-          diner.foods_version fv
-        WHERE
-          (fv.xid_food = f.id_food)
-      ) v ON (TRUE)
-    )
-    LEFT JOIN LATERAL (
-      SELECT
-        jsonb_agg(
-          jsonb_build_object(
-            'category_id',
-            catlist.id_foods_categories,
-            'category_name',
-            catlist.name,
-            'items',
-            (
-              SELECT
-                COALESCE(
-                  jsonb_agg(
-                    jsonb_build_object(
-                      'id',
-                      fai2.id_foods_addon,
-                      'id_food',
-                      fai2.xid_food,
-                      'id_food_version',
-                      fai2.xid_food_version,
-                      'free',
-                      fai2.free
-                    )
-                    ORDER BY
-                      fc2.name
-                  ),
-                  '[]' :: jsonb
-                ) AS "coalesce"
-              FROM
-                (
-                  (
-                    diner.foods_addons fai2
-                    LEFT JOIN diner.foods fc2 ON ((fc2.id_food = fai2.xid_food))
-                  )
-                  LEFT JOIN diner.foods_version fvv2 ON ((fvv2.id_food_version = fai2.xid_food_version))
-                )
-              WHERE
-                (
-                  (fai2.xid_food_base = f.id_food)
-                  AND (fc2.xid_categorie = catlist.id_foods_categories)
-                )
-            )
-          )
-          ORDER BY
-            catlist.name
-        ) AS addons
-      FROM
-        (
+        WITH catlist AS (
           SELECT
             DISTINCT cat.id_foods_categories,
-            cat.name
+            cat.name,
+            cat.position_addons
           FROM
             (
               (
@@ -120,9 +80,105 @@ FROM
             )
           WHERE
             (fai.xid_food_base = f.id_food)
-        ) catlist
-    ) a ON (TRUE)
-  )
-ORDER BY
-  f.price,
-  f.name;
+        ),
+        items_by_cat AS (
+          SELECT
+            fc2.xid_categorie AS category_id,
+            COALESCE(
+              jsonb_agg(
+                jsonb_build_object(
+                  'id',
+                  fai2.id_foods_addon,
+                  'id_food',
+                  fai2.xid_food,
+                  'id_food_version',
+                  fai2.xid_food_version,
+                  'free',
+                  fai2.free
+                )
+                ORDER BY
+                  fc2.name
+              ),
+              '[]' :: jsonb
+            ) AS items
+          FROM
+            (
+              diner.foods_addons fai2
+              JOIN diner.foods fc2 ON ((fc2.id_food = fai2.xid_food))
+            )
+          WHERE
+            (fai2.xid_food_base = f.id_food)
+          GROUP BY
+            fc2.xid_categorie
+        )
+        SELECT
+          COALESCE(
+            jsonb_agg(
+              jsonb_build_object(
+                'category_id',
+                cl.id_foods_categories,
+                'category_name',
+                cl.name,
+                'items',
+                COALESCE(ibc.items, '[]' :: jsonb)
+              )
+              ORDER BY
+                cl.position_addons,
+                cl.name
+            ),
+            '[]' :: jsonb
+          ) AS addons
+        FROM
+          (
+            catlist cl
+            LEFT JOIN items_by_cat ibc ON ((ibc.category_id = cl.id_foods_categories))
+          )
+      ) a ON (TRUE)
+    )
+    LEFT JOIN LATERAL (
+      SELECT
+        COALESCE(
+          jsonb_agg(
+            jsonb_build_object(
+              'id_foods_extra_ingredients',
+              fei.id_foods_extra_ingredients,
+              'id_extra_ingredient',
+              ei.id_extra_ingredient,
+              'name',
+              ei.name,
+              'description',
+              ei.description,
+              'img',
+              ei.img,
+              'price',
+              ei.price,
+              'promotion',
+              ei.promotion,
+              'qty_max',
+              ei.qty_max,
+              'stock',
+              ei.stock,
+              'sale',
+              ei.sale,
+              'created_at',
+              ei.created_at
+            )
+            ORDER BY
+              ei.name,
+              ei.price
+          ),
+          '[]' :: jsonb
+        ) AS extra_ingredients
+      FROM
+        (
+          diner.foods_extra_ingredients fei
+          JOIN diner.extra_ingredients ei ON (
+            (
+              ei.id_extra_ingredient = fei.xid_extra_ingredient
+            )
+          )
+        )
+      WHERE
+        (fei.xid_food = f.id_food)
+    ) x ON (TRUE)
+  );

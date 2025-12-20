@@ -23,20 +23,37 @@ model client {
   @@schema("diner")
 }
 
+model extra_ingredients {
+  id_extra_ingredient     String                    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name                    String                    @unique @db.VarChar(30)
+  description             String?
+  img                     String                    @default("logos/logo") @db.VarChar(35)
+  price                   Decimal                   @db.Decimal(6, 2)
+  promotion               Decimal?                  @db.Decimal(7, 2)
+  qty_max                 Int
+  stock                   Boolean                   @default(true)
+  sale                    Boolean                   @default(true)
+  created_at              DateTime                  @default(now()) @db.Timestamp(6)
+  foods_extra_ingredients foods_extra_ingredients[]
+
+  @@schema("diner")
+}
+
 model foods {
-  id_food                                        String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  xid_categorie                                  String           @db.Uuid
-  name                                           String           @db.VarChar(30)
+  id_food                                        String                    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  xid_categorie                                  String                    @db.Uuid
+  name                                           String                    @db.VarChar(30)
   description                                    String
-  img                                            String           @default("logos/logo") @db.VarChar(35)
-  price                                          Decimal          @db.Decimal(6, 2)
-  promotion                                      Decimal?         @db.Decimal(7, 2)
-  stock                                          Boolean          @default(true)
-  sale                                           Boolean          @default(true)
-  created_at                                     DateTime?        @default(now()) @db.Timestamp(6)
-  foods_categories                               foods_categories @relation(fields: [xid_categorie], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  foods_addons_foods_addons_xid_food_baseTofoods foods_addons[]   @relation("foods_addons_xid_food_baseTofoods")
-  foods_addons_foods_addons_xid_foodTofoods      foods_addons[]   @relation("foods_addons_xid_foodTofoods")
+  img                                            String                    @default("logos/logo") @db.VarChar(35)
+  price                                          Decimal                   @db.Decimal(6, 2)
+  promotion                                      Decimal?                  @db.Decimal(7, 2)
+  stock                                          Boolean                   @default(true)
+  sale                                           Boolean                   @default(true)
+  created_at                                     DateTime?                 @default(now()) @db.Timestamp(6)
+  foods_categories                               foods_categories          @relation(fields: [xid_categorie], references: [id_foods_categories], onDelete: Cascade, onUpdate: NoAction)
+  foods_addons_foods_addons_xid_food_baseTofoods foods_addons[]            @relation("foods_addons_xid_food_baseTofoods")
+  foods_addons_foods_addons_xid_foodTofoods      foods_addons[]            @relation("foods_addons_xid_foodTofoods")
+  foods_extra_ingredients                        foods_extra_ingredients[]
   foods_version                                  foods_version[]
 
   @@schema("diner")
@@ -58,12 +75,23 @@ model foods_addons {
 }
 
 model foods_categories {
-  id String @id @default(dbgenerated("gen_random_uuid()")) @map("id_foods_categories") @db.Uuid
+  id_foods_categories String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   name                String  @unique @db.VarChar(35)
   position_menu       Int     @unique(map: "uq_foods_categories_position_menu")
   position_addons     Int     @unique(map: "uq_foods_categories_position_addons")
   foods               foods[]
 
+  @@schema("diner")
+}
+
+model foods_extra_ingredients {
+  id_foods_extra_ingredients String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  xid_food                   String            @db.Uuid
+  xid_extra_ingredient       String            @db.Uuid
+  extra_ingredients          extra_ingredients @relation(fields: [xid_extra_ingredient], references: [id_extra_ingredient], onDelete: Cascade, onUpdate: NoAction)
+  foods                      foods             @relation(fields: [xid_food], references: [id_food], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([xid_food, xid_extra_ingredient])
   @@schema("diner")
 }
 
@@ -84,38 +112,52 @@ model foods_version {
 }
 
 model orders {
-  id_order          String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  xid_client        String              @db.Uuid
-  total_price       Decimal             @db.Decimal(10, 2)
-  resume_string     String
-  status            String              @db.VarChar(30)
-  created_at        DateTime?           @default(now()) @db.Timestamp(6)
-  client            client              @relation(fields: [xid_client], references: [id_client], onDelete: Cascade, onUpdate: NoAction)
-  orders_food       orders_food[]
-  orders_food_addon orders_food_addon[]
+  id_order      String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  xid_client    String        @db.Uuid
+  total_price   Decimal       @db.Decimal(10, 2)
+  resume_string String
+  status        String        @db.VarChar(30)
+  created_at    DateTime?     @default(now()) @db.Timestamp(6)
+  client        client        @relation(fields: [xid_client], references: [id_client], onDelete: Cascade, onUpdate: NoAction)
+  orders_food   orders_food[]
 
   @@schema("diner")
 }
 
 model orders_food {
-  id_order_food   String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  xid_order       String    @db.Uuid
-  food_id         String    @db.Uuid
-  food_version_id String?   @db.Uuid
-  price           Decimal   @db.Decimal(10, 2)
-  created_at      DateTime? @default(now()) @db.Timestamp(6)
-  orders          orders    @relation(fields: [xid_order], references: [id_order], onDelete: Cascade, onUpdate: NoAction)
+  id_order_food                 String                          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  xid_order                     String                          @db.Uuid
+  food_id                       String                          @db.Uuid
+  food_version_id               String?                         @db.Uuid
+  price                         Decimal                         @db.Decimal(10, 2)
+  created_at                    DateTime?                       @default(now()) @db.Timestamp(6)
+  orders                        orders                          @relation(fields: [xid_order], references: [id_order], onDelete: Cascade, onUpdate: NoAction)
+  orders_food_addon             orders_food_addon[]
+  orders_food_extra_ingredients orders_food_extra_ingredients[]
 
   @@schema("diner")
 }
 
 model orders_food_addon {
-  id_order_food_addon String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  xid_order           String    @db.Uuid
-  xid_foods_addons    String    @db.Uuid
-  price               Decimal   @db.Decimal(10, 2)
-  created_at          DateTime? @default(now()) @db.Timestamp(6)
-  orders              orders    @relation(fields: [xid_order], references: [id_order], onDelete: NoAction, onUpdate: NoAction)
+  id_order_food_addon String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  xid_order_food      String      @db.Uuid
+  xid_foods_addons    String      @db.Uuid
+  price               Decimal     @db.Decimal(10, 2)
+  created_at          DateTime?   @default(now()) @db.Timestamp(6)
+  orders_food         orders_food @relation(fields: [xid_order_food], references: [id_order_food], onDelete: Cascade, onUpdate: NoAction)
+
+  @@schema("diner")
+}
+
+model orders_food_extra_ingredients {
+  id_orders_food_extra_ingredients String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  xid_order_food                   String      @db.Uuid
+  foods_extra_ingredients_id       String      @db.Uuid
+  price_unit                       Decimal     @db.Decimal(10, 2)
+  qty_choice                       Int
+  price_total                      Decimal     @db.Decimal(10, 2)
+  created_at                       DateTime    @default(now()) @db.Timestamp(6)
+  orders_food                      orders_food @relation(fields: [xid_order_food], references: [id_order_food], onDelete: Cascade, onUpdate: NoAction)
 
   @@schema("diner")
 }
@@ -139,18 +181,19 @@ model settings_colors {
 }
 
 view foods_full {
-  id_food        String?  @db.Uuid
-  name           String?  @db.VarChar(30)
-  description    String?
-  img            String?  @db.VarChar(35)
-  id_categorie   String?  @db.Uuid
-  name_categorie String?  @db.VarChar(35)
-  price          Decimal? @db.Decimal(6, 2)
-  promotion      Decimal? @db.Decimal(7, 2)
-  stock          Boolean?
-  sale           Boolean?
-  versions       Json?
-  addons         Json?
+  id_food           String?  @db.Uuid
+  name              String?  @db.VarChar(30)
+  description       String?
+  img               String?  @db.VarChar(35)
+  id_categorie      String?  @db.Uuid
+  name_categorie    String?  @db.VarChar(35)
+  price             Decimal? @db.Decimal(6, 2)
+  promotion         Decimal? @db.Decimal(7, 2)
+  stock             Boolean?
+  sale              Boolean?
+  versions          Json?
+  addons            Json?
+  extra_ingredients Json?
 
   @@schema("diner")
 }
