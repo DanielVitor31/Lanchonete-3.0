@@ -1,19 +1,19 @@
 "use client";
 
-import { supabaseStorageURL, moneyFormatBRL } from "@/ultils/ultils";
-import { useState } from "react";
+import type { OrderArrayChosenType } from "@/types/typeFood";
 import { buttonClasses } from "@/styles/preset";
-import type { Option, PagesType } from "./functions";
 
 
 type Props = {
-    setPageCurrent: (valor: number) => void;
-    handleOrderFinish: () => void;
-    page: PagesType;
-    optionsSelect: { [key: number]: number };
+    setPageCurrentIndex: (valor: number) => void;
+    // handleOrderFinish: () => void;
+    pageCurrentName: string;
+    pageCurrentIndex: number;
+    complementSelect: OrderArrayChosenType;
+    pageAddons: number;
 }
 
-export default function ButtonsElement({ setPageCurrent, handleOrderFinish, page, optionsSelect }: Props) {
+export default function ButtonsElement({ setPageCurrentIndex,  pageCurrentName, pageCurrentIndex, complementSelect, pageAddons }: Props) {
 
 
 
@@ -21,25 +21,25 @@ export default function ButtonsElement({ setPageCurrent, handleOrderFinish, page
         <>
             <button
                 type="button"
-                onClick={() => setPageCurrent(page.current - 1)}
+                onClick={() => setPageCurrentIndex(pageCurrentIndex - 1)}
                 className={`${buttonClasses} px-3 py-1 text-xs md:text-sm`}
-                disabled={page.min === page.current}
+                disabled={pageCurrentIndex ===  0}
             >
                 Voltar
             </button>
-            {page.last !== page.current ? (
+            {pageCurrentName !== "orderEnd" ? (
                 <button
                     type="button"
-                    onClick={() => setPageCurrent(page.current + 1)}
+                    onClick={() => setPageCurrentIndex(pageCurrentIndex + 1)}
                     className={`${buttonClasses} px-3 py-1 text-xs md:text-sm`}
-                    disabled={!(page.current in optionsSelect)}
+                    disabled={ !(["versions", "extraIgrediens"].includes(pageCurrentName))  && complementSelect[2][pageAddons] === undefined}
                 >
                     Próximo
                 </button>
             ) : (
                 <button
                     type="button"
-                    onClick={() => handleOrderFinish()}
+                    onClick={() => console.log("Finalizar pedido")}
                     className={`${buttonClasses} px-3 py-1 text-xs md:text-sm`}
                 >
                     Finalizar

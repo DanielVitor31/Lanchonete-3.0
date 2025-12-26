@@ -2,7 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 //import type { foods_full } from "@prisma/client";
-import type { FoodsGrouped, FoodFull, FoodVersion, FoodAddonGroupedCategory, FoodsVersionGrouped } from "@/types/typeFood";
+import type { FoodsGrouped, FoodFull, FoodVersion, FoodAddonGroupedCategory, FoodsVersionGrouped, FoodExtraIgredien } from "@/types/typeFood";
 
 export async function getFoodsGrouped(): Promise<FoodsGrouped> {
   const rows = await prisma.foods_full.findMany();
@@ -12,6 +12,10 @@ export async function getFoodsGrouped(): Promise<FoodsGrouped> {
   for (const row of rows) {
     const versionsArr = Array.isArray(row.versions)
       ? (row.versions as unknown as FoodVersion[])
+      : [];
+
+    const extraIgrediens = Array.isArray(row.extra_ingredients)
+      ? (row.extra_ingredients as unknown as FoodExtraIgredien[])
       : [];
 
     const addons = Array.isArray(row.addons)
@@ -26,17 +30,18 @@ export async function getFoodsGrouped(): Promise<FoodsGrouped> {
     const food: FoodFull = {
       id_food: row.id_food!,
       name: row.name!,
-      description: row.description!, 
+      description: row.description!,
       img: row.img!,
       id_categorie: row.id_categorie!,
       name_categorie: row.name_categorie!,
       price: Number(row.price!),
-      promotion:row.promotion === null || row.promotion === undefined
-          ? null
-          : Number(row.promotion),
+      promotion: row.promotion === null || row.promotion === undefined
+        ? null
+        : Number(row.promotion),
       stock: row.stock!,
       sale: row.sale!,
       versions,
+      extraIgrediens,
       addons,
     };
 

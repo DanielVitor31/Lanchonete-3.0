@@ -28,7 +28,8 @@ LEFT JOIN LATERAL (
                     'id_food',        fv.xid_food,
                     'id_categorie',   f.xid_categorie,
                     'name_categorie', c.name,
-                    'name',           f.name || ' (' || fv.name || ')',
+                    'name',           f.name,
+                    'name_version',   fv.name,
                     'description',    fv.description,
                     'img',            f.img,
                     'price',          fv.price,
@@ -107,6 +108,7 @@ LEFT JOIN LATERAL (
                     'price',              ei.price,
                     'promotion',          ei.promotion,
                     'qty_max',            ei.qty_max,
+                    'qty_chosen',         0,
                     'stock',              ei.stock,
                     'sale',               ei.sale,
                     'created_at',         ei.created_at

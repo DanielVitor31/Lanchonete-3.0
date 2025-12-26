@@ -34,11 +34,9 @@ FROM
                   'name_categorie',
                   c.name,
                   'name',
-                  (
-                    (
-                      ((f.name) :: text || ' (' :: text) || (fv.name) :: text
-                    ) || ')' :: text
-                  ),
+                  f.name,
+                  'name_version',
+                  fv.name,
                   'description',
                   fv.description,
                   'img',
@@ -73,13 +71,13 @@ FROM
           FROM
             (
               (
-                diner.foods_addons fai
-                JOIN diner.foods fc ON ((fc.id_food = fai.xid_food))
+                diner.foods_addons fa
+                JOIN diner.foods fc ON ((fc.id_food = fa.xid_food))
               )
               JOIN diner.foods_categories cat ON ((cat.id_foods_categories = fc.xid_categorie))
             )
           WHERE
-            (fai.xid_food_base = f.id_food)
+            (fa.xid_food_base = f.id_food)
         ),
         items_by_cat AS (
           SELECT
@@ -123,8 +121,7 @@ FROM
                 COALESCE(ibc.items, '[]' :: jsonb)
               )
               ORDER BY
-                cl.position_addons,
-                cl.name
+                cl.position_addons
             ),
             '[]' :: jsonb
           ) AS addons
@@ -156,6 +153,8 @@ FROM
               ei.promotion,
               'qty_max',
               ei.qty_max,
+              'qty_chosen',
+              0,
               'stock',
               ei.stock,
               'sale',
@@ -164,8 +163,8 @@ FROM
               ei.created_at
             )
             ORDER BY
-              ei.name,
-              ei.price
+              ei.price,
+              ei.name
           ),
           '[]' :: jsonb
         ) AS extra_ingredients

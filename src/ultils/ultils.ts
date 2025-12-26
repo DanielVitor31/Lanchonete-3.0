@@ -80,6 +80,5 @@ export function invertObject<T extends Record<PropertyKey, PropertyKey>>(obj: T)
 
 
 
-
-
+export const extrackTitleVersion = (nameVersion: string) =>  nameVersion.replace(")", "").split(" (");
 
