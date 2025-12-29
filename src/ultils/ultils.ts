@@ -1,8 +1,12 @@
 export const moneyFormatBRL = (value: number) =>
-  value.toLocaleString("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-  });
+  value
+    .toLocaleString("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    })
+    .normalize("NFKC")
+    .replace(/\s+/g, ' ');
+
 
 export const supabaseStorageURL = (arquivo: string) => 
   `https://tcbwhkdbktgzelgtyzgv.supabase.co/storage/v1/object/public/image/${arquivo}.webp`;
@@ -77,8 +81,17 @@ export function invertObject<T extends Record<PropertyKey, PropertyKey>>(obj: T)
 }
 
 
+export function arrayToMap<T, K extends string | number>(
+  rows: T[],
+  getKey: (row: T) => K
+): Map<string, T> {
+  const m = new Map<string, T>();
+  for (const row of rows) m.set(String(getKey(row)), row);
+  return m;
+}
 
 
 
-export const extrackTitleVersion = (nameVersion: string) =>  nameVersion.replace(")", "").split(" (");
+
+
 

@@ -3,9 +3,9 @@
 import type { OrderArrayChosenType } from "@/types/typeFood";
 import { buttonClasses } from "@/styles/preset";
 
-
 type Props = {
     setPageCurrentIndex: (valor: number) => void;
+    handleOrderFinish: () => void;
     // handleOrderFinish: () => void;
     pageCurrentName: string;
     pageCurrentIndex: number;
@@ -13,8 +13,7 @@ type Props = {
     pageAddons: number;
 }
 
-export default function ButtonsElement({ setPageCurrentIndex,  pageCurrentName, pageCurrentIndex, complementSelect, pageAddons }: Props) {
-
+export default function ButtonsElement({ setPageCurrentIndex, handleOrderFinish,  pageCurrentName, pageCurrentIndex, complementSelect, pageAddons }: Props) {
 
 
     return (
@@ -39,7 +38,7 @@ export default function ButtonsElement({ setPageCurrentIndex,  pageCurrentName, 
             ) : (
                 <button
                     type="button"
-                    onClick={() => console.log("Finalizar pedido")}
+                    onClick={() => handleOrderFinish()}
                     className={`${buttonClasses} px-3 py-1 text-xs md:text-sm`}
                 >
                     Finalizar
@@ -48,3 +47,5 @@ export default function ButtonsElement({ setPageCurrentIndex,  pageCurrentName, 
         </>
     )
 }
+
+

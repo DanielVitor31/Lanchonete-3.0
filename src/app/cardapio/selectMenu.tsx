@@ -4,10 +4,12 @@ import { supabaseStorageURL, moneyFormatBRL } from "@/ultils/ultils";
 import type { FoodsGrouped, FoodFull, OrderArrayType, OrderArrayChosenType, FoodTypes, FoodVersion, FoodAddon } from "@/types/typeFood";
 import { useState, useMemo } from "react";
 import { X } from "lucide-react";
-import { loadAddons, pagesNavFunc, pricesCalc, orderArrayString, orderStringFunc } from "./functions"
+import { loadAddons, pagesNavFunc, pricesCalc, orderArrayStringFunc, orderStringFunc } from "./functions"
 import AddonsElement from "./complements"
 import ButtonsElement from "./buttons"
 import Check from "./check";
+import createOrderDB from "./createOrderDB";
+import validateOrder from "../finalizar_pedido/validateOrder";
 
 
 
@@ -49,9 +51,10 @@ export default function SelectMenu({ open, foods, food }: Props) {
     return pricesCalc(complementSelect, food);
   }, [complementSelect])
 
-  const orderString = orderArrayString(complementSelect, food);
-  console.log("orderString", orderString);
-  console.log("orderString (texto):\n", orderStringFunc(orderString, priceTotal));
+  const orderArrayString = orderArrayStringFunc(complementSelect, food);
+  const orderString = orderStringFunc(orderArrayString, priceTotal);
+  //console.log("orderArrayString", orderArrayString);
+  //console.log("orderString (texto):\n", orderString);
 
   const handleSelectOption = (option: FoodTypes | number, optionIndice: number) => {
     setComplementSelect(prev => {
@@ -79,6 +82,13 @@ export default function SelectMenu({ open, foods, food }: Props) {
       return next;
     });
   };
+
+  const handleOrderFinish = async () => {
+    await createOrderDB({ food, total_price: priceTotal, orderString: orderString, orderReady: complementSelect });
+    console.log("Finalizar pedido - Enviando para o DB...");
+  }
+
+  if (true) console.log(validateOrder());
 
 
 
@@ -135,7 +145,7 @@ export default function SelectMenu({ open, foods, food }: Props) {
                       Esse item não possui versões ou complementos.
                     </p>
                   ) : (
-                    <Check data={orderString} />
+                    <Check data={orderArrayString} />
                   )}
                 </>
               )
@@ -155,7 +165,7 @@ export default function SelectMenu({ open, foods, food }: Props) {
             </div>
 
             <div className="flex items-center gap-2">
-              <ButtonsElement setPageCurrentIndex={setPageCurrentIndex} pageCurrentName={pageCurrentName} pageCurrentIndex={pageCurrentIndex} complementSelect={complementSelect} pageAddons={pageAddons} />
+              <ButtonsElement handleOrderFinish={handleOrderFinish} setPageCurrentIndex={setPageCurrentIndex} pageCurrentName={pageCurrentName} pageCurrentIndex={pageCurrentIndex} complementSelect={complementSelect} pageAddons={pageAddons} />
             </div>
           </footer>
         </div>

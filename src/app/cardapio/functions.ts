@@ -1,5 +1,5 @@
 
-import type { FoodsGrouped, FoodAddon, FoodFull, OrderArrayType, FoodVersion, OrderArrayChosenType, FoodExtraIgredien, OrderFoodStringType, OrderIngredientStringType, OrderArrayStringType } from "@/types/typeFood";
+import type { FoodsGrouped, FoodAddon, FoodFull, OrderArrayType, FoodVersion, OrderArrayChosenType, FoodExtraIgredien, OrderArrayStringType } from "@/types/typeFood";
 import { OPTION_NULL } from "@/constants";
 import { moneyFormatBRL, extrackTitleVersion } from "@/ultils/ultils";
 
@@ -138,7 +138,7 @@ export function complementsInfos(kind: string, OrderArray: OrderArrayType, compl
 };
 
 
-export function orderArrayString(complementSelect: OrderArrayChosenType, food: FoodFull): OrderArrayStringType {
+export function orderArrayStringFunc(complementSelect: OrderArrayChosenType, food: FoodFull): OrderArrayStringType {
     const [version, extraIgrediens, addons] = complementSelect;
 
     const foodBase = version ?? food;
