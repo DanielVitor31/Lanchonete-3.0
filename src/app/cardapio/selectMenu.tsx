@@ -53,8 +53,6 @@ export default function SelectMenu({ open, foods, food }: Props) {
 
   const orderArrayString = orderArrayStringFunc(complementSelect, food);
   const orderString = orderStringFunc(orderArrayString, priceTotal);
-  //console.log("orderArrayString", orderArrayString);
-  //console.log("orderString (texto):\n", orderString);
 
   const handleSelectOption = (option: FoodTypes | number, optionIndice: number) => {
     setComplementSelect(prev => {
@@ -88,7 +86,6 @@ export default function SelectMenu({ open, foods, food }: Props) {
     console.log("Finalizar pedido - Enviando para o DB...");
   }
 
-  if (true) console.log(validateOrder());
 
 
 

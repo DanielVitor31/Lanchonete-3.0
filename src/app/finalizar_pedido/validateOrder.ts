@@ -1,10 +1,9 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { Prisma } from "@prisma/client";
+import Decimal from "decimal.js";
 import { USER_DEFAULT } from "@/constants";
 import { searchdb } from "./functions";
-export type dataOrder = { price: number, sale: boolean, stock: boolean }
 import type { FoodsLite, VersionsLite, AddonsLite, FoodIngredientsLite } from "./functions"
 
 
@@ -92,7 +91,7 @@ export default async function validateOrder() {
     const invalidOrderFoodIds = new Set<string>();
 
 
-    const validate = (obj: FoodsLite | VersionsLite | AddonsLite | FoodIngredientsLite | undefined, value: Prisma.Decimal) => {
+    const validate = (obj: FoodsLite | VersionsLite | AddonsLite | FoodIngredientsLite | undefined, value: Decimal) => {
         if (!obj) return true;
         if (obj.price.toNumber() !== value.toNumber()) return true;
         if (!obj.stock) return true;
@@ -145,17 +144,16 @@ export default async function validateOrder() {
 
     const invalidIdsArr = [...invalidOrderFoodIds];
 
-    // if (invalidIdsArr.length > 0) {
-    //     await prisma.orders.deleteMany({
-    //         where: {
-    //             id_order: { in: invalidIdsArr },
-    //             status: "cart",
-    //             xid_client: USER_DEFAULT,
-    //         },
-    //     });
-    // }
+    if (invalidIdsArr.length > 0) {
+        await prisma.orders.deleteMany({
+            where: {
+                id_order: { in: invalidIdsArr },
+                status: "cart",
+                xid_client: USER_DEFAULT,
+            },
+        });
+    }
 
-    console.log("Itens para remover", invalidIdsArr);
 
     return;
 }

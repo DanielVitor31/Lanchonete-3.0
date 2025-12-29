@@ -1,7 +1,6 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-//import type { foods_full } from "@prisma/client";
 import type { FoodsGrouped, FoodFull, FoodVersion, FoodAddonGroupedCategory, FoodsVersionGrouped, FoodExtraIgredien } from "@/types/typeFood";
 
 export async function getFoodsGrouped(): Promise<FoodsGrouped> {

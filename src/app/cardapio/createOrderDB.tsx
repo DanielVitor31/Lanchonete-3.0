@@ -1,9 +1,8 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import type { FoodFull, FoodAddon, OrderArrayChosenType } from "@/types/typeFood"
+import type { FoodFull, OrderArrayChosenType } from "@/types/typeFood"
 import { USER_DEFAULT } from "@/constants"
-import validateOrder from "@/app/finalizar_pedido/validateOrder"
 
 type Props = {
   total_price: number;

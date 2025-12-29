@@ -3,7 +3,7 @@
 import { supabaseStorageURL, moneyFormatBRL} from "@/ultils/ultils";
 import { culoriCalc } from "@/ultils/colors";
 import { useState } from "react";
-import type { FoodsGrouped, FoodsCategory, FoodsCategoryObj } from "@/types/typeFood";
+import type { FoodsGrouped, FoodsCategoryObj } from "@/types/typeFood";
 import SelectMenu from "./selectMenu";
 import { useAppSettings } from "@/context/AppSettingsContext";
 

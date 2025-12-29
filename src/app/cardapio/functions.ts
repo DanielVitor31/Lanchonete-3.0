@@ -1,7 +1,7 @@
 
 import type { FoodsGrouped, FoodAddon, FoodFull, OrderArrayType, FoodVersion, OrderArrayChosenType, FoodExtraIgredien, OrderArrayStringType } from "@/types/typeFood";
 import { OPTION_NULL } from "@/constants";
-import { moneyFormatBRL, extrackTitleVersion } from "@/ultils/ultils";
+import { moneyFormatBRL } from "@/ultils/ultils";
 
 
 export function loadAddons(food: FoodFull, foods: FoodsGrouped) {
@@ -73,29 +73,6 @@ export function pricesCalc(complementSelect: OrderArrayChosenType, food: FoodFul
     return prices
 }
 
-
-
-
-
-// export function orderFinishOBJ(hasAddons: boolean, hasVersion: boolean, foodVersions: FoodVersion[], optionsSelect: { [key: number]: number }, food: FoodFull, foodAddons: Option[][]) {
-//     const orderFinish = Object.entries(optionsSelect).reduce((acc, [key, value]) => {
-//         const index = Number(key);
-
-//         if (index === 0) {
-//             acc.push(hasVersion ? foodVersions[value] : food);
-//         } else if (hasAddons) {
-//             acc.push(foodAddons[index][value]);
-//         }
-
-//         return acc;
-//     }, [] as OrderArrayType[]);
-
-//     return orderFinish
-// }
-
-/**
- * Função que monta o resumo do pedido em um array de strings
- */
 
 
 

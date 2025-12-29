@@ -1,7 +1,7 @@
 "use client";
 
 import { useAppSettings } from "@/context/AppSettingsContext";
-import type { FoodsGrouped, FoodAddon, FoodFull, OrderArrayType, FoodVersion, OrderArrayChosenType, FoodExtraIgredien, OrderFoodStringType, OrderIngredientStringType, OrderArrayStringType } from "@/types/typeFood";
+import type { OrderArrayStringType } from "@/types/typeFood";
 
 
 type Props = {

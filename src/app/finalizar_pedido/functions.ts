@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { arrayToMap } from "@/ultils/ultils"
-import { Prisma } from "@prisma/client";
+import Decimal from "decimal.js";
 
 
 
@@ -41,7 +41,7 @@ const findAddons = async (ids: string[]) => {
 
         return {
             id_foods_addon: r.id_foods_addon,
-            price: r.free ? new Prisma.Decimal(0) : source.price,
+            price: r.free ? new Decimal(0) : source.price,
             stock: source.stock,
             sale: source.sale,
         };
@@ -112,14 +112,3 @@ export async function searchdb(type: SearchType, ids: string[]) {
 //#endregion
 
 
-
-// Entrega os ids ausentes
-export function searchIdsMissing(data: string[], ids: string[], collumn: string) {
-
-    if (data.length === 0) return [];
-
-    const dataIds = data.map((item: any) => item[collumn]);
-    const idsMissing = ids.filter((id) => !dataIds.includes(id));
-
-    return idsMissing
-}
