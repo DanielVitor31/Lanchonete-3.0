@@ -3,12 +3,12 @@ CREATE TABLE diner.orders_food_extra_ingredients (
     xid_order_food                       UUID REFERENCES diner.orders_food (id_order_food) ON DELETE CASCADE NOT NULL,
     foods_extra_ingredients_id           UUID NOT NULL,
     price_unit                           NUMERIC(10,2) NOT NULL,
-    qty_choice                           INTEGER NOT NULL,
+    qty_chosen                           INTEGER NOT NULL,
     price_total                          NUMERIC(10,2) NOT NULL,
     created_at                           TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
-insert into diner.orders_food_extra_ingredients (id_orders_food_extra_ingredients, xid_order_food, foods_extra_ingredients_id, price_unit, qty_choice, price_total, created_at)
+insert into diner.orders_food_extra_ingredients (id_orders_food_extra_ingredients, xid_order_food, foods_extra_ingredients_id, price_unit, qty_chosen, price_total, created_at)
 values  ('b5950179-07d2-44b5-9325-1af36e8bd36a', '876b3923-a02d-4909-9083-f39b2c198e8a', '48af388c-215f-443a-9208-ead0ae1eaa6c', 3.00, 1, 3.00, '2025-12-15 04:10:52.024585'),
         ('92aaa07f-4c81-4f53-8dc4-e7506ad7fa08', '876b3923-a02d-4909-9083-f39b2c198e8a', 'ab65732e-ca19-4dd7-9fc8-7c8121adf798', 4.00, 2, 8.00, '2025-12-15 04:10:52.024585'),
         ('43c2a8b7-84be-40e1-aa23-c6e8b87a52b2', '876b3923-a02d-4909-9083-f39b2c198e8a', '499db861-77b1-4610-b9e5-1a614c0644b2', 4.00, 3, 12.00, '2025-12-15 04:10:52.024585'),

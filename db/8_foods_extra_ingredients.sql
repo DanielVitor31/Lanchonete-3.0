@@ -1,7 +1,10 @@
 CREATE TABLE diner.foods_extra_ingredients (
     id_foods_extra_ingredients UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     xid_food                   UUID REFERENCES diner.foods (id_food) ON DELETE CASCADE NOT NULL,
-    xid_extra_ingredient       UUID REFERENCES diner.extra_ingredients (id_extra_ingredient) ON DELETE CASCADE NOT NULL,
+    xid_extra_ingredient       UUID 
+    REFERENCES diner.extra_ingredients (id_extra_ingredient) 
+    ON DELETE CASCADE
+    NOT NULL,
 
     UNIQUE (xid_food, xid_extra_ingredient)
 );

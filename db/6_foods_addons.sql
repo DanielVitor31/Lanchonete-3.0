@@ -1,8 +1,21 @@
 CREATE TABLE diner.foods_addons (
     id_foods_addon UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    xid_food_base UUID NOT NULL REFERENCES diner.foods(id_food) ON DELETE CASCADE NOT NULL,
-    xid_food UUID NOT NULL REFERENCES diner.foods(id_food) ON DELETE CASCADE NOT NULL,
-    xid_food_version UUID REFERENCES diner.foods_version(id_food_version) ON DELETE CASCADE,
+
+    xid_food_base UUID NOT NULL
+        REFERENCES diner.foods(id_food)
+        ON DELETE CASCADE
+        CONSTRAINT food_base,
+
+    xid_food UUID NOT NULL
+        REFERENCES diner.foods(id_food)
+        ON DELETE CASCADE
+        CONSTRAINT food,
+
+    xid_food_version UUID
+        REFERENCES diner.foods_version(id_food_version)
+        ON DELETE CASCADE
+        CONSTRAINT food_version,
+        
     free BOOLEAN DEFAULT FALSE NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
 
