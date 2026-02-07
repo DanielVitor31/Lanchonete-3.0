@@ -1,7 +1,10 @@
 import Link from "next/link";
 
-export default function OrderStatus() {
+type Props = {
+  open: (value: null | string) => void;
+};
 
+export default function FinishNav({ open }: Props) {
 
   return (
     <div className="min-h-[calc(100vh-120px)] flex items-center justify-center px-4">
@@ -16,16 +19,15 @@ export default function OrderStatus() {
         </p>
 
         <div className="flex flex-col gap-3">
-          <Link
-            href="/cardapio"
+          <button
+            onClick={() => open(null)}
             className="w-full rounded-lg bg-zinc-800 hover:bg-zinc-700 text-white py-3 transition text-center"
-          //onClick={() => handleSelectOption("cart")}
           >
             Continuar comprando
-          </Link>
+          </button>
 
           <Link
-            href="/checkout"
+            href="/"
             prefetch={false}
             className="w-full rounded-lg bg-base-tematica-1 hover:bg-tematica-2 text-black font-medium py-3 transition text-center"
           >

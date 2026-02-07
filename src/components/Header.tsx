@@ -6,7 +6,7 @@ import { ROUTES_STRING } from "@/constants";
 import { supabaseStorageURL } from "@/ultils/ultils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import type { ColorsDB } from "@/types/typeFood";
+import type { ColorsDB } from "@/types/typeFood2";
 
 type Props = {
   colorsDB: Record<string, ColorsDB>;

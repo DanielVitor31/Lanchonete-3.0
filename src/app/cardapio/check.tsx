@@ -1,19 +1,21 @@
 "use client";
 
 import { useAppSettings } from "@/context/AppSettingsContext";
-import type { OrderArrayStringType } from "@/types/typeFood";
-
+import type { OrderArrayStringType } from "@/types/typeFood2";
+import type { orderArrayStringFuncType } from "./functions"
 
 type Props = {
-  data: OrderArrayStringType;
+  data: orderArrayStringFuncType;
 };
+
 
 export default function Check({ data }: Props) {
   const { settings } = useAppSettings(); // se não usar, pode remover
-  const [base, ingredients, addons] = data;
 
-  const hasIngredients = ingredients.length > 0;
-  const hasAddons = addons.length > 0;
+  const hasVersion = "id_food_version" in data.foodBase;
+  const _name = "id_food_version" in data.foodBase ? `${data.foodBase.name_food} (${data.foodBase.name})}` : data.foodBase.name;
+  const hasIngredients = data.extraIngredients.length > 0;
+  const hasAddons = data.addons.length > 0;
 
   return (
     <div
@@ -56,15 +58,15 @@ export default function Check({ data }: Props) {
       {/* Item base */}
       <div className="rounded-xl px-3 py-2.5 bg-black/10 ring-1 ring-black/10">
         <div className="flex items-center justify-between gap-2 mb-1.5">
-          <p className="text-sm font-semibold text-zinc-100">{base.name}</p>
+          <p className="text-sm font-semibold text-zinc-100">{_name}</p>
           <span className="text-[10px] uppercase tracking-wide text-zinc-400">
             Item
           </span>
         </div>
 
-        {base.version && (
+        {hasVersion && (
           <p className="text-[11px] font-medium text-amber-200/90">
-            Versão: {base.version}
+            Versão: {data.foodBase.name}
           </p>
         )}
 
@@ -73,7 +75,7 @@ export default function Check({ data }: Props) {
             Valor
           </span>
           <span className="text-dinheiro-6 text-sm font-semibold tabular-nums">
-            {base.price}
+            {data.foodBase.price}
           </span>
         </div>
       </div>
@@ -89,7 +91,7 @@ export default function Check({ data }: Props) {
           </div>
 
           <div className="space-y-1">
-            {ingredients.map((it, idx) => (
+            {data.extraIngredients.map((it, idx) => (
               <div key={idx} className="flex items-center justify-between text-xs">
                 <p className="text-zinc-200">
                   {it.qty_chosen}x {it.name}
@@ -112,7 +114,7 @@ export default function Check({ data }: Props) {
           </div>
 
           <div className="space-y-1">
-            {addons.map((a, idx) => (
+            {data.addons.map((a, idx) => (
               <div key={idx} className="flex items-center justify-between text-xs">
                 <div className="flex flex-col">
                   <p className="text-zinc-200">{a.name}</p>

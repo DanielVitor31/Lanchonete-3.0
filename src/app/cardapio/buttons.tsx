@@ -1,7 +1,7 @@
 "use client";
 
-import type { OrderArrayChosenType } from "@/types/typeFood";
 import { buttonClasses } from "@/styles/preset";
+import type { OrderArrayChosenType } from "@/types/typeFood";
 
 type Props = {
     setPageCurrentIndex: (valor: number) => void;
@@ -10,10 +10,9 @@ type Props = {
     pageCurrentName: string;
     pageCurrentIndex: number;
     complementSelect: OrderArrayChosenType;
-    pageAddons: number;
 }
 
-export default function ButtonsElement({ setPageCurrentIndex, handleOrderFinish,  pageCurrentName, pageCurrentIndex, complementSelect, pageAddons }: Props) {
+export default function ButtonsElement({ setPageCurrentIndex, handleOrderFinish, pageCurrentName, pageCurrentIndex, complementSelect }: Props) {
 
 
     return (
@@ -21,8 +20,8 @@ export default function ButtonsElement({ setPageCurrentIndex, handleOrderFinish,
             <button
                 type="button"
                 onClick={() => setPageCurrentIndex(pageCurrentIndex - 1)}
-                className={`${buttonClasses} px-3 py-1 text-xs md:text-sm`}
-                disabled={pageCurrentIndex ===  0}
+                className={`${buttonClasses} h-full px-3 py-0 text-xs md:text-sm`}
+                disabled={pageCurrentIndex === 0}
             >
                 Voltar
             </button>
@@ -30,8 +29,8 @@ export default function ButtonsElement({ setPageCurrentIndex, handleOrderFinish,
                 <button
                     type="button"
                     onClick={() => setPageCurrentIndex(pageCurrentIndex + 1)}
-                    className={`${buttonClasses} px-3 py-1 text-xs md:text-sm`}
-                    disabled={ !(["versions", "extraIgrediens"].includes(pageCurrentName))  && complementSelect[2][pageAddons] === undefined}
+                    className={`${buttonClasses} h-full px-3 py-0 text-xs md:text-sm`}
+                    disabled={!(["versions", "extraIgrediens"].includes(pageCurrentName)) && !(complementSelect.addons.has(pageCurrentName))}
                 >
                     Próximo
                 </button>
@@ -39,7 +38,7 @@ export default function ButtonsElement({ setPageCurrentIndex, handleOrderFinish,
                 <button
                     type="button"
                     onClick={() => handleOrderFinish()}
-                    className={`${buttonClasses} px-3 py-1 text-xs md:text-sm`}
+                    className={`${buttonClasses} h-full px-3 py-0 text-xs md:text-sm`}
                 >
                     Finalizar
                 </button>

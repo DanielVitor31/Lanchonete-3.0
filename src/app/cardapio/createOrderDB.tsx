@@ -1,21 +1,20 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import type { FoodFull, OrderArrayChosenType } from "@/types/typeFood"
+import type { OrderArrayChosenType } from "@/types/typeFood"
 import { USER_DEFAULT } from "@/constants"
+import type { FoodFullMap, FoodFullObj, FoodFull, Version, ExtraIngredient, Addon, Food } from "./actions/getFoodsGrouped"
 
 type Props = {
   total_price: number;
   orderString: string;
   orderReady: OrderArrayChosenType;
-  food: FoodFull;
+  food: Food;
 }
 
-export default async function createOrder({food, total_price, orderString, orderReady }: Props) {
+export default async function createOrder({ food, total_price, orderString, orderReady }: Props) {
 
-  const [version, ingredients, addons] = orderReady;
-
-  const foodBase = version ?? food;
+  const version = orderReady.versions;
 
   return prisma.$transaction(async (tx) => {
     // 1) orders
@@ -32,42 +31,38 @@ export default async function createOrder({food, total_price, orderString, order
     const orders_food = await tx.orders_food.create({
       data: {
         xid_order: order.id_order,
-        food_id: foodBase.id_food,
-        food_version_id: "id_version" in foodBase ? foodBase.id_version : null,
-        price: foodBase.price,
+        food_id: version?.xid_food ?? food.id_food,
+        food_version_id: version?.id_food_version,
+        price: version?.price ?? food.price,
       },
     });
 
     // 3) orders_food_extra_ingredients
-    if (ingredients.length > 0) {
+    if (orderReady.extraIngredients.size > 0) {
       await tx.orders_food_extra_ingredients.createMany({
-        data: ingredients
-        .filter(ingredient => ingredient.qty_chosen > 0)
-        .map((ingredient) => ({
-          xid_order_food: orders_food.id_order_food,
-          foods_extra_ingredients_id: ingredient.id_foods_extra_ingredients,
-          price_unit: ingredient.price,
-          qty_chosen: ingredient.qty_chosen,
-          price_total: ingredient.price * ingredient.qty_chosen,
-        })),
+        data: [...orderReady.extraIngredients.values()].map((ingredient) => ({
+            xid_order_food: orders_food.id_order_food,
+            foods_extra_ingredients_id: ingredient.id_extra_ingredient,
+            price_unit: ingredient.price,
+            qty_chosen: ingredient.qty_chosen,
+            price_total: ingredient.price * ingredient.qty_chosen,
+          })),
       });
     }
 
     // 4) orders_food_addon 
-    if (addons.length > 0) {
+    if (orderReady.addons.size > 0) {
 
       await tx.orders_food_addon.createMany({
-        data: addons
-        .filter(addon => addon.id_food !== "null")
-        .map((addon) => ({
-          xid_order_food: orders_food.id_order_food,
-          foods_addons_id: addon.id_addon,
-          price: addon.free ? 0.0 : addon.price,
-        })),
+        data: [...orderReady.addons.values()]
+          .filter(addon => !(addon.id_foods_addon.includes("null")))
+          .map((addon) => ({
+            xid_order_food: orders_food.id_order_food,
+            foods_addons_id: addon.id_foods_addon,
+            price: addon.free ? 0.0 : addon.price,
+          })),
       });
     }
-
-
 
     return order.id_order;
   });

@@ -1,3 +1,4 @@
+@config "../../tailwind.config.cjs";
 @import "tailwindcss";
 
 
@@ -16,8 +17,6 @@
   --color-dinheiro-6: var(--dinheiro);
 }
 
-
-
 @keyframes slideDown {
   from { opacity: 0; transform: translateY(-10px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -28,6 +27,38 @@
 }
 
 
+/* Scrollbar global (estilo consistente com o select menu) */
+:root {
+  --scrollbar-thumb: rgba(255, 255, 255, 0.35);
+  --scrollbar-thumb-hover: rgba(255, 255, 255, 0.55);
+  --scrollbar-track: rgba(0, 0, 0, 0.25);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
+
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+  border-radius: 999px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+}
 
 /* bg-mint-500	       background-color
 text-mint-500	         color (texto)

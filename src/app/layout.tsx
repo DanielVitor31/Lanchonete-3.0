@@ -1,31 +1,23 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import RootLayoutClient from "./RootLayoutClient";
-import { prisma } from "@/lib/prisma";
 import { Suspense } from "react";
 import Loading from "./loading";
+import { getSettingsCached, getSettingsColorsCached } from "@/app/actions/cachedSettings"
 
 export const metadata: Metadata = {
   title: "Lanchonete 3.0",
   description: "Sistema da lanchonete",
 };
 
+export const viewport: Viewport = {
+  themeColor: "#ff4da6",
+};
+
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  try {
-    const colorsDB = await prisma.settings_colors.findMany({
-      select: {
-        name: true,
-        value: true,
-      }
-    });
+    const colorsDB = await getSettingsColorsCached();
 
-    if (!colorsDB.length) {
-      throw new Error("DB_EMPTY");
-    }
-
-    const settings  = await prisma.settings.findMany();
-
-
+    const settings  = await getSettingsCached();
 
     return (
       <html lang="pt-BR">
@@ -41,10 +33,5 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         </body>
       </html>
     );
-  } catch (err: any) {
-    console.error("Erro ao acessar DB:", err);
-
-    throw new Error("DB_ERROR");
-  }
-
+  
 }

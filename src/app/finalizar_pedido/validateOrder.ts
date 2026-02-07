@@ -1,5 +1,3 @@
-"use server";
-
 import { prisma } from "@/lib/prisma";
 import Decimal from "decimal.js";
 import { USER_DEFAULT } from "@/constants";

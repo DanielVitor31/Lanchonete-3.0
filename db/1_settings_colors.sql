@@ -1,6 +1,5 @@
 CREATE TABLE diner.settings_colors (
-    id_settings_colors UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    name VARCHAR(30) NOT NULL UNIQUE,
+    name VARCHAR(30) PRIMARY KEY,
     value VARCHAR(50) NOT NULL,
     value_default VARCHAR(50) NOT NULL,
     calc_color numeric(10,2)[],

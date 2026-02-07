@@ -9,7 +9,6 @@ SELECT
     f.price          AS price,
     f.promotion      AS promotion,
     f.stock          AS stock,
-    f.sale           AS sale,
 
     COALESCE(v.versions, '[]'::jsonb)                 AS versions,
     COALESCE(a.addons,   '[]'::jsonb)                 AS addons,
@@ -18,7 +17,7 @@ SELECT
 FROM diner.foods f
 JOIN diner.foods_categories c ON c.id_foods_categories = f.xid_categorie
 
-/* versões da comida (ordenadas) */
+-- versões da comida (ordenadas)
 LEFT JOIN LATERAL (
     SELECT
         COALESCE(
@@ -34,18 +33,17 @@ LEFT JOIN LATERAL (
                     'img',            f.img,
                     'price',          fv.price,
                     'promotion',      fv.promotion,
-                    'stock',          fv.stock,
-                    'sale',           fv.sale
+                    'stock',          fv.stock
                 )
                 ORDER BY fv.price, fv.name
             ),
             '[]'::jsonb
         ) AS versions
     FROM diner.foods_version fv
-    WHERE fv.xid_food = f.id_food
+    WHERE fv.xid_food = f.id_food AND fv.sale = true
 ) v ON TRUE
 
-/* addons por categoria  */
+-- addons por categoria
 LEFT JOIN LATERAL (
     WITH catlist AS (
         SELECT DISTINCT
@@ -59,7 +57,7 @@ LEFT JOIN LATERAL (
     ),
     items_by_cat AS (
         SELECT
-            fc2.xid_categorie                         AS category_id,
+            fc2.xid_categorie  AS category_id,
             COALESCE(
                 jsonb_agg(
                     jsonb_build_object(
@@ -93,7 +91,7 @@ LEFT JOIN LATERAL (
     LEFT JOIN items_by_cat ibc ON ibc.category_id = cl.id_foods_categories
 ) a ON TRUE
 
-/* extra_ingredients por comida */
+-- extra_ingredients por comida
 LEFT JOIN LATERAL (
     SELECT
         COALESCE(
@@ -109,9 +107,7 @@ LEFT JOIN LATERAL (
                     'promotion',          ei.promotion,
                     'qty_max',            ei.qty_max,
                     'qty_chosen',         0,
-                    'stock',              ei.stock,
-                    'sale',               ei.sale,
-                    'created_at',         ei.created_at
+                    'stock',              ei.stock
                 )
                 ORDER BY ei.price, ei.name
             ),
@@ -119,5 +115,6 @@ LEFT JOIN LATERAL (
         ) AS extra_ingredients
     FROM diner.foods_extra_ingredients fei
     JOIN diner.extra_ingredients ei ON ei.id_extra_ingredient = fei.xid_extra_ingredient
-    WHERE fei.xid_food = f.id_food
-) x ON TRUE;
+    WHERE fei.xid_food = f.id_food AND ei.sale = true
+) x ON TRUE
+WHERE f.sale =true;

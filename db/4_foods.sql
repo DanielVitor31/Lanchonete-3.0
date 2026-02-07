@@ -1,6 +1,10 @@
 CREATE TABLE diner.foods (
     id_food UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    xid_categorie UUID REFERENCES diner.foods_categories(id_foods_categories) ON DELETE CASCADE NOT NULL,
+    xid_category UUID 
+    REFERENCES diner.foods_categories(id_foods_categories) 
+    ON DELETE CASCADE 
+    NOT NULL
+    CONSTRAINT food_category,
     name VARCHAR(30) UNIQUE NOT NULL,
     description TEXT NOT NULL,
     img VARCHAR(35) DEFAULT 'logos/logo' NOT NULL,
@@ -12,7 +16,7 @@ CREATE TABLE diner.foods (
 );
 
 
-INSERT INTO diner.foods ("id_food", "xid_categorie", "name", "description", "img", "price", "promotion", "stock", "sale") VALUES
+INSERT INTO diner.foods ("id_food", "xid_category", "name", "description", "img", "price", "promotion", "stock", "sale") VALUES
     ('abbfa861-2b5d-455d-b904-f441487f5091', 'f72b8586-5a7b-4b9e-9e31-0c2ea1b36448', 'X-Salada', 'Hambúrguer artesanal 120g, queijo, alface, tomate, maionese da casa no pão brioche.', 'lanches/lanche1', 18.90, 20.00, TRUE, TRUE),
     ('2162a6aa-d5cc-463d-98e5-8a6b7b579359', 'f72b8586-5a7b-4b9e-9e31-0c2ea1b36448', 'X-Burguer', 'Hambúrguer 120g, queijo prato derretido e maionese artesanal no pão brioche.', 'lanches/lanche2', 21.90, 15.00, TRUE, TRUE),
     ('e9a827a8-a6ef-4916-8b83-4168720a0327', 'f72b8586-5a7b-4b9e-9e31-0c2ea1b36448', 'X-Frango Crocante', 'Filé de frango empanado crocante, queijo, alface, maionese temperada no pão brioche.', 'lanches/lanche2', 20.90, 10.00, TRUE, TRUE),

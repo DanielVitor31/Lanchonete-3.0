@@ -8,7 +8,7 @@ export const moneyFormatBRL = (value: number) =>
     .replace(/\s+/g, ' ');
 
 
-export const supabaseStorageURL = (arquivo: string) => 
+export const supabaseStorageURL = (arquivo: string) =>
   `https://tcbwhkdbktgzelgtyzgv.supabase.co/storage/v1/object/public/image/${arquivo}.webp`;
 
 
@@ -25,12 +25,12 @@ export function colect_colors(list: string[]) {
 }
 
 
-export function calcHours(dateStr: string | null , horas: number): boolean {
-  if (!dateStr) return false; 
+export function calcHours(dateStr: string | null, horas: number): boolean {
+  if (!dateStr) return false;
 
   const time = new Date(dateStr).getTime();
 
-  
+
   if (isNaN(time)) return false;
 
   return Date.now() - time >= horas * 60 * 60 * 1000;
@@ -57,12 +57,12 @@ type ArrayToKeyedObjectParams<T, K extends keyof T> = {
   obj: T[]
 }
 
-export function arrayObjToObjKey<T, K extends keyof T>({key, obj}: ArrayToKeyedObjectParams<T, K>): Record<string, T> {
+export function arrayObjToObjKey<T, K extends keyof T>({ key, obj }: ArrayToKeyedObjectParams<T, K>): Record<string, T> {
   return obj.reduce((acc, item) => {
 
     const index = String(item[key])
     acc[index] = item
-    
+
     return acc
   }, {} as Record<string, T>)
 }
@@ -92,6 +92,60 @@ export function arrayToMap<T, K extends string | number>(
 
 
 
+function isPlainObject(v: any): v is Record<string, any> {
+  if (!v || typeof v !== "object") return false;
+  const proto = Object.getPrototypeOf(v);
+  return proto === Object.prototype || proto === null;
+}
+
+function isEntriesArray(v: any): v is [any, any][] {
+  return (
+    Array.isArray(v) &&
+    (v.length === 0 || (Array.isArray(v[0]) && v[0].length === 2))
+  );
+}
+
+// =====================
+// Runtime: Map -> DTO
+// =====================
+export function deepMapToDTO<T>(value: T): any {
+  if (value instanceof Map) {
+    return Array.from(value.entries()).map(([k, v]) => [k, deepMapToDTO(v)]);
+  }
+
+  if (Array.isArray(value)) {
+    return value.map(deepMapToDTO);
+  }
+
+  if (isPlainObject(value)) {
+    const out: Record<string, any> = {};
+    for (const [k, v] of Object.entries(value)) out[k] = deepMapToDTO(v);
+    return out;
+  }
+
+  return value;
+}
+
+// =====================
+// Runtime: DTO -> Map
+// =====================
+export function deepDTOToMap<T>(value: T): any {
+  if (isEntriesArray(value)) {
+    return new Map(value.map(([k, v]) => [k, deepDTOToMap(v)]));
+  }
+
+  if (Array.isArray(value)) {
+    return value.map(deepDTOToMap);
+  }
+
+  if (isPlainObject(value)) {
+    const out: Record<string, any> = {};
+    for (const [k, v] of Object.entries(value)) out[k] = deepDTOToMap(v);
+    return out;
+  }
+
+  return value;
+}
 
 
 

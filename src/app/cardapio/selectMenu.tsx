@@ -1,144 +1,201 @@
 "use client";
 
 import { supabaseStorageURL, moneyFormatBRL } from "@/ultils/ultils";
-import type { FoodsGrouped, FoodFull, OrderArrayType, OrderArrayChosenType, FoodTypes, FoodVersion, FoodAddon } from "@/types/typeFood";
-import { useState, useMemo } from "react";
+import type { OrderArrayType } from "@/types/typeFood";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { X } from "lucide-react";
 import { loadAddons, pagesNavFunc, pricesCalc, orderArrayStringFunc, orderStringFunc } from "./functions"
 import AddonsElement from "./complements"
 import ButtonsElement from "./buttons"
 import Check from "./check";
 import createOrderDB from "./createOrderDB";
-import validateOrder from "../finalizar_pedido/validateOrder";
+import type { FoodFullMap, FoodFull, Version, ExtraIngredient, Addon, Food } from "./actions/getFoodsGrouped"
+import FinishNav from "./finishNav"
+import Image from "next/image";
+
+import { selectMenuStyles as s } from "./selectMenu.styles";
+
 
 
 
 type Props = {
-  open: (value: null) => void;
-  foods: FoodsGrouped;
+  open: (value: null | string) => void;
+  foods: FoodFullMap;
   food: FoodFull;
 };
 
 
 export default function SelectMenu({ open, foods, food }: Props) {
   // Variaveis apenas para facilitar a leitura
-  const foodVersions = Object.values(food.versions);
-  const foodAddons = loadAddons(food, foods);
-  const FoodExtraIgrediens = food.extraIgrediens
+  const { versions: fV, extra_ingredients: fI, addons: fA, ...foodSimpleObj } = food // Comida simples sem versão, ingredientes extras ou complementos
+  const foodVersions = [...food.versions.values()];
+  const foodAddons = useMemo(() => loadAddons([...food.addons.values()], foods), [food, foods]);
+  const foodExtraIgrediens = [...food.extra_ingredients.values()];
 
 
   // Verifica se o alimento possui complementos, versões ou ingredientes extras
   const hasVersion = foodVersions.length > 0;
-  const hasExtraIgrediens = FoodExtraIgrediens.length > 0;
-  const hasAddons = foodAddons.length > 0;
+  const hasExtraIgrediens = foodExtraIgrediens.length > 0;
+  const hasAddons = foodAddons.size > 0;
   const foodSimple = !hasVersion && !hasAddons && !hasExtraIgrediens
 
   // Arrays do pedido
-  const OrderArray: OrderArrayType = [foodVersions, FoodExtraIgrediens, foodAddons];
-  const OrderArrayChosenDefault: OrderArrayChosenType = [foodVersions[0], FoodExtraIgrediens, []];
+  const OrderArray: OrderArrayType = { versions: foodVersions, extraIngredients: foodExtraIgrediens, addons: foodAddons };
+  const [versionChosen, setVersionChosen] = useState<Version | undefined>(foodVersions[0]);
+  const [extraIngredients, setExtraIngredients] = useState(new Map<string, ExtraIngredient>())
+  const [addons, setAddons] = useState(new Map<string, Addon>())
+
 
   // Configuração das páginas de navegação
-  const pagesNav = pagesNavFunc(hasVersion, hasExtraIgrediens, hasAddons, foodAddons);
+  const pagesNav = pagesNavFunc(hasVersion, hasExtraIgrediens, [...foodAddons.keys()]);
   const [pageCurrentIndex, setPageCurrentIndex] = useState(0);
   const pageCurrentName = pagesNav[pageCurrentIndex];
-  const pageAddons = Number(pageCurrentName.split("-")[1]); // 
   const pagMax = pagesNav.length;
+  const optionsContainerRef = useRef<HTMLElement | null>(null);
 
   // Estado dos complementos escolhidos
-  const [complementSelect, setComplementSelect] = useState(OrderArrayChosenDefault);
+  const complementSelect = useMemo(() => { return { versions: versionChosen, extraIngredients: extraIngredients, addons: addons } }, [versionChosen, extraIngredients, addons]);
+
+  const [orderFinish, setOrderFinish] = useState(false);
+
+  useEffect(() => {
+    const el = optionsContainerRef.current;
+    if (el) el.scrollTop = 0;
+  }, [pageCurrentIndex]);
+
 
   const priceTotal = useMemo(() => {
     return pricesCalc(complementSelect, food);
   }, [complementSelect])
 
-  const orderArrayString = orderArrayStringFunc(complementSelect, food);
+  const orderArrayString = orderArrayStringFunc(complementSelect, foodSimpleObj);
   const orderString = orderStringFunc(orderArrayString, priceTotal);
 
-  const handleSelectOption = (option: FoodTypes | number, optionIndice: number) => {
-    setComplementSelect(prev => {
-      const next: OrderArrayChosenType = [...prev];
+  const handleSelectOption = (complement: Version | Addon | ExtraIngredient, qty?: number) => {
+    //Seta a nova versão
+    if ("id_food_version" in complement && !("id_foods_addon" in complement)) return setVersionChosen(complement)
+    // alterar a quantidade dos ingredientes extras
+    if ("id_extra_ingredient" in complement) {
+      setExtraIngredients(prev => {
+        const map = new Map(prev);
+        const key = complement.id_extra_ingredient;
 
-      if (pageCurrentName === "versions") {
-        next[0] = option as FoodVersion;
-        return next;
-      }
+        map.set(key, {
+          ...(map.get(key) ?? complement),
+          qty_chosen: qty!,
+        });
 
-      if (pageCurrentName === "extraIgrediens") {
-        const extras = [...next[1]];
-        extras[optionIndice] = {
-          ...extras[optionIndice],
-          qty_chosen: option as number,
-        };
-        next[1] = extras;
-        return next;
-      }
-
-      // page >= 2 => addons
-      const addons = [...next[2]];
-      addons[pageAddons] = option as FoodAddon;
-      next[2] = addons;
-      return next;
-    });
+        return map;
+      });
+    }
+    //Setar addon
+    if ("id_foods_addon" in complement) {
+      setAddons((prev) => {
+        const map = new Map(prev)
+        map.set(complement.name_category, (complement as Addon))
+        return map
+      })
+    }
   };
 
   const handleOrderFinish = async () => {
-    await createOrderDB({ food, total_price: priceTotal, orderString: orderString, orderReady: complementSelect });
-    console.log("Finalizar pedido - Enviando para o DB...");
+    await createOrderDB({ food: foodSimpleObj, total_price: priceTotal, orderString: orderString, orderReady: complementSelect });
+    setOrderFinish(true);
   }
 
 
-
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-      <div className="w-full max-w-lg h-[80vh] rounded-2xl bg-zinc-950 border border-zinc-800 p-4 shadow-2xl">
-        <div className="grid h-full grid-rows-[auto_auto_auto_minmax(0,1fr)_auto] gap-3">
+    <div className={s.overlay}>
+      <div className={s.modal}>
+        <div className={s.grid}>
           {/* Cabeçalho */}
-          <header className="flex items-start justify-between gap-3">
-            <div className="flex flex-col gap-1">
-              <h2 className="text-base md:text-lg font-semibold text-zinc-50 leading-tight">
-                {food.name}
-              </h2>
-              {(!foodSimple) && (
-                <span className="inline-flex items-center rounded-full bg-zinc-900 px-2 py-0.5 text-[10px] uppercase tracking-wide text-zinc-400 border border-zinc-800">
-                  Personalize seu pedido
-                </span>
-              )}
-            </div>
+          <header className={s.header}>
+            <h2 className={s.title}>
+              {food.name}
+            </h2>
 
             <button
-              className="cursor-pointer select-none text-zinc-500 hover:text-zinc-200 transition"
+              className={s.closeBtn}
               onClick={() => open(null)}
               type="button"
             >
-              <X size={22} />
+              <X size={25} />
             </button>
           </header>
 
           {/* Imagem principal */}
-          <div className="w-60 h-60 flex items-center justify-center mx-auto">
-            <div
-              className="w-full h-full bg-center bg-contain bg-no-repeat"
-              style={{ backgroundImage: `url("${supabaseStorageURL(food.img)}")` }}
+          <div className={s.imageFoodContainer}>
+            <Image
+              src={supabaseStorageURL(food.img)}
+              alt={food.name}
+              width={520}
+              height={520}
+              sizes="(max-width: 640px) 90vw, (max-width: 1024px) 420px, 520px"
+              className={s.imageFood}
+              loading="lazy"
             />
           </div>
 
 
           {/* Descrição */}
-          <p className="w-full text-xs md:text-sm text-zinc-300 leading-snug line-clamp-3 bg-zinc-900/40 rounded-xl px-3 py-2 border border-zinc-800/60">
-            {food.description}
-          </p>
+          <div className={s.descriptionContainer}>
+            <p className={s.description}>
+              {food.description}
+            </p>
+          </div>
 
           {/* Opções (versões / addons) */}
-          <section className="min-h-0 overflow-y-auto rounded-xl border border-zinc-800 bg-zinc-900/70 p-3">
-            {pageCurrentName !== "orderEnd"
-              ? (
-                <AddonsElement handleSelectOption={handleSelectOption} OrderArray={OrderArray} pageCurrentName={pageCurrentName} pageCurrentIndex={pageCurrentIndex} pagMax={pagMax} complementSelect={complementSelect} pageAddons={pageAddons} />
-              )
+          <section ref={optionsContainerRef} className={s.optionsContainer}>
+            {pageCurrentName !== "orderEnd" ? (
+              <>
+                {pageCurrentName === "versions" && (
+                  <AddonsElement
+                    handleSelectOption={handleSelectOption}
+                    complements={OrderArray.versions}
+                    getNameComplement={"Versões"}
+                    getId={(y) => y.id_food_version}
+                    getName={(y) => `${y.name_food} (${y.name})`}
+                    getPrice={(y) => y.price}
+                    getSelect={(y) => y.id_food_version === complementSelect.versions?.id_food_version}
+                    pageCurrentIndex={pageCurrentIndex}
+                    pagMax={pagMax}
+                  />
+                )}
+                {pageCurrentName === "extraIgrediens" && (
+                  <AddonsElement
+                    handleSelectOption={handleSelectOption}
+                    complements={OrderArray.extraIngredients}
+                    getNameComplement={"Ingredientes Extras"}
+                    getId={(y) => y.id_extra_ingredient}
+                    getName={(y) => y.name}
+                    getImg={(y) => y.img}
+                    getPrice={(y) => y.price}
+                    getQty={(y) => complementSelect.extraIngredients.get(y.id_extra_ingredient)?.qty_chosen ?? 0}
+                    getMax={(y) => y.qty_max}
+                    pageCurrentIndex={pageCurrentIndex}
+                    pagMax={pagMax}
+                  />
+                )}
+                {pageCurrentName !== "extraIgrediens" && pageCurrentName !== "versions" && (
+                  <AddonsElement
+                    handleSelectOption={handleSelectOption}
+                    complements={OrderArray.addons.get(pageCurrentName)!}
+                    getNameComplement={pageCurrentName}
+                    getId={(y) => y.id_foods_addon}
+                    getName={(y) => y.name}
+                    getImg={(y) => y.img}
+                    getPrice={(y) => y.price}
+                    getSelect={(y) => y.id_foods_addon === complementSelect.addons.get(pageCurrentName)?.id_foods_addon}
+                    pageCurrentIndex={pageCurrentIndex}
+                    pagMax={pagMax}
+                  />
+                )}
+              </>
+            )
               : (
                 <>
                   {foodSimple ? (
-                    <p className="text-xs md:text-sm text-zinc-400 text-center">
+                    <p className={s.emptyText}>
                       Esse item não possui versões ou complementos.
                     </p>
                   ) : (
@@ -150,23 +207,29 @@ export default function SelectMenu({ open, foods, food }: Props) {
 
           </section>
 
+
           {/* Footer */}
-          <footer className="flex items-center justify-between gap-3">
-            <div className="flex flex-col">
-              <span className="text-[11px] text-zinc-400 uppercase tracking-wide">
+          <footer className={s.footer}>
+            <div className={s.totalBox}>
+              <span className={s.totalLabel}>
                 Valor Total
               </span>
-              <span className="text-base md:text-lg font-bold text-dinheiro-6">
+              <span className={s.totalValue}>
                 {moneyFormatBRL(priceTotal)}
               </span>
             </div>
 
-            <div className="flex items-center gap-2">
-              <ButtonsElement handleOrderFinish={handleOrderFinish} setPageCurrentIndex={setPageCurrentIndex} pageCurrentName={pageCurrentName} pageCurrentIndex={pageCurrentIndex} complementSelect={complementSelect} pageAddons={pageAddons} />
+            <div className={s.buttonsWrap}>
+              <ButtonsElement handleOrderFinish={handleOrderFinish} setPageCurrentIndex={setPageCurrentIndex} pageCurrentName={pageCurrentName} pageCurrentIndex={pageCurrentIndex} complementSelect={complementSelect} />
             </div>
           </footer>
         </div>
       </div>
+      {orderFinish && (
+        <div className={s.finishOverlay}>
+          <FinishNav open={open} />
+        </div>
+      )}
     </div>
   );
 }

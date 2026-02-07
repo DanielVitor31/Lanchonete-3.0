@@ -1,70 +1,99 @@
 "use client";
 
-import type { OrderArrayType, FoodVersion, FoodExtraIgredien, FoodAddon, OrderArrayChosenType, FoodTypes } from "@/types/typeFood";
 import { supabaseStorageURL, moneyFormatBRL } from "@/ultils/ultils";
-import { complementsInfos } from "./functions";
+import type { Addon, Version, ExtraIngredient } from "./actions/getFoodsGrouped"
+import Image from "next/image";
+import clsx from "clsx";
+import { complementsStyles as s } from "./complements.styles";
 
-type Props = {
-  handleSelectOption: (option: FoodTypes | number, optionIndex: number) => void;
-  OrderArray: OrderArrayType;
-  pageCurrentName: string;
+type Props<Complement> = {
+  handleSelectOption: (option: Complement, optionIndex: number) => void;
+  complements: Complement[]
+  getNameComplement: string
+  getId: (item: Complement) => string
+  getName: (item: Complement) => string
+  getPrice: (item: Complement) => number
+  getImg?: (item: Complement) => string
+  getFree?: (item: Complement) => boolean
+  getQty?: (item: Complement) => number
+  getMax?: (item: Complement) => number
+  getSelect?: (item: Complement) => boolean
+  getCountExtraIngredient?: (item: Complement) => number
   pageCurrentIndex: number;
   pagMax: number;
-  complementSelect: OrderArrayChosenType;
-  pageAddons: number;
 };
 
 
+export default function AddonsElement<Complement>({
+  handleSelectOption,
+  complements,
+  getNameComplement,
+  getId,
+  getName,
+  getPrice,
+  getImg,
+  getFree,
+  getQty,
+  getMax,
+  getSelect,
+  getCountExtraIngredient,
+  pageCurrentIndex,
+  pagMax,
+}: Props<Complement>) {
 
-
-export default function AddonsElement({ handleSelectOption, OrderArray, pageCurrentName, pageCurrentIndex, pagMax, complementSelect, pageAddons }: Props) {
-  const complementValues = complementsInfos(pageCurrentName, OrderArray, complementSelect, pageAddons);
-
-  
 
   return (
     <>
-      <div className="mb-2 flex items-center justify-between gap-2">
-        <p className="text-xs md:text-sm font-semibold text-zinc-200 uppercase tracking-wide">
-          {complementValues.title}
+      {/* Header */}
+      <div className={s.header}>
+        <p className="text-xs font-semibold text-zinc-200 uppercase tracking-wide">
+          {getNameComplement}
         </p>
         <p className="text-sm text-zinc-500">
           Passo {pageCurrentIndex + 1} de {pagMax - 1}
         </p>
       </div>
 
+      {/* Conteúdo */}
       <div className="flex flex-col gap-2">
-        {complementValues.items.map((complete, indice) => {
-          const isSelected = complementValues.getSelected(complete as any);
-          let countExtraIngredient = 0;
-          const pageCurrentIngredients = pageCurrentName === "extraIgrediens";
+        {complements.map((complement, indice) => {
 
-         if (pageCurrentIngredients) {
-            countExtraIngredient = complementSelect[1][indice].qty_chosen;
-          } 
-          
+          const isExtras = getNameComplement === "Ingredientes Extras";
+          const isVersion = getNameComplement === "Versões";
+          const isAddonPage = !isExtras && !isVersion;
+          const qty = getQty?.(complement) ?? 0;
+          const OptionContainerTag = isExtras ? "div" : "button";
+          const priceLabel = isAddonPage && getFree?.(complement)
+            ? "Grátis"
+            : moneyFormatBRL(getPrice(complement));
+          const subtotal = qty > 0 ? moneyFormatBRL(getPrice(complement) * qty) : null;
+          const isImg = getImg?.(complement);
+
           return (
-            <div
-              key={complementValues.getKey(complete as any)}
-              onClick={() => !pageCurrentIngredients && handleSelectOption(complete, indice)}
-              className={[
-                "group flex h-full flex-col justify-between rounded-xl border px-3 py-2 text-xs md:text-sm transition-all",
-                "shadow-sm hover:shadow-md",
-                pageCurrentIngredients
-                  ? "cursor-default"
-                  : "cursor-pointer",
-                isSelected && !pageCurrentIngredients
+            <OptionContainerTag
+              key={getId(complement)}
+              {...(!isExtras ? { type: "button" } : {})}
+              onClick={() => !isExtras && handleSelectOption(complement, indice)}
+              className={clsx(
+                s.optionContainer,
+                isExtras ? "cursor-default" : "cursor-pointer",
+                getSelect?.(complement)
                   ? "border-emerald-500 bg-emerald-500/10"
-                  : "border-zinc-800 bg-zinc-900 hover:border-zinc-700",
-              ].join(" ")}
+                  : "border-zinc-800 bg-zinc-900 hover:border-zinc-700"
+              )}
             >
-              <div className="flex items-center gap-2">
+              <div className="flex w-full items-center gap-2">
                 {/* Imagens*/}
-                {pageCurrentName !== "versions" && (
-                  <div className="h-12 w-12 rounded-lg overflow-hidden bg-zinc-800 shrink-0">
-                    <div
-                      className="h-full w-full bg-cover bg-center"
-                      style={{ backgroundImage: `url("${supabaseStorageURL(complete.img)}")` }}
+                {isImg && (
+                  <div className={s.imageAddonContainer}>
+                    <Image
+                      src={supabaseStorageURL(isImg)}
+                      alt="Complemento"
+                      width={520}
+                      height={520}
+                      sizes="(max-width: 640px) 90vw, (max-width: 1024px) 420px, 520px"
+                      className="object-cover object-center"
+                      loading="lazy"
                     />
                   </div>
                 )}
@@ -72,64 +101,59 @@ export default function AddonsElement({ handleSelectOption, OrderArray, pageCurr
                 <div className="flex-1 flex items-center justify-between gap-3">
                   <div className="flex flex-col">
                     <p className="font-medium text-zinc-100 line-clamp-2">
-                      {complementValues.getName(complete as any)}
+                      {getName(complement)}
                     </p>
                     <p className="text-sm font-bold text-dinheiro-6">
-                      {pageCurrentName.includes("addon") && (complete as FoodAddon).free
-                        ? "Grátis"
-                        : moneyFormatBRL(complete.price)}
+                      {priceLabel}
                     </p>
-                    {countExtraIngredient > 0 && (
+                    {subtotal && (
                       <p className="text-sm font-bold text-dinheiro-6">
-                        SubTotal: {moneyFormatBRL(complete.price * countExtraIngredient)}
+                        SubTotal: <br /> {subtotal}
                       </p>
                     )}
                   </div>
 
-                  {!pageCurrentIngredients ? (
+                  {/* Bolinha de seleção */}
+                  {!isExtras ? (
+                    // Parte De Fora
                     <div
-                      className={[
-                        "flex h-5 w-5 items-center justify-center rounded-full border transition-colors",
-                        isSelected
+                      className={clsx(
+                        s.ballOutside,
+                        getSelect!(complement)
                           ? "border-emerald-500 bg-emerald-500/20"
-                          : "border-zinc-700 bg-zinc-900",
-                      ].join(" ")}
+                          : "border-zinc-700 bg-zinc-900"
+                      )}
                     >
+                      {/* Parte De Dentro */}
                       <span
-                        className={[
-                          "h-2.5 w-2.5 rounded-full transition-colors",
-                          isSelected
+                        className={clsx(
+                          s.ballInside,
+                          getSelect!(complement)
                             ? "bg-emerald-400"
-                            : "bg-zinc-600 group-hover:bg-zinc-500",
-                        ].join(" ")}
+                            : "bg-zinc-600 group-hover:bg-zinc-500"
+                        )}
                       />
                     </div>
                   ) : (
-                    <div className="flex items-center overflow-hidden rounded-lg border border-zinc-700 bg-zinc-800 h-8">
+                    <div className={s.buttonsQtyContainer}>
                       <button
                         type="button"
-                        onClick={() => handleSelectOption(countExtraIngredient - 1, indice)}
-                        disabled={countExtraIngredient === 0}
-                        className="flex h-full w-8 items-center justify-center border-r border-zinc-700
-                          text-sm font-bold text-zinc-200
-                        hover:bg-zinc-700
-                          disabled:opacity-40 disabled:cursor-not-allowed"
+                        onClick={() => handleSelectOption(complement, qty! - 1)}
+                        disabled={qty === 0}
+                        className={clsx(s.buttonsQty, "border-r")}
                       >
                         −
                       </button>
 
                       <span className="min-w-8 text-center text-sm font-semibold text-zinc-100">
-                        {countExtraIngredient}
+                        {qty}
                       </span>
 
                       <button
                         type="button"
-                        onClick={() => handleSelectOption(countExtraIngredient + 1, indice)}
-                        disabled={countExtraIngredient === complementSelect[1][indice].qty_max}
-                        className="flex h-full w-8 items-center justify-center border-l border-zinc-700
-                          text-sm font-bold text-zinc-200
-                        hover:bg-zinc-700
-                          disabled:opacity-40 disabled:cursor-not-allowed"
+                        onClick={() => handleSelectOption(complement, qty! + 1)}
+                        disabled={qty === getMax!(complement)}
+                        className={clsx(s.buttonsQty, "border-l")}
                       >
                         +
                       </button>
@@ -137,7 +161,7 @@ export default function AddonsElement({ handleSelectOption, OrderArray, pageCurr
                   )}
                 </div>
               </div>
-            </div>
+            </OptionContainerTag>
           );
         })}
       </div>
