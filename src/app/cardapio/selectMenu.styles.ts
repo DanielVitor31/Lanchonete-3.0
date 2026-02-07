@@ -2,8 +2,8 @@ export const selectMenuStyles = {
     overlay: "fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm",
 
     modal:
-        "w-[100dvw] xl:w-[40dvw] fhd:w-[30dvw] " + //Largura
-        "h-[100dvh] xl:h-[97dvh] fhd:h-[90dvh] " + //Altura
+        "w-dvw xl:w-[40dvw] fhd:w-[30dvw] " + // Largura
+        "h-dvh xl:h-[97dvh] fhd:h-[90dvh] " + // Altura
         "bg-zinc-950 px-5 py-4 xl:rounded-xl",
 
     grid: "grid h-full grid-cols-1 grid-rows-[minmax(0,0.22fr)_minmax(0,1.35fr)_minmax(0,0.55fr)_minmax(0,1.4fr)_minmax(0,0.24fr)] gap-2 ",
