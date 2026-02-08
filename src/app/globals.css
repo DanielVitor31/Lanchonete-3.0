@@ -5,8 +5,8 @@
 /* nome que deve seguir um padrão "--color-<nome>-<nível>" */
 @theme {
   /* Cores tematicas */
-  --color-base-tematica-1: var(--base-tematica);
-  --color-tematica-2: var(--tematica);
+  --color-base-thematic-1: var(--base-thematic);
+  --color-thematic-2: var(--thematic);
 
   /* Food Menu */
   --color-food-menu-card-fundo-3: var(--food-menu-card-fundo);
@@ -14,7 +14,7 @@
   --color-food-menu-escrita-5: var(--food-menu-escrita);
   --color-food-menu-fundo-7: var(--food-menu-fundo);
   
-  --color-dinheiro-6: var(--dinheiro);
+  --color-money-6: var(--money);
 }
 
 @keyframes slideDown {

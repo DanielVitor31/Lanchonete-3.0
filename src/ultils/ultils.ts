@@ -38,19 +38,6 @@ export function calcHours(dateStr: string | null, horas: number): boolean {
 
 
 
-type CssVarItem = {
-  name: string;
-  value: string;
-};
-
-export function applyCssVars(items: CssVarItem[]) {
-  if (typeof document === "undefined") return;
-  const root = document.documentElement;
-
-  items.forEach(({ name, value }) => {
-    root.style.setProperty(name, value);
-  });
-}
 
 type ArrayToKeyedObjectParams<T, K extends keyof T> = {
   key: K

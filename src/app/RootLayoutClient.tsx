@@ -1,41 +1,38 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { useEffect, useMemo } from "react";
+import { useEffect, useState } from "react";
 import Header from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { applyCssVars, arrayObjToObjKey } from "@/ultils/ultils";
+import { applyColorsCssVars } from "@/ultils/colors";
 import { AppSettingsProvider } from "@/context/AppSettingsContext";
-import type { ColorsDB, GeneralSettings } from "@/types/types"
-
-
+import type { GeneralSettings } from "@/types/types"
+import type { ColorsDBTypes } from "./actions/getSettings";
+import type { ColorsTypes } from "@/ultils/colors"
+import Loading from "./loading";
 
 type Props = {
   children: ReactNode;
-  colorsDB: ColorsDB[];
+  colorsDB: ColorsDBTypes[];
   settings: GeneralSettings[];
 };
 
 export default function RootLayoutClient({ children, colorsDB, settings }: Props) {
+  const [colors, setColors] = useState<ColorsTypes>()
+
   useEffect(() => {
-    applyCssVars(colorsDB);
+    const colorsObj = applyColorsCssVars(colorsDB);
+    setColors(colorsObj);
   }, [colorsDB]);
 
-  const colorsDB_obj = arrayObjToObjKey({ key: "name", obj: colorsDB })
-
-  const appSettingsValue = useMemo(() => ({
-    colorsDB_obj,
-    settings,
-  }),
-    [colorsDB_obj, settings]
-  );
+  if (!colors) return <Loading />
 
   return (
-    <AppSettingsProvider value={appSettingsValue}>
-      <div className="w-full h-[100dvh] overflow-hidden grid grid-rows-[0.6fr_minmax(0,6fr)_0.7fr]">
+    <AppSettingsProvider colors={colors} settings={settings}>
+      <div className="w-full h-dvh overflow-hidden grid grid-rows-[0.6fr_minmax(0,6fr)_0.7fr]">
         {/* Header */}
         <div className="flex items-center">
-          <Header colorsDB={colorsDB_obj} />
+          <Header colorsDB={colors} />
         </div>
 
         {/* Conteúdo */}

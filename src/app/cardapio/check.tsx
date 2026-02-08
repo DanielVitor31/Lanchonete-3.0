@@ -74,7 +74,7 @@ export default function Check({ data }: Props) {
           <span className="text-zinc-400 uppercase tracking-[0.15em] text-[10px]">
             Valor
           </span>
-          <span className="text-dinheiro-6 text-sm font-semibold tabular-nums">
+          <span className="text-money-6 text-sm font-semibold tabular-nums">
             {data.foodBase.price}
           </span>
         </div>

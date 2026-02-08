@@ -2,7 +2,6 @@
 
 import { Typography, Paper, Stack, Button, Box } from "@mui/material";
 import Link from "next/link";
-import styles from "./page.module.css";
 
 
 // Home page da aplicação

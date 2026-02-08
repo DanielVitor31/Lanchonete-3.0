@@ -1,3 +1,39 @@
+
+import type { ColorsDBTypes } from "@/app/actions/getSettings";
+type ColorsTypesObj = Omit<ColorsDBTypes, 'value_current' | 'value_default' | 'value_test'> & { value: string; };
+export type ColorsTypes = { [k: string]: ColorsTypesObj };
+
+import { ADMIN } from "@/constants";
+
+// Função responsavel por aplicar as cores do banco como variáveis CSS e retornar um objeto das cores do banco ajustadas.
+export function applyColorsCssVars(colors: ColorsDBTypes[]) {
+  const root = document.documentElement;
+  const colorsObj: ColorsTypes = {};
+
+  colors.forEach((c) => {
+    const value = () => {
+      if (ADMIN && c.value_test) return c.value_test;
+      return c.value_current;
+    };
+
+    root.style.setProperty(c.id, value());
+    const { value_current, value_default, value_test, ...drest } = c;
+
+    const cp = {
+      ...drest,
+      value: value()
+    };
+
+    colorsObj[cp.id] = cp;
+  });
+
+  return colorsObj;
+}
+
+
+
+
+
 import { formatHex8, oklch, formatCss, parse } from "culori";
 
 type TypeCorData = {
@@ -80,3 +116,4 @@ export function normalizeToOklch(input: string): string | null {
   }
 
 }
+

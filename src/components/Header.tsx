@@ -6,10 +6,10 @@ import { ROUTES_STRING } from "@/constants";
 import { supabaseStorageURL } from "@/ultils/ultils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import type { ColorsDB } from "@/types/typeFood2";
+import type { ColorsTypes } from "@/ultils/colors"
 
 type Props = {
-  colorsDB: Record<string, ColorsDB>;
+  colorsDB: ColorsTypes;
 };
 
 export default function Header({ colorsDB }: Props) {
@@ -22,7 +22,7 @@ export default function Header({ colorsDB }: Props) {
         flex items-center justify-between
         w-full h-full
         border-b border-zinc-800
-        bg-tematica-2 backdrop-blur-lg
+        bg-thematic-2 backdrop-blur-lg
         px-4 py-3
         md:px-6
         select-none

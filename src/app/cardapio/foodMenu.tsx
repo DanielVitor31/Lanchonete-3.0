@@ -37,7 +37,7 @@ export default function FoodMenu({ foodsGroupedOBJ }: Props) {
     return m ? [...m.values()] : [];
   }, [foodsGroupedMap, categoriesActive]);
 
-  const { colorsDB_obj: colorDB } = useAppSettings();
+  const { colors: colorDB } = useAppSettings();
 
   const StyleBorder = useMemo(() => {
     return culoriCalc(colorDB["--food-menu-fundo"].value, [0.1832, 0.0016, 0.21]);
@@ -214,7 +214,7 @@ export default function FoodMenu({ foodsGroupedOBJ }: Props) {
                   md:text-center
                   md:text-base
                 "
-                style={{ color: culoriCalc(colorDB["--dinheiro"].value, [-0.16, -0.06, 0.06]) }}
+                style={{ color: culoriCalc(colorDB["--money"].value, [-0.16, -0.06, 0.06]) }}
               >
                 {moneyFormatBRL(food.price)}
               </p>
