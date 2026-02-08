@@ -103,11 +103,11 @@ export default function AddonsElement<Complement>({
                     <p className="font-medium text-zinc-100 line-clamp-2">
                       {getName(complement)}
                     </p>
-                    <p className="text-sm font-bold text-money-6">
+                    <p className="text-sm font-bold text-money">
                       {priceLabel}
                     </p>
                     {subtotal && (
-                      <p className="text-sm font-bold text-money-6">
+                      <p className="text-sm font-bold text-money">
                         SubTotal: <br /> {subtotal}
                       </p>
                     )}

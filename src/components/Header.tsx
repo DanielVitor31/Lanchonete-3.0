@@ -22,7 +22,7 @@ export default function Header({ colorsDB }: Props) {
         flex items-center justify-between
         w-full h-full
         border-b border-zinc-800
-        bg-thematic-2 backdrop-blur-lg
+        bg-thematic backdrop-blur-lg
         px-4 py-3
         md:px-6
         select-none

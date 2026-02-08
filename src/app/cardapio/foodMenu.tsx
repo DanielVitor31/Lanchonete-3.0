@@ -62,7 +62,7 @@ export default function FoodMenu({ foodsGroupedOBJ }: Props) {
 
 
   return (
-    <div className="bg-food-menu-fundo-7 flex flex-col md:flex-row h-full">
+    <div className="bg-food-menu-fundo flex flex-col md:flex-row h-full">
       {/* MENU */}
       <aside
         className="
@@ -70,7 +70,7 @@ export default function FoodMenu({ foodsGroupedOBJ }: Props) {
           max-h-[40vh] md:max-h-none
           shrink-0
           border-b md:border-b-0 md:border-r
-          text-food-menu-escrita-5
+          text-food-menu-escrita
           flex flex-col
         "
         style={{ borderColor: StyleBorder }}
@@ -128,9 +128,9 @@ export default function FoodMenu({ foodsGroupedOBJ }: Props) {
                 food-card
                 relative
                 w-full
-                min-h-[124px]
-                bg-food-menu-card-fundo-3
-                text-food-menu-card-escrita-4
+                min-h-31
+                bg-food-menu-card-fundo
+                text-food-menu-card-escrita
                 flex items-center gap-3
                 cursor-pointer select-none
                 border

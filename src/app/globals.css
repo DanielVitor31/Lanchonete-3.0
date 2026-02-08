@@ -6,15 +6,15 @@
 @theme {
   /* Cores tematicas */
   --color-base-thematic-1: var(--base-thematic);
-  --color-thematic-2: var(--thematic);
+  --color-thematic: var(--thematic);
 
   /* Food Menu */
-  --color-food-menu-card-fundo-3: var(--food-menu-card-fundo);
-  --color-food-menu-card-escrita-4: var(--food-menu-card-escrita);
-  --color-food-menu-escrita-5: var(--food-menu-escrita);
-  --color-food-menu-fundo-7: var(--food-menu-fundo);
+  --color-food-menu-card-fundo: var(--food-menu-card-fundo);
+  --color-food-menu-card-escrita: var(--food-menu-card-escrita);
+  --color-food-menu-escrita: var(--food-menu-escrita);
+  --color-food-menu-fundo: var(--food-menu-fundo);
   
-  --color-money-6: var(--money);
+  --color-money: var(--money);
 }
 
 @keyframes slideDown {

@@ -26,7 +26,7 @@ export const selectMenuStyles = {
     footer: "flex items-center gap-3 h-full w-full",
     totalBox: "flex flex-col text-left",
     totalLabel: "text-[11px] text-zinc-400 uppercase tracking-wide",
-    totalValue: "text-base font-bold text-money-6",
+    totalValue: "text-base font-bold text-money",
 
     buttonsWrap: "ml-auto flex items-stretch gap-2 h-full",
 
