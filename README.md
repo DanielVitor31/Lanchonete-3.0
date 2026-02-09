@@ -1,14 +1,14 @@
-# 🍔 Lanchonete — Sistema Completo com Next.js, MUI, Prisma e Supabase
+# 🍔 Lanchonete — Sistema Completo com Next.js, Tailwind, Prisma e Supabase
 
 Este projeto é a versão moderna do sistema **Lanchonete**, refatorado com foco em:
 
-* **Performance**
-* **Escalabilidade**
-* **UI profissional**
-* **Integração real com banco de dados**
-* **Tema dinâmico personalizável**
-* **Supabase (database + storage)**
-* **Next.js (App Router)**
+- **Performance**
+- **Escalabilidade**
+- **UI profissional**
+- **Integração real com banco de dados**
+- **Tema dinâmico personalizável**
+- **Supabase (database + storage)**
+- **Next.js (App Router)**
 
 Serve como base para um sistema completo de restaurante: cardápio, comandas, pedidos e painel administrativo.
 
@@ -16,30 +16,32 @@ Serve como base para um sistema completo de restaurante: cardápio, comandas, pe
 
 ## 📌 Sumário
 
-* [✨ Visão Geral](#-visão-geral)
-* [⚙️ Tecnologias Utilizadas](#-tecnologias-utilizadas)
-* [🎨 Tema Dinâmico](#-tema-dinâmico)
-* [🗄️ Banco de Dados (Prisma + Supabase)](#️-banco-de-dados-prisma--supabase)
-* [🖼️ Supabase Storage](#️-supabase-storage)
-* [🏗️ Estrutura do Projeto](#️-estrutura-do-projeto)
-* [🔧 Como Rodar o Projeto](#-como-rodar-o-projeto)
-* [🧪 Scripts](#-scripts)
-* [🚀 Próximos Passos](#-próximos-passos)
-* [📜 Licença](#-licença)
+- [✨ Visão Geral](#-visão-geral)
+- [⚙️ Tecnologias Utilizadas](#-tecnologias-utilizadas)
+- [🎨 Tema Dinâmico](#-tema-dinâmico)
+- [🗄️ Banco de Dados (Prisma + Supabase)](#️-banco-de-dados-prisma--supabase)
+- [🖼️ Supabase Storage](#️-supabase-storage)
+- [🏗️ Estrutura do Projeto](#️-estrutura-do-projeto)
+- [🔧 Como Rodar o Projeto](#-como-rodar-o-projeto)
+- [🧪 Scripts](#-scripts)
+- [🚀 Próximos Passos](#-próximos-passos)
+- [📜 Licença](#-licença)
 
 ---
 
 # ✨ Visão Geral
 
-Este projeto utiliza **Next.js 15 + App Router** como base do frontend e backend, com integração completa ao banco de dados via **Prisma 7** e conexão otimizada usando `@prisma/adapter-pg`.
+Este projeto utiliza **Next.js 16 + App Router** como base do frontend e backend, com integração completa ao banco de dados via **Prisma 7** e conexão otimizada usando `@prisma/adapter-pg`.
 
 O sistema conta com:
 
-* **Tema totalmente dinâmico** (definido pelo dono do site)
-* **Consumo real de dados** usando Server Components
-* **Integração com Supabase Storage** para imagens
-* **Componentização limpa usando MUI + CSS Modules**
-* **Arquitetura escalável e separação clara de responsabilidades**
+- **Tema totalmente dinâmico** (definido pelo dono do site)
+- **Consumo real de dados** usando Server Components
+- **Integração com Supabase Storage** para imagens
+
+* **Estilização completa com Tailwind CSS 4**
+
+- **Arquitetura escalável e separação clara de responsabilidades**
 
 ---
 
@@ -47,57 +49,56 @@ O sistema conta com:
 
 ### 🧩 Base
 
-* **Next.js 15**
-* **React 19**
-* **TypeScript**
+- **Next.js 16**
+- **React 19**
+- **TypeScript**
 
 ### 🎨 UI & Estilo
 
-* **Material UI 7** (Design System principal)
-* **CSS Modules**
-* **Variáveis CSS globais** para tema dinâmico
+- **Tailwind CSS 4** (Estilização utilitária de alta performance)
+- **Culori** (Manipulação avançada de cores e suporte a OKLCH)
+- **Lucide React** (Ícones modernos)
+- **CSS Modules**
+- **Variáveis CSS globais** para tema dinâmico
 
 ### 🛢️ Banco / API
 
-* **PostgreSQL (Supabase)**
-* **Prisma 7** com Adapter Postgres (pg + @prisma/adapter-pg)
+- **PostgreSQL (Supabase)**
+- **Prisma 7** com Adapter Postgres (pg + @prisma/adapter-pg)
 
 ### 🖼️ Imagens
 
-* **Supabase Storage**
-
-  * URLs públicas
-  * Preparado para upload via service role
+- **Supabase Storage**
+  - URLs públicas
+  - Preparado para upload via service role
 
 ### 📦 Organização interna
 
-* `app/` → rotas + componentes server
-* `components/` → componentes de UI
-* `lib/` → prisma, supabase, utilidades
-* `hooks/` → lógicas reutilizáveis
-* `styles/` → CSS global/modular
-* `prisma/` → schema e migrations
+- `app/` → rotas + componentes server
+- `components/` → componentes de UI
+- `lib/` → prisma, supabase, utilidades
+- `hooks/` → lógicas reutilizáveis
+- `styles/` → CSS global/modular
+- `prisma/` → schema e migrations
 
 ---
 
 # 🎨 Tema Dinâmico
 
-O sistema possui um **tema dinâmico completo**, onde o dono da lanchonete pode definir a cor principal.
-A partir dela, são geradas automaticamente variações:
+O sistema possui um **tema dinâmico completo**, utilizando a biblioteca **Culori** para manipulação de cores e suporte ao espaço de cor **OKLCH**.
+A partir da cor principal, são geradas e calculadas variações aplicadas via variáveis CSS:
 
-* `--primary`
-* `--primary-light`
-* `--primary-dark`
-* `--primary-soft`
-* `--primary-strong`
-* `--primary-test`
+- `--primary`
+- `--primary-light`
+- `--primary-dark`
+- `--primary-soft`
+- `--primary-strong`
+- `--primary-test`
 
 ### Fluxo do tema:
 
-* **MUI Theme**
-* **Variáveis CSS globais**
-* **Tema muda dinamicamente em toda a aplicação**
-
+- **Variáveis CSS globais**
+- **Tema muda dinamicamente em toda a aplicação**
 
 ---
 
@@ -113,12 +114,11 @@ import { Pool } from "pg";
 import { PrismaPg } from "@prisma/adapter-pg";
 ```
 
-
 # 🖼️ Supabase Storage
 
-* Armazena imagens do cardápio e logo
-* Usa URLs públicas ou `getPublicUrl`
-* Preparado para upload via service key no futuro
+- Armazena imagens do cardápio e logo
+- Usa URLs públicas ou `getPublicUrl`
+- Preparado para upload via service key no futuro
 
 Exemplo:
 
@@ -177,7 +177,7 @@ Exemplo:
     +---types
     |
     \---ultils
-            ultils.ts
+            colors.ts
 ```
 
 ---
@@ -229,26 +229,27 @@ http://localhost:3000
 
 # 🧪 Scripts
 
-| Comando               | Função                    |
-| --------------------- | ------------------------- |
-| `npm run dev`         | Inicia o servidor Next.js |
-| `npm run build`       | Build de produção         |
-| `npm run start`       | Inicia versão de produção |
-| `npx prisma generate` | Gera cliente Prisma       |
-| `npx prisma db pull`  | Atualiza modelos do banco |
+| Comando               | Função                                                                  |
+| --------------------- | ----------------------------------------------------------------------- |
+| `npm run dev`         | Inicia o servidor Next.js                                               |
+| `npm run build`       | Build de produção                                                       |
+| `npm run start`       | Inicia versão de produção                                               |
+| `npx prisma generate` | Gera cliente Prisma                                                     |
+| `npx prisma db pull`  | Atualiza modelos do banco                                               |
+| `npm run sync`        | Sincroniza DB, roda scripts e gera cliente (Pull + Validate + Generate) |
 
 ---
 
 # 🚀 Próximos Passos
 
-* 🔐 Página de admin com autenticação
-* 🎛️ Página de configuração de tema (salvar cor no banco)
-* 🧾 CRUD completo de produtos do cardápio
-* 🧾 Sistema de comandas
-* 📦 Upload de imagens direto do painel
-* 📱 Interface mobile otimizada
-* 🧪 Testes com Playwright / Vitest
-* 📊 Painel administrativo avançado
+- 🔐 Página de admin com autenticação
+- 🎛️ Página de configuração de tema (salvar cor no banco)
+- 🧾 CRUD completo de produtos do cardápio
+- 🧾 Sistema de comandas
+- 📦 Upload de imagens direto do painel
+- 📱 Interface mobile otimizada
+- 🧪 Testes com Playwright / Vitest
+- 📊 Painel administrativo avançado
 
 ---
 
@@ -257,5 +258,3 @@ http://localhost:3000
 Este projeto segue a licença **privada**.
 
 ---
-
-
